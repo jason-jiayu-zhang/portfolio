@@ -6,13 +6,13 @@ import { PROJECTS } from '../data/portfolio'
 // a viewer scrolls past the interactive wheel without engaging it.
 export default function FeaturedGrid() {
   return (
-    <section id="featured-grid" className="relative py-16 md:py-24 px-4 sm:px-6 lg:px-12">
+    <section id="featured-grid" className="relative pt-8 md:pt-12 pb-16 md:pb-24 px-4 sm:px-6 lg:px-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12 pb-4 border-b border-accent/30">
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-          <span className="label-caps text-gold">WORK /</span>
+          <span className="label-caps text-gold">FEATURED /</span>
           <div className="w-px h-4 bg-accent/50" />
           <span className="font-mono text-xs text-parchment/65 tracking-wide">
-            FEATURED PROJECTS
+            ALL FOUR, AT A GLANCE
           </span>
         </div>
         <span className="label-caps opacity-90">{PROJECTS.length.toString().padStart(2, '0')} PROJECTS</span>

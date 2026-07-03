@@ -41,7 +41,7 @@ function TiltCard({ to, children, style, className }: TiltCardProps) {
     <Link
       ref={cardRef}
       to={to}
-      className={`group relative flex flex-col gap-1.5 sm:gap-3 p-2 sm:p-4 md:p-5 border border-accent/20 -mt-px -ml-px bg-primary z-0 cursor-pointer ${className ?? ''}`}
+      className={`group relative flex flex-col gap-1.5 sm:gap-2.5 p-2 sm:p-3 md:p-4 border border-accent/20 -mt-px -ml-px bg-primary z-0 cursor-pointer ${className ?? ''}`}
       style={{
         ...style,
         // GPU-accelerated 3D transform
@@ -74,21 +74,21 @@ function TiltCard({ to, children, style, className }: TiltCardProps) {
 // ─── Studio Section ───────────────────────────────────────────────────────────
 export default function StudioSection() {
   return (
-    <section id="studio" className="relative py-16 md:py-24 px-4 sm:px-6 lg:px-12">
-      {/* Section header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12 pb-4 border-b border-accent/30">
-        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-          <span className="label-caps text-gold">STUDIO /</span>
-          <div className="w-px h-4 bg-accent/50" />
-          <span className="font-mono text-xs text-parchment/65 tracking-wide">
+    <section id="studio" className="relative py-10 md:py-14 px-4 sm:px-6 lg:px-12">
+      {/* Section header — deliberately quieter than the Featured header above */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-8 pb-3 border-b border-accent/15">
+        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+          <span className="font-mono text-[10px] tracking-label uppercase text-parchment/50">STUDIO /</span>
+          <div className="w-px h-3 bg-accent/30" />
+          <span className="font-mono text-[11px] text-parchment/45 tracking-wide">
             OFF-A-WHIM EXPERIMENTS
           </span>
         </div>
-        <span className="label-caps opacity-90">{EXPERIMENTS.length.toString().padStart(2, '0')} PIECES</span>
+        <span className="font-mono text-[10px] tracking-label uppercase text-parchment/50">{EXPERIMENTS.length.toString().padStart(2, '0')} PIECES</span>
       </div>
 
-      {/* Experiment grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 bg-primary pl-px pt-px border-b border-r border-accent/20">
+      {/* Experiment grid — denser columns keep each card small relative to Featured Work */}
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 bg-primary pl-px pt-px border-b border-r border-accent/20">
         {[...EXPERIMENTS].sort((a, b) => {
           const yearA = a.year === 'Present' ? 9999 : Number(a.year);
           const yearB = b.year === 'Present' ? 9999 : Number(b.year);
@@ -130,18 +130,18 @@ export default function StudioSection() {
 
             {/* Labels */}
             <div className="space-y-1">
-              <p className="label-caps opacity-90">{exp.contextLabel}</p>
-              <p className="font-sans font-medium text-sm text-parchment leading-tight tracking-tight">
+              <p className="font-mono text-[9px] tracking-label uppercase text-parchment/50">{exp.contextLabel}</p>
+              <p className="font-sans font-medium text-xs text-parchment leading-tight tracking-tight">
                 {exp.title}
               </p>
-              <p className="font-mono text-xs text-parchment/70 leading-relaxed">
+              <p className="font-mono text-[11px] text-parchment/60 leading-relaxed line-clamp-2">
                 {exp.description}
               </p>
             </div>
 
             {/* Year */}
             <div className="mt-auto">
-              <span className="label-caps opacity-90">{exp.year}</span>
+              <span className="font-mono text-[10px] tracking-label uppercase text-parchment/50">{exp.year}</span>
             </div>
 
             {/* Hover corner accent */}
