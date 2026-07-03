@@ -22,7 +22,7 @@ function AnimatedElement({ delay, children, className = '' }: AnimatedElementPro
   }, [delay])
 
   return (
-    <div className={`overflow-hidden pb-2 -mb-2 ${className}`}>
+    <div className={`${className}`}>
       <div
         style={{
           transform: show ? 'translateY(0)' : 'translateY(10px)',
@@ -64,7 +64,7 @@ function NarrativePanel({ project }: NarrativePanelProps) {
   return (
     <div className="space-y-4">
       {project.narrative.map((para, i) => (
-        <div key={i} className="overflow-hidden pb-2 -mb-2">
+        <div key={i} className="">
           <p
             className="font-mono text-sm text-parchment/60 leading-[1.65] tracking-tight"
             style={{
@@ -259,22 +259,58 @@ export default function HeroSection() {
   const handleProjectChange = useCallback((index: number) => {
     if (index === activeIndex) return;
     setActiveIndex(index)
-    
+
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
     setIsFadingOut(true)
-    
+
     timeoutRef.current = setTimeout(() => {
       // Record the wheel's position relative to the viewport right before content changes
       if (wheelContainerRef.current) {
         wheelPosRef.current = wheelContainerRef.current.getBoundingClientRect().top
       }
-      
+
       setDisplayIndex(index)
       keyRef.current += 1
       setProjKey(`proj-${index}-${keyRef.current}`)
       setIsFadingOut(false)
     }, 300)
   }, [activeIndex])
+
+  // ── AMBIENT AUTO-ROTATE ───────────────────────────────────────────────────
+  // Slowly cycles the wheel to the next project on its own when idle; any
+  // interaction (drag/scroll on the wheel, or the change it produces) resets the timer.
+  const AUTO_ADVANCE_MS = 6000
+  const autoAdvanceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const activeIndexRef = useRef(activeIndex)
+
+  useEffect(() => {
+    activeIndexRef.current = activeIndex
+  }, [activeIndex])
+
+  const resetAutoAdvance = useCallback(() => {
+    if (autoAdvanceTimerRef.current) clearInterval(autoAdvanceTimerRef.current)
+    autoAdvanceTimerRef.current = setInterval(() => {
+      handleProjectChange((activeIndexRef.current + 1) % PROJECTS.length)
+    }, AUTO_ADVANCE_MS)
+  }, [handleProjectChange])
+
+  useEffect(() => {
+    resetAutoAdvance()
+    return () => {
+      if (autoAdvanceTimerRef.current) clearInterval(autoAdvanceTimerRef.current)
+    }
+  }, [resetAutoAdvance])
+
+  useEffect(() => {
+    const el = wheelContainerRef.current
+    if (!el) return
+    el.addEventListener('pointerdown', resetAutoAdvance)
+    el.addEventListener('wheel', resetAutoAdvance, { passive: true })
+    return () => {
+      el.removeEventListener('pointerdown', resetAutoAdvance)
+      el.removeEventListener('wheel', resetAutoAdvance)
+    }
+  }, [resetAutoAdvance])
 
   // ── Touch swipe state (for mobile project switching) ─────────────────────
   const touchStartXRef = useRef(0)

@@ -14,7 +14,7 @@ export const BIO: BioProfile = {
   email: 'jason.jiayu.zhang@gmail.com',
   resumeUrl:
     '/JasonResume.pdf',
-  tagline: 'a product without users is merely a project.',
+  tagline: 'to nurture others to love the art of making.',
   socials: [
     {
       platform: 'LinkedIn',

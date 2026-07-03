@@ -30,7 +30,7 @@ function RotatingStatusText() {
   }
 
   return (
-    <span className="font-mono text-xs text-parchment/70 overflow-hidden block h-[1.2em]">
+    <span className="font-mono text-xs text-parchment/70 overflow-hidden block min-h-[1.2em]">
       <span style={textStyle}>{STATUS_CYCLE[currentIdx].text}</span>
     </span>
   )
@@ -368,15 +368,15 @@ function InteractiveTerminalPrompt({
     <div className="mt-8 flex flex-col border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-sm shadow-sm">
       {/* Terminal Header */}
       <div className="flex items-center px-3 py-1.5 border-b border-accent/20 bg-accent/5">
-        <div className="flex gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
-          <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+        <div className="flex gap-1.5 w-[36px] shrink-0">
+          <div className="w-2 h-2 rounded-full bg-red-500/60" />
+          <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
+          <div className="w-2 h-2 rounded-full bg-green-400/60" />
         </div>
         <div className="flex-1 text-center font-mono text-xs text-parchment/60 uppercase tracking-widest">
           bash
         </div>
-        <div className="w-[34px]" /> {/* Spacer to balance the dots for center alignment */}
+        <div className="w-[36px] shrink-0" />
       </div>
 
       {/* Terminal Body */}
@@ -676,30 +676,25 @@ export default function AboutSection() {
               className="font-sans font-black text-parchment leading-tight mb-3"
               style={{ fontSize: 'clamp(1.4rem, 2vw, 1.8rem)', letterSpacing: '-0.04em' }}
             >
-              I'm Jason—a hybrid <span className="text-gold">designer × engineer</span> who believes that the most profound digital experiences live at the intersection of rigorous logic and poetic expression.
+              I’m Jason, a hybrid <span className="text-gold">design × engineer</span> who believes the ideal digital experiences live at the intersection of rigorous systems and poetic craft.
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl">
             <div>
               <p className="font-mono text-xs text-parchment/50 leading-relaxed">
-                My work is driven by a fascination with systems. Whether I'm architecting a robust front-end component library or crafting the micro-interactions of a physical product interface, I strive for a balance between aesthetic purity and functional resilience.
+                My work is driven by a curiosity for how systems, and teams, operate. Whether architecting a front-end component library or detailing micro-interactions, I make it a priority to understand the workflows and constraints of my engineering and product partners. By designing the collaboration as intentionally as the interface, I streamline how we design and ship together.
               </p>
             </div>
             <div>
               <p className="font-mono text-xs text-parchment/50 leading-relaxed">
-                Beyond the editor, I am deeply invested in human-computer interaction history, photography, and exploring how artifacts shape our daily rituals. I build tools that feel like extensions of thought.
+                Beyond the editor, I'm deeply invested in coordination in all its forms, whether calling tactical plays as an In-Game Leader, organizing design events as a Figma Campus Leader, or mentoring student designers. I thrive in environments where collective effort meets structured play. The best leadership is simply about clearing the path so others can execute.
               </p>
             </div>
           </div>
 
           {/* Terminal-like metadata */}
           <div className="mt-8 flex flex-wrap gap-6 pt-6 border-t border-accent/20">
-            <div className="flex flex-col gap-1.5">
-              <span className="font-mono text-xs text-parchment/60 uppercase tracking-wider">Status</span>
-              <RotatingStatusText />
-            </div>
-            <div className="w-px h-8 bg-accent/20 hidden sm:block" />
             <div className="flex flex-col gap-1.5">
               <span className="font-mono text-xs text-parchment/60 uppercase tracking-wider">Location</span>
               <span className="font-mono text-xs text-parchment/70">Davis, CA</span>
@@ -708,6 +703,11 @@ export default function AboutSection() {
             <div className="flex flex-col gap-1.5">
               <span className="font-mono text-xs text-parchment/60 uppercase tracking-wider">Class</span>
               <span className="font-mono text-xs text-parchment/70">Design Engineer</span>
+            </div>
+            <div className="w-px h-8 bg-accent/20 hidden sm:block" />
+            <div className="flex flex-col gap-1.5">
+              <span className="font-mono text-xs text-parchment/60 uppercase tracking-wider">Status</span>
+              <RotatingStatusText />
             </div>
           </div>
         </div>
@@ -725,10 +725,10 @@ export default function AboutSection() {
 
           <div className="relative w-full max-w-[280px] aspect-[4/5] mx-auto flex items-center justify-center">
             {/* Image 1: Main portrait */}
-            <div className="group absolute top-0 right-4 w-[75%] aspect-[3/4] z-10 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-500" style={{ transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            <div className="group absolute -top-2 right-0 w-[75%] aspect-[3/4] z-10 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-500" style={{ transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
               <div className="relative w-full h-full overflow-hidden">
                 <img
-                  src="/images/jason-headshot-1.jpg"
+                  src="/images/jason-headshot-1.webp"
                   alt="Jason Portrait"
                   className="w-full h-full object-cover object-top grayscale contrast-125 brightness-90 mix-blend-luminosity group-hover:grayscale-0 group-hover:mix-blend-normal group-hover:brightness-100"
                   style={{ transition: 'filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}
@@ -745,10 +745,10 @@ export default function AboutSection() {
             </div>
 
             {/* Image 2: Secondary / Action shot */}
-            <div className="group absolute bottom-6 left-0 w-[65%] aspect-square z-20 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform -rotate-3 hover:rotate-0 hover:z-30" style={{ transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            <div className="group absolute bottom-0 -left-4 w-[65%] aspect-square z-20 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform -rotate-3 hover:rotate-0 hover:z-30" style={{ transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
               <div className="relative w-full h-full overflow-hidden">
                 <img
-                  src="/images/jason-headshot-2.jpg"
+                  src="/images/jason-headshot-2.webp"
                   alt="Jason at work"
                   className="w-full h-full object-cover object-[center_30%] grayscale contrast-125 brightness-90 mix-blend-luminosity group-hover:grayscale-0 group-hover:mix-blend-normal group-hover:brightness-100"
                   style={{ transition: 'filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}
@@ -860,8 +860,7 @@ export default function AboutSection() {
               <span className="text-gold">Always.</span>
             </h2>
             <p className="font-mono text-xs text-parchment/70 leading-relaxed">
-              Servant leadership. Deep empathy. Authentic community.
-              The following principles aren't values on a slide — they're operating constraints.
+              Servant leadership. Authentic community. Real products. The following principles aren’t just values in a list. They’re operating constraints for my entire design journey.
             </p>
           </div>
 
@@ -870,13 +869,6 @@ export default function AboutSection() {
             {BELIEFS.map((belief) => (
               <BeliefBlock key={belief.index} belief={belief} />
             ))}
-          </div>
-
-          {/* Closing line */}
-          <div className="mt-8 pt-6 border-t border-accent/20">
-            <blockquote className="font-mono text-xs text-parchment/60 italic leading-relaxed">
-              "To nurture others to love the art of making."
-            </blockquote>
           </div>
         </div>
 
@@ -942,7 +934,7 @@ export default function AboutSection() {
                         {STATUS_ICONS[book.status]}
                       </span>
                       <div className="min-w-0">
-                        <p className="font-mono text-xs text-parchment/70 leading-tight truncate">
+                        <p className="font-mono text-xs text-parchment/70 leading-tight">
                           {book.title}
                         </p>
                         <p className="font-mono text-xs text-parchment/60 mt-0.5">
@@ -952,14 +944,14 @@ export default function AboutSection() {
                       </div>
                     </div>
                   ))}
-                  <InteractiveTerminalPrompt
-                    history={history}
-                    commandInput={commandInput}
-                    setCommandInput={setCommandInput}
-                    handleCommand={handleCommand}
-                    inputRef={inputRef}
-                  />
                 </div>
+                <InteractiveTerminalPrompt
+                  history={history}
+                  commandInput={commandInput}
+                  setCommandInput={setCommandInput}
+                  handleCommand={handleCommand}
+                  inputRef={inputRef}
+                />
               </TerminalSection>
             )}
 
@@ -1000,14 +992,14 @@ export default function AboutSection() {
                       <span className="font-mono text-xs text-parchment/50">♫</span>
                     </div>
                   ))}
-                  <InteractiveTerminalPrompt
-                    history={history}
-                    commandInput={commandInput}
-                    setCommandInput={setCommandInput}
-                    handleCommand={handleCommand}
-                    inputRef={inputRef}
-                  />
                 </div>
+                <InteractiveTerminalPrompt
+                  history={history}
+                  commandInput={commandInput}
+                  setCommandInput={setCommandInput}
+                  handleCommand={handleCommand}
+                  inputRef={inputRef}
+                />
               </TerminalSection>
             )}
 

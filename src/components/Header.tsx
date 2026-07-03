@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { STATUS_CYCLE, BIO } from '../data/portfolio'
 import { useIntro } from './IntroContext'
 
@@ -124,7 +123,11 @@ export default function Header() {
         {isPhase2 && (
         <div className={`flex items-center gap-3 ${!hasLoaded ? 'animate-mask-right' : ''}`}>
           {/* JJZ monogram — routes home */}
-          <Link to="/" className="flex items-center gap-1.5 group">
+          <a
+            href="#featured"
+            onClick={(e) => handleScroll(e, 'featured')}
+            className="flex items-center gap-1.5 group"
+          >
             <img
               src="/favicon.svg"
               className="w-[18px] h-[18px] transition-transform duration-300 group-hover:scale-110 object-contain"
@@ -136,7 +139,7 @@ export default function Header() {
             >
               ©25
             </span>
-          </Link>
+          </a>
 
           {/* Vertical separator */}
           <div className="w-px h-4 bg-accent/50" />
@@ -160,18 +163,18 @@ export default function Header() {
         {isPhase3 && (
         <nav className={`flex items-center gap-4 overflow-x-auto no-scrollbar justify-end min-w-0 ${!hasLoaded ? 'animate-fade-down' : ''}`}>
           <a
-            href="#work"
-            onClick={(e) => handleScroll(e, 'work')}
-            className="font-mono text-xs tracking-label text-parchment/50 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
-          >
-            Work
-          </a>
-          <a
             href="#studio"
             onClick={(e) => handleScroll(e, 'studio')}
             className="font-mono text-xs tracking-label text-parchment/50 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
           >
             Studio
+          </a>
+          <a
+            href="#archive"
+            onClick={(e) => handleScroll(e, 'archive')}
+            className="font-mono text-xs tracking-label text-parchment/50 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
+          >
+            Index
           </a>
           <a
             href="#about"
