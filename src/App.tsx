@@ -1,6 +1,7 @@
 
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
+import FeaturedGrid from './components/FeaturedGrid'
 import ArchiveSection from './components/ArchiveSection'
 import StudioSection from './components/StudioSection'
 import AboutSection from './components/AboutSection'
@@ -25,6 +26,11 @@ function AppContent() {
 
         {isPhase3 && (
           <>
+            {/* § 1.5 — Featured grid: static fallback for the 4 wheel projects */}
+            <div className="contain-section">
+              <FeaturedGrid />
+            </div>
+
             {/* § 2 — Studio section: off-a-whim experiments */}
             <div className="contain-section">
               <StudioSection />
