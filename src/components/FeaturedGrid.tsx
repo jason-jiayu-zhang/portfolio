@@ -29,14 +29,35 @@ export default function FeaturedGrid() {
             {/* Accent bar — ties back to wheel color coding */}
             <div className="absolute top-0 left-0 right-0 h-0.5" style={{ backgroundColor: proj.accentColor, opacity: 0.7 }} />
 
+            {/* Preview thumbnail */}
+            <div className="relative -mx-4 -mt-4 sm:-mx-5 sm:-mt-5 mb-1 aspect-video overflow-hidden border-b border-accent/20 bg-surface/10">
+              {proj.caseStudy?.images?.[0] ? (
+                <img
+                  src={proj.caseStudy.images[0].src}
+                  alt={proj.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-[opacity,transform] duration-200 ease-out"
+                  style={{ willChange: 'transform, opacity' }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity duration-200">
+                  <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke={proj.accentColor} strokeWidth="0.75">
+                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="12" cy="12" r="4" strokeDasharray="2 3" />
+                  </svg>
+                </div>
+              )}
+            </div>
+
             <div className="flex items-center justify-between font-mono text-xs tracking-label uppercase text-parchment/50">
               <span>0{i + 1} / 0{PROJECTS.length}</span>
               <span className="flex items-center gap-1.5">
                 <span
-                  className="w-1.5 h-1.5 rounded-full"
+                  className="w-1.5 h-1.5 rounded-full border"
                   style={{
-                    backgroundColor: proj.status === 'live' ? '#4ade80' : '#a39d7b',
-                    boxShadow: proj.status === 'live' ? '0 0 6px #4ade80' : 'none',
+                    backgroundColor: proj.status === 'live' ? proj.accentColor : 'transparent',
+                    borderColor: proj.status === 'live' ? proj.accentColor : 'rgba(207,204,187,0.3)',
                   }}
                 />
                 {proj.status === 'live' ? 'Live' : proj.status === 'offline' ? 'Offline' : 'Archived'}

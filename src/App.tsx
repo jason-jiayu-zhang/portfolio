@@ -2,7 +2,6 @@
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
 import FeaturedGrid from './components/FeaturedGrid'
-import ArchiveSection from './components/ArchiveSection'
 import StudioSection from './components/StudioSection'
 import AboutSection from './components/AboutSection'
 import Footer from './components/Footer'
@@ -34,11 +33,6 @@ function AppContent() {
             {/* § 2 — Studio section: off-a-whim experiments */}
             <div className="contain-section">
               <StudioSection />
-            </div>
-
-            {/* § 3 — Archive section: masterlist of all work */}
-            <div className="contain-section">
-              <ArchiveSection />
             </div>
 
             {/* § 4 — 3-column About / Foundations */}
