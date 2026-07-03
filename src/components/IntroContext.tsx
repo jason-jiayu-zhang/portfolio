@@ -36,16 +36,16 @@ export function IntroProvider({ children }: { children: React.ReactNode }) {
       setPhase('phase01')
     }, 500)
     
-    // Phase 02: 2100ms after phase01 (2600ms total - overlaps end of wheel draw by 300ms)
+    // Phase 02: fires at 600ms, while the glow/rings' 1.3s vector-draw (finishes ~1750ms after mount) is still mid-flight — the cardinal points and labels start fading in over the tail of the draw instead of waiting for it to fully settle.
     const timer1 = setTimeout(() => {
       setPhase('phase02')
-    }, 2600)
+    }, 600)
 
-    // Phase 03: 1400ms after phase02 (4000ms total)
+    // Phase 03: fires at 1500ms — 900ms after phase02, enough for the staggered cardinal-point/label fade-ins (last one starts at phase02+490ms, 250ms transition) to finish before hasLoaded flips.
     const timer2 = setTimeout(() => {
       setPhase('phase03')
       sessionStorage.setItem('introPlayed', 'true')
-    }, 4000)
+    }, 1500)
 
     return () => {
       clearTimeout(timer0)

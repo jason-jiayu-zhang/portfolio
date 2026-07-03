@@ -24,7 +24,7 @@ function RotatingStatusText() {
   const textStyle: React.CSSProperties = {
     transform: animState === 'exit' ? 'translateY(-100%)' : animState === 'enter' ? 'translateY(4px)' : 'translateY(0)',
     opacity: animState === 'enter' ? 0 : 1,
-    transition: animState === 'exit' ? 'transform 0.32s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.25s ease' : animState === 'enter' ? 'none' : 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease',
+    transition: animState === 'exit' ? 'transform 0.22s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.2s ease' : animState === 'enter' ? 'none' : 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease',
     willChange: 'transform, opacity',
     display: 'block'
   }
@@ -56,7 +56,7 @@ function AnchorLine({
         style={{
           transform: 'scaleX(0)',
           transformOrigin: 'center',
-          transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'transform 0.26s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
         data-underline
       />
@@ -77,7 +77,7 @@ function TimelineRow({ entry, index }: { entry: TimelineEntry; index: number }) 
       style={{
         paddingTop: '14px',
         paddingBottom: open ? '14px' : '14px',
-        transition: 'padding 0.35s cubic-bezier(0.22,1,0.36,1)',
+        transition: 'padding 0.22s cubic-bezier(0.22,1,0.36,1)',
       }}
     >
       <button
@@ -88,11 +88,11 @@ function TimelineRow({ entry, index }: { entry: TimelineEntry; index: number }) 
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           {/* Left — number + period */}
           <div className="flex items-center gap-3 flex-shrink-0">
-            <span className="font-mono text-xs text-parchment/50 w-5 text-right">
+            <span className="font-mono text-xs text-parchment/65 w-5 text-right">
               {String(index + 1).padStart(2, '0')}
             </span>
             <span
-              className="font-mono text-xs tracking-label text-parchment/60 whitespace-nowrap"
+              className="font-mono text-xs tracking-label text-parchment/65 whitespace-nowrap"
             >
               {entry.period}
             </span>
@@ -103,16 +103,16 @@ function TimelineRow({ entry, index }: { entry: TimelineEntry; index: number }) 
             <p className="font-sans font-semibold text-sm text-parchment leading-snug" style={{ letterSpacing: '-0.02em' }}>
               {entry.role}
             </p>
-            <p className="font-mono text-xs text-gold/70 mt-0.5">{entry.org}</p>
+            <p className="font-mono text-xs text-gold/88 mt-0.5">{entry.org}</p>
           </div>
         </div>
 
         {/* Right — expand toggle */}
         <span
-          className="font-mono text-xs text-parchment/60 flex-shrink-0 mt-0.5"
+          className="font-mono text-xs text-parchment/65 flex-shrink-0 mt-0.5"
           style={{
             transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
-            transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            transition: 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
           +
@@ -125,12 +125,12 @@ function TimelineRow({ entry, index }: { entry: TimelineEntry; index: number }) 
         style={{
           gridTemplateRows: open ? '1fr' : '0fr',
           // Expo-out: the grid row snaps open then eases — feels like a physical drawer
-          transition: 'grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'grid-template-rows 0.26s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
         <div className="overflow-hidden">
           <div className="pt-3 pl-8 space-y-2 pb-2">
-            <p className="font-mono text-xs text-parchment/45 leading-relaxed">{entry.detail}</p>
+            <p className="font-mono text-xs text-parchment/65 leading-relaxed">{entry.detail}</p>
             <div className="flex flex-wrap gap-1.5">
               {entry.tags.map((tag) => (
                 <span
@@ -165,20 +165,20 @@ function BeliefBlock({ belief }: { belief: Belief }) {
           background: 'linear-gradient(to bottom, transparent, #a39d7b, transparent)',
           opacity: hovered ? 0.6 : 0,
           // Expo-out: the bar whips in instantly, fades out quickly on leave
-          transition: 'opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       />
 
       <div className="pl-4">
         <div className="flex items-center gap-3 mb-2">
-          <span className="font-mono text-xs text-parchment/50">{belief.index}</span>
+          <span className="font-mono text-xs text-parchment/65">{belief.index}</span>
           <div
             className="h-px flex-1"
             style={{
               background: 'linear-gradient(90deg, rgba(163,157,123,0.4), transparent)',
               width: hovered ? '100%' : '24px',
               maxWidth: hovered ? '80px' : '24px',
-              transition: 'max-width 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+              transition: 'max-width 0.26s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           />
         </div>
@@ -195,7 +195,7 @@ function BeliefBlock({ belief }: { belief: Belief }) {
         <p
           className="font-mono text-xs leading-relaxed"
           style={{
-            color: hovered ? 'rgba(207,204,187,0.6)' : 'rgba(207,204,187,0.35)',
+            color: hovered ? 'rgba(207,204,187,0.85)' : 'rgba(207,204,187,0.65)',
             transition: 'color 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
@@ -215,7 +215,7 @@ const STATUS_ICONS: Record<BookEntry['status'], string> = {
 const STATUS_COLORS: Record<BookEntry['status'], string> = {
   reading: '#9cd5f8',
   done: '#4ade80',
-  queued: 'rgba(207,204,187,0.25)',
+  queued: 'rgba(207,204,187,0.5)',
 }
 
 function TerminalSection({
@@ -225,8 +225,8 @@ function TerminalSection({
     <div className="mb-6">
       {/* Terminal prompt line */}
       <div className="flex items-center gap-2 mb-3 pb-2 border-b border-accent/20">
-        <span className="font-mono text-xs text-gold/50">›</span>
-        <span className="font-mono text-xs tracking-label text-gold/70 uppercase">{label}</span>
+        <span className="font-mono text-xs text-gold/88">›</span>
+        <span className="font-mono text-xs tracking-label text-gold/88 uppercase">{label}</span>
       </div>
       {children}
     </div>
@@ -373,7 +373,7 @@ function InteractiveTerminalPrompt({
           <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
           <div className="w-2 h-2 rounded-full bg-green-400/60" />
         </div>
-        <div className="flex-1 text-center font-mono text-xs text-parchment/60 uppercase tracking-widest">
+        <div className="flex-1 text-center font-mono text-xs text-parchment/65 uppercase tracking-widest">
           bash
         </div>
         <div className="w-[36px] shrink-0" />
@@ -386,7 +386,7 @@ function InteractiveTerminalPrompt({
             {history.map((h, i) => (
               <div key={i} className="space-y-1" style={{ animation: 'fadeIn 0.2s ease both' }}>
                 <div className="flex items-center gap-1.5">
-                  <span className="font-mono text-xs text-gold/50">›_</span>
+                  <span className="font-mono text-xs text-gold/88">›_</span>
                   <span className="font-mono text-xs text-parchment/70">{h.cmd}</span>
                 </div>
                 {h.output && (
@@ -403,7 +403,7 @@ function InteractiveTerminalPrompt({
           className="flex items-center gap-1.5 relative cursor-text min-h-[20px] shrink-0"
           onClick={() => inputRef.current?.focus()}
         >
-          <span className="font-mono text-xs text-parchment/60">›_</span>
+          <span className="font-mono text-xs text-parchment/65">›_</span>
           {/* Inline hint layer — the ghost text behind the visible cursor */}
           <span
             className="font-mono text-xs flex-1 whitespace-pre-wrap break-all pointer-events-none select-none"
@@ -650,13 +650,13 @@ export default function AboutSection() {
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
           <span className="label-caps">FOUNDATIONS /</span>
           <div className="w-px h-4 bg-accent/40" />
-          <span className="font-mono text-xs text-parchment/60">ABOUT + BELIEFS + CATALOG</span>
+          <span className="font-mono text-xs text-parchment/65">ABOUT + BELIEFS + CATALOG</span>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-mono text-xs text-parchment/50">{EDUCATION.institution}</span>
+          <span className="font-mono text-xs text-parchment/65">{EDUCATION.institution}</span>
           <div className="w-px h-3 bg-accent/30" />
           {EDUCATION.degrees.map((d, i) => (
-            <span key={i} className="font-mono text-xs text-parchment/60">{d}</span>
+            <span key={i} className="font-mono text-xs text-parchment/65">{d}</span>
           ))}
         </div>
       </div>
@@ -682,12 +682,12 @@ export default function AboutSection() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl">
             <div>
-              <p className="font-mono text-xs text-parchment/50 leading-relaxed">
+              <p className="font-mono text-xs text-parchment/65 leading-relaxed">
                 My work is driven by a curiosity for how systems, and teams, operate. Whether architecting a front-end component library or detailing micro-interactions, I make it a priority to understand the workflows and constraints of my engineering and product partners. By designing the collaboration as intentionally as the interface, I streamline how we design and ship together.
               </p>
             </div>
             <div>
-              <p className="font-mono text-xs text-parchment/50 leading-relaxed">
+              <p className="font-mono text-xs text-parchment/65 leading-relaxed">
                 Beyond the editor, I'm deeply invested in coordination in all its forms, whether calling tactical plays as an In-Game Leader, organizing design events as a Figma Campus Leader, or mentoring student designers. I thrive in environments where collective effort meets structured play. The best leadership is simply about clearing the path so others can execute.
               </p>
             </div>
@@ -696,17 +696,17 @@ export default function AboutSection() {
           {/* Terminal-like metadata */}
           <div className="mt-8 flex flex-wrap gap-6 pt-6 border-t border-accent/20">
             <div className="flex flex-col gap-1.5">
-              <span className="font-mono text-xs text-parchment/60 uppercase tracking-wider">Location</span>
+              <span className="font-mono text-xs text-parchment/65 uppercase tracking-wider">Location</span>
               <span className="font-mono text-xs text-parchment/70">Davis, CA</span>
             </div>
             <div className="w-px h-8 bg-accent/20 hidden sm:block" />
             <div className="flex flex-col gap-1.5">
-              <span className="font-mono text-xs text-parchment/60 uppercase tracking-wider">Class</span>
+              <span className="font-mono text-xs text-parchment/65 uppercase tracking-wider">Class</span>
               <span className="font-mono text-xs text-parchment/70">Design Engineer</span>
             </div>
             <div className="w-px h-8 bg-accent/20 hidden sm:block" />
             <div className="flex flex-col gap-1.5">
-              <span className="font-mono text-xs text-parchment/60 uppercase tracking-wider">Status</span>
+              <span className="font-mono text-xs text-parchment/65 uppercase tracking-wider">Status</span>
               <RotatingStatusText />
             </div>
           </div>
@@ -725,17 +725,17 @@ export default function AboutSection() {
 
           <div className="relative w-full max-w-[280px] aspect-[4/5] mx-auto flex items-center justify-center">
             {/* Image 1: Main portrait */}
-            <div className="group absolute -top-2 right-0 w-[75%] aspect-[3/4] z-10 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-500" style={{ transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            <div className="group absolute -top-2 right-0 w-[75%] aspect-[3/4] z-10 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-200" style={{ transition: 'transform 0.26s cubic-bezier(0.16, 1, 0.3, 1)' }}>
               <div className="relative w-full h-full overflow-hidden">
                 <img
                   src="/images/jason-headshot-1.webp"
                   alt="Jason Portrait"
                   className="w-full h-full object-cover object-top grayscale contrast-125 brightness-90 mix-blend-luminosity group-hover:grayscale-0 group-hover:mix-blend-normal group-hover:brightness-100"
-                  style={{ transition: 'filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}
+                  style={{ transition: 'filter 0.26s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1)' }}
                 />
                 {/* Scanline overlay */}
                 <div
-                  className={`absolute inset-0 pointer-events-none transition-opacity duration-500 group-hover:opacity-0 ${scanlineActive ? 'opacity-100' : 'opacity-30'}`}
+                  className={`absolute inset-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-0 ${scanlineActive ? 'opacity-100' : 'opacity-30'}`}
                   style={{
                     background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
                     backgroundSize: '100% 4px, 3px 100%'
@@ -745,16 +745,16 @@ export default function AboutSection() {
             </div>
 
             {/* Image 2: Secondary / Action shot */}
-            <div className="group absolute bottom-0 -left-4 w-[65%] aspect-square z-20 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform -rotate-3 hover:rotate-0 hover:z-30" style={{ transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            <div className="group absolute bottom-0 -left-4 w-[65%] aspect-square z-20 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform -rotate-3 hover:rotate-0 hover:z-30" style={{ transition: 'transform 0.26s cubic-bezier(0.16, 1, 0.3, 1)' }}>
               <div className="relative w-full h-full overflow-hidden">
                 <img
                   src="/images/jason-headshot-2.webp"
                   alt="Jason at work"
                   className="w-full h-full object-cover object-[center_30%] grayscale contrast-125 brightness-90 mix-blend-luminosity group-hover:grayscale-0 group-hover:mix-blend-normal group-hover:brightness-100"
-                  style={{ transition: 'filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}
+                  style={{ transition: 'filter 0.26s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1)' }}
                 />
                 <div
-                  className={`absolute inset-0 pointer-events-none transition-opacity duration-500 group-hover:opacity-0 ${scanlineActive ? 'opacity-100' : 'opacity-30'}`}
+                  className={`absolute inset-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-0 ${scanlineActive ? 'opacity-100' : 'opacity-30'}`}
                   style={{
                     background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
                     backgroundSize: '100% 4px, 3px 100%'
@@ -805,14 +805,14 @@ export default function AboutSection() {
                 className="px-2 pt-0 pb-1 border border-accent/30 rounded-sm"
                 style={{ background: 'rgba(56,64,106,0.15)' }}
               >
-                <span className="font-mono text-xs tracking-label text-gold/70">{d}</span>
+                <span className="font-mono text-xs tracking-label text-gold/88">{d}</span>
               </div>
             ))}
           </div>
 
           {/* Toolchain */}
           <div className="mb-8">
-            <div className="label-caps mb-3 opacity-50">RAPID PROTOTYPING STACK</div>
+            <div className="label-caps mb-3 opacity-90">RAPID PROTOTYPING STACK</div>
             <div className="flex flex-wrap gap-1.5">
               {EDUCATION.tools.map((tool) => (
                 <span
@@ -827,7 +827,7 @@ export default function AboutSection() {
 
           {/* Timeline */}
           <div>
-            <div className="label-caps mb-4 opacity-50">EXPERIENCE</div>
+            <div className="label-caps mb-4 opacity-90">EXPERIENCE</div>
             <div className="space-y-0 divide-y divide-transparent">
               {TIMELINE.map((entry, i) => (
                 <TimelineRow key={entry.role} entry={entry} index={i} />
@@ -838,7 +838,7 @@ export default function AboutSection() {
           {/* Resume CTA */}
           <div className="mt-8 pt-6 border-t border-accent/20">
             <AnchorLine href={BIO.resumeUrl}>
-              <span className="font-mono text-xs tracking-label uppercase text-gold/70 hover:text-gold transition-colors">
+              <span className="font-mono text-xs tracking-label uppercase text-gold/88 hover:text-gold transition-colors">
                 View Full Resume ↗
               </span>
             </AnchorLine>
@@ -888,7 +888,7 @@ export default function AboutSection() {
                 <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
                 <div className="w-2 h-2 rounded-full bg-green-400/60" />
                 <div className="flex-1" />
-                <span className="font-mono text-xs text-parchment/50">~/jjz/personal</span>
+                <span className="font-mono text-xs text-parchment/65">~/jjz/personal</span>
               </div>
 
               {/* Tab switcher */}
@@ -900,10 +900,10 @@ export default function AboutSection() {
                       setActiveTab(tab)
                       setCommandInput('')
                     }}
-                    className="flex-1 py-1.5 font-mono text-xs tracking-label uppercase transition-all duration-250"
+                    className="flex-1 py-1.5 font-mono text-xs tracking-label uppercase transition-all duration-200"
                     style={{
                       background: activeTab === tab ? 'rgba(56,64,106,0.4)' : 'transparent',
-                      color: activeTab === tab ? '#cfccbb' : 'rgba(207,204,187,0.3)',
+                      color: activeTab === tab ? '#cfccbb' : 'rgba(207,204,187,0.65)',
                       borderRight: tab !== 'play' ? '1px solid rgba(56,64,106,0.25)' : undefined,
                       transition: 'background 0.25s cubic-bezier(0.22,1,0.36,1), color 0.25s ease',
                     }}
@@ -924,7 +924,7 @@ export default function AboutSection() {
                       className="flex items-start gap-2.5 py-1.5 border-b border-accent/10 last:border-b-0 group cursor-default"
                       style={{
                         opacity: 1,
-                        animation: `fadeIn 0.3s ease ${i * 40}ms both`,
+                        animation: `fadeIn 0.25s ease ${i * 40}ms both`,
                       }}
                     >
                       <span
@@ -937,9 +937,9 @@ export default function AboutSection() {
                         <p className="font-mono text-xs text-parchment/70 leading-tight">
                           {book.title}
                         </p>
-                        <p className="font-mono text-xs text-parchment/60 mt-0.5">
+                        <p className="font-mono text-xs text-parchment/65 mt-0.5">
                           {book.author}
-                          <span className="ml-2 opacity-50">— {book.category}</span>
+                          <span className="ml-2">— {book.category}</span>
                         </p>
                       </div>
                     </div>
@@ -963,10 +963,10 @@ export default function AboutSection() {
                     <div
                       key={track.artist}
                       className="flex items-center justify-between py-2.5 border-b border-accent/10 last:border-b-0 group cursor-default"
-                      style={{ animation: `fadeIn 0.3s ease ${i * 35}ms both` }}
+                      style={{ animation: `fadeIn 0.25s ease ${i * 35}ms both` }}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs text-parchment/50 w-4">
+                        <span className="font-mono text-xs text-parchment/65 w-4">
                           {String(i + 1).padStart(2, '0')}
                         </span>
                         {/* Mini waveform visual */}
@@ -977,7 +977,7 @@ export default function AboutSection() {
                               className="w-0.5 bg-gold/30 group-hover:bg-gold/60 rounded-full"
                               style={{
                                 height: `${h * 2}px`,
-                                transition: `height 0.3s cubic-bezier(0.22,1,0.36,1) ${j * 25}ms, background-color 0.3s ease`,
+                                transition: `height 0.25s cubic-bezier(0.22,1,0.36,1) ${j * 25}ms, background-color 0.25s ease`,
                               }}
                             />
                           ))}
@@ -986,10 +986,10 @@ export default function AboutSection() {
                           <p className="font-sans font-medium text-xs text-parchment/70 leading-none">
                             {track.note}
                           </p>
-                          <p className="font-mono text-xs text-parchment/60 mt-0.5">{track.artist}</p>
+                          <p className="font-mono text-xs text-parchment/65 mt-0.5">{track.artist}</p>
                         </div>
                       </div>
-                      <span className="font-mono text-xs text-parchment/50">♫</span>
+                      <span className="font-mono text-xs text-parchment/65">♫</span>
                     </div>
                   ))}
                 </div>
@@ -1023,10 +1023,10 @@ export default function AboutSection() {
                         </span>
                         <span
                           className="font-mono text-xs tracking-label uppercase leading-tight transition-colors duration-200"
-                          style={{ color: activeGameId === game.id ? '#cfccbb' : 'rgba(207,204,187,0.35)' }}
+                          style={{ color: activeGameId === game.id ? '#cfccbb' : 'rgba(207,204,187,0.65)' }}
                         >
-                          {game.id} <span className="opacity-50">//</span><br />
-                          <span className="opacity-80">{game.title}</span>
+                          {game.id} <span>//</span><br />
+                          <span>{game.title}</span>
                         </span>
                       </button>
                     ))}
@@ -1039,13 +1039,13 @@ export default function AboutSection() {
                         <div
                           key={`${activeGameId}-${item.label}`}
                           className="flex items-start justify-between py-2.5 border-b border-accent/10 last:border-b-0"
-                          style={{ animation: `fadeIn 0.3s ease ${i * 30}ms both` }}
+                          style={{ animation: `fadeIn 0.25s ease ${i * 30}ms both` }}
                         >
                           <div>
-                            <span className="font-mono text-xs tracking-label text-parchment/60 uppercase block">
+                            <span className="font-mono text-xs tracking-label text-parchment/65 uppercase block">
                               {item.label}
                             </span>
-                            <span className={`font-mono text-xs block mt-0.5 ${item.sublabel ? 'text-parchment/50' : 'opacity-0 select-none'}`}>
+                            <span className={`font-mono text-xs block mt-0.5 ${item.sublabel ? 'text-parchment/65' : 'opacity-0 select-none'}`}>
                               {item.sublabel || '—'}
                             </span>
                           </div>

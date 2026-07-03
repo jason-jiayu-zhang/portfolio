@@ -182,12 +182,12 @@ function LogSectionHead({
         borderBottom: '1px solid rgba(56,64,106,0.35)',
         opacity: mounted ? 1 : 0,
         transform: mounted ? 'translateY(0)' : 'translateY(6px)',
-        transition: `opacity 0.5s ease ${mountDelay}ms, transform 0.55s cubic-bezier(0.22,1,0.36,1) ${mountDelay}ms`,
+        transition: `opacity 0.2s ease ${mountDelay}ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) ${mountDelay}ms`,
       }}
     >
-      <span className="font-mono text-xs text-parchment/50 pb-0.5">{index}</span>
+      <span className="font-mono text-xs text-parchment/65 pb-0.5">{index}</span>
       <div className="w-4 h-px bg-accent/40" />
-      <span className="font-mono text-xs tracking-label uppercase text-gold/55">{label}</span>
+      <span className="font-mono text-xs tracking-label uppercase text-gold/88">{label}</span>
     </div>
   )
 }
@@ -213,8 +213,8 @@ export default function ExperimentLogPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4">
-          <p className="font-mono text-xs tracking-label text-parchment/60">404 — EXPERIMENT NOT FOUND</p>
-          <Link to="/" className="font-mono text-xs text-gold/70 hover:text-gold transition-colors">
+          <p className="font-mono text-xs tracking-label text-parchment/65">404 — EXPERIMENT NOT FOUND</p>
+          <Link to="/" className="font-mono text-xs text-gold/88 hover:text-gold transition-colors">
             ← Return Home
           </Link>
         </div>
@@ -235,28 +235,28 @@ export default function ExperimentLogPage() {
           borderBottom: '1px solid rgba(56,64,106,0.3)',
           opacity: mounted ? 1 : 0,
           transform: mounted ? 'translateY(0)' : 'translateY(-6px)',
-          transition: 'opacity 0.45s ease 60ms, transform 0.5s cubic-bezier(0.22,1,0.36,1) 60ms',
+          transition: 'opacity 0.2s ease 60ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) 60ms',
         }}
       >
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
-            className="group font-mono text-xs tracking-label text-parchment/60 hover:text-parchment/60 uppercase transition-colors flex items-center gap-2"
+            className="group font-mono text-xs tracking-label text-parchment/65 hover:text-parchment/65 uppercase transition-colors flex items-center gap-2"
           >
-            <svg viewBox="0 0 12 8" className="w-3 h-3 text-parchment/60 group-hover:text-parchment/60 transition-colors">
+            <svg viewBox="0 0 12 8" className="w-3 h-3 text-parchment/65 group-hover:text-parchment/65 transition-colors">
               <path d="M8 1 L2 4 L8 7" stroke="currentColor" strokeWidth="1" fill="none" strokeLinecap="round" strokeLinejoin="round" />
               <line x1="2" y1="4" x2="10" y2="4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
             </svg>
             Studio
           </button>
-          <span className="font-mono text-xs text-parchment/50">/</span>
-          <span className="font-mono text-xs tracking-label text-parchment/50 uppercase">{exp.category}</span>
-          <span className="font-mono text-xs text-parchment/50">/</span>
+          <span className="font-mono text-xs text-parchment/65">/</span>
+          <span className="font-mono text-xs tracking-label text-parchment/65 uppercase">{exp.category}</span>
+          <span className="font-mono text-xs text-parchment/65">/</span>
           <span className="font-mono text-xs text-parchment/70">{exp.title}</span>
         </div>
         <span
           className="font-mono text-xs tracking-label"
-          style={{ color: '#a39d7b', opacity: mounted ? 0.4 : 0, transition: 'opacity 0.6s ease 200ms' }}
+          style={{ color: '#a39d7b', opacity: mounted ? 0.4 : 0, transition: 'opacity 0.2s ease 200ms' }}
         >
           [LOG // OFF_A_WHIM_{logNumber}]
         </span>
@@ -270,10 +270,10 @@ export default function ExperimentLogPage() {
           style={{
             opacity: mounted ? 1 : 0,
             transform: mounted ? 'translateY(0)' : 'translateY(12px)',
-            transition: 'opacity 0.6s ease 120ms, transform 0.65s cubic-bezier(0.22,1,0.36,1) 120ms',
+            transition: 'opacity 0.2s ease 120ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) 120ms',
           }}
         >
-          <p className="font-mono text-xs tracking-label text-gold/55 uppercase mb-4">{exp.contextLabel}</p>
+          <p className="font-mono text-xs tracking-label text-gold/88 uppercase mb-4">{exp.contextLabel}</p>
           <h1
             className="font-sans font-black text-parchment leading-none"
             style={{ fontSize: 'clamp(2.5rem, 7vw, 5.5rem)', letterSpacing: '-0.05em' }}
@@ -293,7 +293,7 @@ export default function ExperimentLogPage() {
             backgroundColor: 'rgba(28,32,53,0.5)',
             opacity: mounted ? 1 : 0,
             transform: mounted ? 'translateY(0)' : 'translateY(16px)',
-            transition: 'opacity 0.65s ease 200ms, transform 0.7s cubic-bezier(0.22,1,0.36,1) 200ms',
+            transition: 'opacity 0.2s ease 200ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) 200ms',
           }}
         >
           {/* Corner bracket SVGs — fine #a39d7b lines */}
@@ -335,7 +335,7 @@ export default function ExperimentLogPage() {
 
           {/* Visual type label — bottom left of frame */}
           <div className="absolute bottom-4 left-4">
-            <span className="font-mono text-xs tracking-label" style={{ color: '#a39d7b', opacity: 0.5 }}>
+            <span className="font-mono text-xs tracking-label" style={{ color: '#a39d7b', opacity: 0.9 }}>
               [{exp.visualAssetType.toUpperCase().replace(/ /g, '_')}]
             </span>
           </div>
@@ -351,7 +351,7 @@ export default function ExperimentLogPage() {
                 fontStyle: 'italic',
                 opacity: mounted ? 1 : 0,
                 transform: mounted ? 'translateY(0)' : 'translateY(8px)',
-                transition: 'opacity 0.55s ease 360ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) 360ms',
+                transition: 'opacity 0.2s ease 360ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) 360ms',
               }}
             >
               {log.spark}
@@ -370,7 +370,7 @@ export default function ExperimentLogPage() {
                 letterSpacing: '-0.03em',
                 opacity: mounted ? 1 : 0,
                 transform: mounted ? 'translateY(0)' : 'translateY(8px)',
-                transition: 'opacity 0.55s ease 520ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) 520ms',
+                transition: 'opacity 0.2s ease 520ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) 520ms',
               }}
             >
               {log.output}
@@ -389,10 +389,10 @@ export default function ExperimentLogPage() {
                 backgroundColor: 'rgba(163,157,123,0.03)',
                 opacity: mounted ? 1 : 0,
                 transform: mounted ? 'translateY(0)' : 'translateY(8px)',
-                transition: 'opacity 0.55s ease 640ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) 640ms',
+                transition: 'opacity 0.2s ease 640ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) 640ms',
               }}
             >
-              <p className="font-mono text-xs text-parchment/55 leading-[1.85]">{log.sandbox}</p>
+              <p className="font-mono text-xs text-parchment/65 leading-[1.85]">{log.sandbox}</p>
             </div>
           </div>
         )}
@@ -403,11 +403,11 @@ export default function ExperimentLogPage() {
             className="py-16 text-center"
             style={{
               opacity: mounted ? 1 : 0,
-              transition: 'opacity 0.5s ease 300ms',
+              transition: 'opacity 0.2s ease 300ms',
             }}
           >
-            <p className="font-mono text-xs tracking-label text-parchment/60 uppercase mb-3">Log Entry Pending</p>
-            <p className="font-mono text-xs text-parchment/50 max-w-xs mx-auto leading-relaxed">{exp.description}</p>
+            <p className="font-mono text-xs tracking-label text-parchment/65 uppercase mb-3">Log Entry Pending</p>
+            <p className="font-mono text-xs text-parchment/65 max-w-xs mx-auto leading-relaxed">{exp.description}</p>
           </div>
         )}
 
@@ -419,7 +419,7 @@ export default function ExperimentLogPage() {
             borderBottom: '1px solid rgba(56,64,106,0.3)',
             opacity: mounted ? 1 : 0,
             transform: mounted ? 'translateY(0)' : 'translateY(6px)',
-            transition: 'opacity 0.5s ease 720ms, transform 0.55s cubic-bezier(0.22,1,0.36,1) 720ms',
+            transition: 'opacity 0.2s ease 720ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) 720ms',
           }}
         >
           {[
@@ -432,8 +432,8 @@ export default function ExperimentLogPage() {
               className="flex flex-col gap-1 px-4 py-4"
               style={{ borderRight: i < 2 ? '1px solid rgba(56,64,106,0.3)' : undefined }}
             >
-              <span className="font-mono text-xs tracking-label text-parchment/22 uppercase">{item.label}</span>
-              <span className="font-mono text-xs text-parchment/50">{item.value}</span>
+              <span className="font-mono text-xs tracking-label text-parchment/65 uppercase">{item.label}</span>
+              <span className="font-mono text-xs text-parchment/65">{item.value}</span>
             </div>
           ))}
         </div>
@@ -443,16 +443,16 @@ export default function ExperimentLogPage() {
           className="flex items-center justify-between"
           style={{
             opacity: mounted ? 1 : 0,
-            transition: 'opacity 0.5s ease 800ms',
+            transition: 'opacity 0.2s ease 800ms',
           }}
         >
           {prev ? (
             <Link to={`/studio/${prev.id}`} className="group flex items-center gap-3">
-              <span className="font-mono text-sm text-parchment/60 group-hover:text-parchment/60 transition-colors">←</span>
+              <span className="font-mono text-sm text-parchment/65 group-hover:text-parchment/65 transition-colors">←</span>
               <div>
-                <p className="font-mono text-xs tracking-label text-parchment/50 uppercase">Previous</p>
+                <p className="font-mono text-xs tracking-label text-parchment/65 uppercase">Previous</p>
                 <p
-                  className="font-sans font-semibold text-parchment/45 group-hover:text-parchment transition-colors duration-200"
+                  className="font-sans font-semibold text-parchment/65 group-hover:text-parchment transition-colors duration-200"
                   style={{ letterSpacing: '-0.02em' }}
                 >
                   {prev.title}
@@ -465,15 +465,15 @@ export default function ExperimentLogPage() {
           {next ? (
             <Link to={`/studio/${next.id}`} className="group flex items-center gap-3 text-right">
               <div>
-                <p className="font-mono text-xs tracking-label text-parchment/50 uppercase">Next</p>
+                <p className="font-mono text-xs tracking-label text-parchment/65 uppercase">Next</p>
                 <p
-                  className="font-sans font-semibold text-parchment/45 group-hover:text-parchment transition-colors duration-200"
+                  className="font-sans font-semibold text-parchment/65 group-hover:text-parchment transition-colors duration-200"
                   style={{ letterSpacing: '-0.02em' }}
                 >
                   {next.title}
                 </p>
               </div>
-              <span className="font-mono text-sm text-parchment/60 group-hover:text-parchment/60 transition-colors">→</span>
+              <span className="font-mono text-sm text-parchment/65 group-hover:text-parchment/65 transition-colors">→</span>
             </Link>
           ) : (
             <div />

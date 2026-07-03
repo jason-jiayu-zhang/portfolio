@@ -6,6 +6,14 @@ import WheelSelector from './WheelSelector'
 import { SNAP_INTERVAL } from '../utils/wheelMath'
 import { useIntro } from './IntroContext'
 
+// ── Featured content reveal groups ─────────────────────────────────────────
+// Elements cluster into a few large groups instead of cascading individually —
+// fewer stagger steps means each group's own animation can run longer.
+const GROUP_HEADER = 0
+const GROUP_META = 90
+const GROUP_CTA = 180
+const GROUP_NARRATIVE = 270
+
 // ── Animated Element Wrapper ───────────────────────────────────────────────
 interface AnimatedElementProps {
   delay: number
@@ -29,7 +37,10 @@ function AnimatedElement({ delay, children, className = '' }: AnimatedElementPro
           opacity: show ? 1 : 0,
           // Expo-out: 70% of travel happens in first 15% of time — feels instant,
           // but the curve coasts gently to rest over the full duration.
-          transition: `transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+          // Elements reveal in a few larger groups (shared delay), which frees up
+          // budget for each group's own animation to run longer without the
+          // overall reveal feeling slow.
+          transition: `transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
           willChange: 'transform, opacity',
         }}
       >
@@ -45,33 +56,25 @@ interface NarrativePanelProps {
 }
 
 function NarrativePanel({ project }: NarrativePanelProps) {
-  const [lines, setLines] = useState<boolean[]>(Array(project.narrative.length).fill(false))
+  const [shown, setShown] = useState(false)
 
   useEffect(() => {
-    setLines(Array(project.narrative.length).fill(false))
-    const timeouts = project.narrative.map((_, i) => 
-      setTimeout(() => {
-        setLines(prev => {
-          const next = [...prev]
-          next[i] = true
-          return next
-        })
-      }, 500 + i * 120)
-    )
-    return () => timeouts.forEach(clearTimeout)
-  }, [project.narrative.length])
+    setShown(false)
+    const t = setTimeout(() => setShown(true), GROUP_NARRATIVE)
+    return () => clearTimeout(t)
+  }, [project.id])
 
   return (
     <div className="space-y-4">
       {project.narrative.map((para, i) => (
         <div key={i} className="">
           <p
-            className="font-mono text-sm text-parchment/60 leading-[1.65] tracking-tight"
+            className="font-mono text-sm text-parchment/65 leading-[1.65] tracking-tight"
             style={{
-              transform: lines[i] ? 'translateY(0)' : 'translateY(8px)',
-              opacity: lines[i] ? 1 : 0,
-              // Expo-out: each paragraph snaps into place immediately, then flows to rest
-              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+              transform: shown ? 'translateY(0)' : 'translateY(8px)',
+              opacity: shown ? 1 : 0,
+              // Expo-out: the whole paragraph group snaps into place together, then flows to rest
+              transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
               willChange: 'transform, opacity',
             }}
           >
@@ -130,7 +133,7 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
       viewTransition
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group/carousel relative block w-full aspect-[21/9] rounded-sm overflow-hidden border transition-all duration-300 bg-surface/10 hover:bg-surface/20 shadow-lg mb-4"
+      className="group/carousel relative block w-full aspect-[21/9] rounded-sm overflow-hidden border transition-all duration-200 bg-surface/10 hover:bg-surface/20 shadow-lg mb-4"
       style={{
         borderColor: isHovered ? `${acc}60` : `${acc}25`,
         boxShadow: isHovered ? `0 12px 48px -12px ${acc}20` : `0 8px 32px -8px ${acc}08`,
@@ -166,7 +169,7 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
           ))}
 
           {/* Banner screen label */}
-          <div className="absolute bottom-3 left-3 pointer-events-none transition-opacity duration-300">
+          <div className="absolute bottom-3 left-3 pointer-events-none transition-opacity duration-200">
             <span className="font-mono text-[9px] tracking-widest uppercase text-parchment/70 font-semibold drop-shadow-md">
               // {images[activeImageIdx].label}
             </span>
@@ -183,7 +186,7 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
 
           {/* Glowing central glyph */}
           <div 
-            className="font-mono text-5xl transition-all duration-500 select-none"
+            className="font-mono text-5xl transition-all duration-200 select-none"
             style={{ 
               color: acc,
               opacity: isHovered ? 0.75 : 0.25,
@@ -195,7 +198,7 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
           </div>
 
           <div className="absolute bottom-3 text-center w-full px-4">
-            <p className="font-mono text-xs tracking-label uppercase text-parchment/50 group-hover/carousel:text-[#cfccbb90] transition-colors">
+            <p className="font-mono text-xs tracking-label uppercase text-parchment/65 group-hover/carousel:text-[#cfccbbe6] transition-colors">
               [{project.title} Spec Template]
             </p>
           </div>
@@ -209,7 +212,7 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
             <button
               key={i}
               onClick={(e) => handleDotClick(e, i)}
-              className="w-1 h-1 rounded-full transition-all duration-300"
+              className="w-1 h-1 rounded-full transition-all duration-200"
               style={{
                 backgroundColor: i === activeImageIdx ? acc : '#cfccbb',
                 opacity: i === activeImageIdx ? 1 : 0.3,
@@ -445,7 +448,7 @@ export default function HeroSection() {
                       aria-label={p.title}
                     >
                       <div
-                        className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                        className="w-1.5 h-1.5 rounded-full transition-all duration-200"
                         style={{
                           backgroundColor: i === activeIndex ? p.accentColor : '#cfccbb',
                           opacity: i === activeIndex ? 1 : 0.2,
@@ -459,22 +462,22 @@ export default function HeroSection() {
 
               <div 
                 key={projKey}
-                className="flex-1 flex flex-col justify-start transition-opacity duration-300 ease-in-out"
+                className="flex-1 flex flex-col justify-start transition-opacity duration-200 ease-in-out"
                 style={{ opacity: isFadingOut ? 0 : 1 }}
               >
                 {/* 1. Header Cluster (Tight Spacing) */}
                 <div className="flex flex-col gap-1 mb-4 sm:mb-8">
-                  <AnimatedElement delay={0}>
+                  <AnimatedElement delay={GROUP_HEADER}>
                     <div className="font-mono text-xs tracking-label uppercase text-[#a39d7b]">
                       0{project.wheelIndex + 1} / 0{PROJECTS.length}
                     </div>
                   </AnimatedElement>
-                  <AnimatedElement delay={60}>
+                  <AnimatedElement delay={GROUP_HEADER}>
                     <div className="font-mono text-xs tracking-label uppercase" style={{ color: project.accentColor }}>
                       {project.categories[0]}
                     </div>
                   </AnimatedElement>
-                  <AnimatedElement delay={120} className="mt-1">
+                  <AnimatedElement delay={GROUP_HEADER} className="mt-1">
                     <Link
                       to={`/work/${project.id}`}
                       viewTransition
@@ -486,8 +489,8 @@ export default function HeroSection() {
                       {project.title}
                     </Link>
                   </AnimatedElement>
-                  <AnimatedElement delay={180}>
-                    <div className="font-mono text-sm text-parchment/60 tracking-tight mt-1">
+                  <AnimatedElement delay={GROUP_HEADER}>
+                    <div className="font-mono text-sm text-parchment/65 tracking-tight mt-1">
                       {project.subtitle}
                     </div>
                   </AnimatedElement>
@@ -495,20 +498,20 @@ export default function HeroSection() {
 
                 {/* 2. Project Metadata Cluster (Tight Spacing) */}
                 <div className="flex flex-col gap-2 mb-6 sm:mb-10">
-                  <AnimatedElement delay={240}>
-                    <div className="flex items-center gap-2 font-mono text-xs tracking-label text-parchment/50 uppercase">
+                  <AnimatedElement delay={GROUP_META}>
+                    <div className="flex items-center gap-2 font-mono text-xs tracking-label text-parchment/65 uppercase">
                       <div className="w-3 h-px" style={{ backgroundColor: project.accentColor, opacity: 0.4 }} />
                       <span>{project.role}</span>
                     </div>
                   </AnimatedElement>
-                  
+
                   <div className="flex flex-col gap-2 my-1">
                     {/* Tech Stack Tags */}
                     <div className="flex flex-wrap gap-1.5">
-                      {project.tools.map((t, i) => (
-                        <AnimatedElement key={t} delay={280 + i * 30} className="inline-block">
+                      {project.tools.map((t) => (
+                        <AnimatedElement key={t} delay={GROUP_META} className="inline-block">
                           <span
-                            className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono tracking-label rounded-sm border cursor-default transition-all duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] border-[#38406a80] text-[#cfccbb8c] bg-transparent hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-bg)]"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono tracking-label rounded-sm border cursor-default transition-all duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] border-[#38406a80] text-[#cfccbbe6] bg-transparent hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-bg)]"
                             style={{
                               '--accent': project.accentColor,
                               '--accent-bg': `${project.accentColor}10`,
@@ -524,7 +527,7 @@ export default function HeroSection() {
                     {/* Classification & Award Tags */}
                     <div className="flex flex-wrap gap-1.5">
                       {project.tools.length >= 4 && (
-                        <AnimatedElement delay={280 + project.tools.length * 30} className="inline-block">
+                        <AnimatedElement delay={GROUP_META} className="inline-block">
                           <span
                             className="font-mono text-xs tracking-label px-2 py-0.5 border rounded-sm"
                             style={{ borderColor: `${project.accentColor}40`, color: project.accentColor, textBox: 'trim-both cap alphabetic' } as React.CSSProperties}
@@ -534,7 +537,7 @@ export default function HeroSection() {
                         </AnimatedElement>
                       )}
                       {project.categories.includes('Full-Stack Engineering') && (
-                        <AnimatedElement delay={280 + (project.tools.length + 1) * 30} className="inline-block">
+                        <AnimatedElement delay={GROUP_META} className="inline-block">
                           <span
                             className="font-mono text-xs tracking-label px-2 py-0.5 border rounded-sm"
                             style={{ borderColor: `${project.accentColor}40`, color: project.accentColor, textBox: 'trim-both cap alphabetic' } as React.CSSProperties}
@@ -543,8 +546,8 @@ export default function HeroSection() {
                           </span>
                         </AnimatedElement>
                       )}
-                      {project.awards?.map((award, i) => (
-                        <AnimatedElement key={award} delay={280 + (project.tools.length + 2 + i) * 30} className="inline-block">
+                      {project.awards?.map((award) => (
+                        <AnimatedElement key={award} delay={GROUP_META} className="inline-block">
                           <span
                             className="font-mono text-xs tracking-label px-2 py-0.5 border rounded-sm"
                             style={{ borderColor: `${project.accentColor}40`, color: project.accentColor, textBox: 'trim-both cap alphabetic' } as React.CSSProperties}
@@ -558,13 +561,13 @@ export default function HeroSection() {
 
                   {project.metrics.length > 0 && (
                     <div className="grid grid-cols-2 gap-2 pt-2">
-                      {project.metrics.map((m, i) => (
-                        <AnimatedElement key={m.label} delay={360 + i * 40}>
+                      {project.metrics.map((m) => (
+                        <AnimatedElement key={m.label} delay={GROUP_META}>
                           <div
-                            className="flex flex-col gap-0.5 px-3 py-2 rounded-sm border border-[rgba(255,255,255,0.05)] bg-transparent hover:bg-[var(--accent-bg-hover)] transition-colors duration-400"
+                            className="flex flex-col gap-0.5 px-3 py-2 rounded-sm border border-[rgba(255,255,255,0.05)] bg-transparent hover:bg-[var(--accent-bg-hover)] transition-colors duration-200"
                             style={{ '--accent-bg-hover': `${project.accentColor}08` } as React.CSSProperties}
                           >
-                            <span className="font-mono text-xs tracking-label text-[#cfccbb4d] uppercase">{m.label}</span>
+                            <span className="font-mono text-xs tracking-label text-[#cfccbbe6] uppercase">{m.label}</span>
                             <span
                               className="font-mono text-sm font-medium"
                               style={{ color: project.accentColor }}
@@ -579,7 +582,7 @@ export default function HeroSection() {
                 </div>
 
                 {/* 3. Status badge & CTA */}
-                <AnimatedElement delay={380}>
+                <AnimatedElement delay={GROUP_CTA}>
                   <div className="flex flex-wrap items-center gap-y-2 gap-x-3 mb-8">
                     <div className="flex items-center gap-2">
                       <div
@@ -619,7 +622,7 @@ export default function HeroSection() {
                 </AnimatedElement>
 
                 {/* Visual Preview Carousel */}
-                <AnimatedElement delay={400}>
+                <AnimatedElement delay={GROUP_CTA}>
                   <ProjectPreviewCarousel project={project} />
                 </AnimatedElement>
  
@@ -633,11 +636,11 @@ export default function HeroSection() {
               {/* Left edge index line */}
               <div 
                 key={`edge-${projKey}`}
-                className="absolute left-0 top-1/2 -translate-y-1/2 h-32 flex items-center transition-opacity duration-300 ease-in-out"
+                className="absolute left-0 top-1/2 -translate-y-1/2 h-32 flex items-center transition-opacity duration-200 ease-in-out"
                 style={{ opacity: isFadingOut ? 0 : 1 }}
               >
                 <div
-                  className={`w-px h-full transition-all duration-700 ${!hasLoaded ? 'animate-slice-y' : ''}`}
+                  className={`w-px h-full transition-all duration-200 ${!hasLoaded ? 'animate-slice-y' : ''}`}
                   style={{ backgroundColor: project.accentColor, opacity: 0.6 }}
                 />
               </div>
@@ -676,7 +679,7 @@ export default function HeroSection() {
                 <div className="absolute left-3 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-20">
                   <button
                     onClick={() => handleProjectChange((activeIndex - 1 + PROJECTS.length) % PROJECTS.length)}
-                    className="p-2 md:p-3 rounded-full border bg-primary/40 backdrop-blur-md transition-all duration-300 group focus:outline-none hover:bg-surface/50 active:scale-95 animate-arrow-left-in"
+                    className="hero-arrow-btn p-2 md:p-3 rounded-full border bg-primary/40 backdrop-blur-md transition-all duration-200 group focus:outline-none hover:bg-surface/50 active:scale-95 animate-arrow-left-in"
                     style={{
                       borderColor: `${activeProject.accentColor}33`,
                       color: activeProject.accentColor,
@@ -694,7 +697,7 @@ export default function HeroSection() {
                     }}
                     aria-label="Previous Project"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transform group-hover:-translate-x-0.5 transition-transform duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transform group-hover:-translate-x-0.5 transition-transform duration-200">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
                   </button>
@@ -704,7 +707,7 @@ export default function HeroSection() {
                 <div className="absolute right-3 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-20">
                   <button
                     onClick={() => handleProjectChange((activeIndex + 1) % PROJECTS.length)}
-                    className="p-2 md:p-3 rounded-full border bg-primary/40 backdrop-blur-md transition-all duration-300 group focus:outline-none hover:bg-surface/50 active:scale-95 animate-arrow-right-in"
+                    className="hero-arrow-btn p-2 md:p-3 rounded-full border bg-primary/40 backdrop-blur-md transition-all duration-200 group focus:outline-none hover:bg-surface/50 active:scale-95 animate-arrow-right-in"
                     style={{
                       borderColor: `${activeProject.accentColor}33`,
                       color: activeProject.accentColor,
@@ -722,7 +725,7 @@ export default function HeroSection() {
                     }}
                     aria-label="Next Project"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transform group-hover:translate-x-0.5 transition-transform duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transform group-hover:translate-x-0.5 transition-transform duration-200">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                     </svg>
                   </button>
@@ -746,7 +749,7 @@ export default function HeroSection() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background: `radial-gradient(ellipse at center, ${activeProject.accentColor}08 0%, transparent 65%)`,
-                transition: 'background 0.8s ease',
+                transition: 'background 0.25s ease',
               }}
             />
           </div>

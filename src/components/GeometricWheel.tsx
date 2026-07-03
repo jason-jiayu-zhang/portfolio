@@ -95,7 +95,7 @@ const StaticBackground = memo(() => {
       }
     `}</style>
 
-    <g className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '3.2s', animationDelay: !hasLoaded ? '450ms' : '0ms' }}>
+    <g className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '1.3s', animationDelay: !hasLoaded ? '450ms' : '0ms' }}>
       <circle cx={CX} cy={CY} r={280} fill="url(#wheelGlow)" />
     </g>
 
@@ -105,7 +105,7 @@ const StaticBackground = memo(() => {
         ambientClass = i % 2 === 0 ? "ambient-ring-cw" : "ambient-ring-ccw"
       }
       return (
-        <g key={`ring-static-${i}`} className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '3.2s', animationDelay: !hasLoaded ? `${(RINGS.length - 1 - i) * 30}ms` : '0ms' }}>
+        <g key={`ring-static-${i}`} className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '1.3s', animationDelay: !hasLoaded ? `${(RINGS.length - 1 - i) * 30}ms` : '0ms' }}>
           <g className={ambientClass}>
             <circle
               cx={CX}
@@ -169,7 +169,7 @@ const StaticRotatingMandalas = memo(() => {
   const { hasLoaded } = useIntro()
 
   return (
-    <g className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '3.2s' }}>
+    <g className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '1.3s' }}>
       {RINGS.map((ring, ri) =>
         ring.ticks ? (
           <path
@@ -255,7 +255,7 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
                 opacity={isPhase2 ? baseLineOpacity : 0}
                 style={{ 
                   filter: isActive ? `drop-shadow(0px 0px 3px ${projColor})` : 'none', 
-                  transition: 'opacity 1s cubic-bezier(0.22, 1, 0.36, 1)',
+                  transition: 'opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
                   transitionDelay: hasLoaded ? '0ms' : `${200 + i * 80}ms`,
                   willChange: 'filter, opacity' 
                 }}
@@ -269,7 +269,7 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
                 opacity={isPhase2 ? baseDotOpacity : 0}
                 style={{ 
                   filter: isActive ? `drop-shadow(0px 0px 3px ${projColor})` : 'none', 
-                  transition: 'opacity 1s cubic-bezier(0.22, 1, 0.36, 1)',
+                  transition: 'opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
                   transitionDelay: hasLoaded ? '0ms' : `${200 + i * 80}ms`,
                   willChange: 'filter, opacity' 
                 }}
@@ -285,7 +285,7 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
           const isActive = i === activeIndex
           
           const isPhase2 = hasLoaded || phase === 'phase02' || phase === 'phase03'
-          const baseTextOpacity = isActive ? 1 : 0.3
+          const baseTextOpacity = isActive ? 1 : 0.65
 
           return (
             <g key={`proj-label-${i}`} transform={`rotate(${angleDeg} ${pos.x} ${pos.y})`}>
@@ -304,7 +304,7 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
                 style={{ 
                   textTransform: 'uppercase',
                   filter: isActive ? `drop-shadow(0px 0px 3px ${proj.accentColor})` : 'none', 
-                  transition: 'opacity 1s cubic-bezier(0.22, 1, 0.36, 1)',
+                  transition: 'opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
                   transitionDelay: hasLoaded ? '0ms' : `${250 + i * 80}ms`,
                   willChange: 'filter, opacity',
                   cursor: 'pointer',

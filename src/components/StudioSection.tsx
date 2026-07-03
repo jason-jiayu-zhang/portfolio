@@ -46,7 +46,7 @@ function TiltCard({ to, children, style, className }: TiltCardProps) {
         ...style,
         // GPU-accelerated 3D transform
         transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateZ(0)`,
-        transition: 'transform 0.35s cubic-bezier(0.22,1,0.36,1)',
+        transition: 'transform 0.22s cubic-bezier(0.22,1,0.36,1)',
         willChange: 'transform',
         backfaceVisibility: 'hidden',
         WebkitBackfaceVisibility: 'hidden',
@@ -80,11 +80,11 @@ export default function StudioSection() {
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
           <span className="label-caps text-gold">STUDIO /</span>
           <div className="w-px h-4 bg-accent/50" />
-          <span className="font-mono text-xs text-parchment/60 tracking-wide">
+          <span className="font-mono text-xs text-parchment/65 tracking-wide">
             OFF-A-WHIM EXPERIMENTS
           </span>
         </div>
-        <span className="label-caps opacity-40">{EXPERIMENTS.length.toString().padStart(2, '0')} PIECES</span>
+        <span className="label-caps opacity-90">{EXPERIMENTS.length.toString().padStart(2, '0')} PIECES</span>
       </div>
 
       {/* Experiment grid */}
@@ -99,10 +99,10 @@ export default function StudioSection() {
             to={`/studio/${exp.id}`}
           >
             {/* Background overlay for hover effect */}
-            <div className="absolute inset-0 -z-10 bg-surface/10 group-hover:bg-surface/30 transition-colors duration-300 pointer-events-none rounded-sm" />
+            <div className="absolute inset-0 -z-10 bg-surface/10 group-hover:bg-surface/30 transition-colors duration-200 pointer-events-none rounded-sm" />
             {/* Visual area */}
             <div
-              className="relative w-full aspect-square bg-accent/10 rounded-sm overflow-hidden flex items-center justify-center border border-accent/20 group-hover:border-parchment/20 transition-colors duration-300"
+              className="relative w-full aspect-square bg-accent/10 rounded-sm overflow-hidden flex items-center justify-center border border-accent/20 group-hover:border-parchment/20 transition-colors duration-200"
               style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
             >
               {exp.imageUrl ? (
@@ -111,12 +111,12 @@ export default function StudioSection() {
                   alt={exp.title}
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-[opacity,transform] duration-500 ease-out"
+                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-[opacity,transform] duration-200 ease-out"
                   style={{ willChange: 'transform, opacity' }}
                 />
               ) : (
                 /* Abstract geometric placeholder per experiment */
-                <svg viewBox="0 0 100 100" className="w-16 h-16 opacity-20 group-hover:opacity-40 transition-opacity duration-300">
+                <svg viewBox="0 0 100 100" className="w-16 h-16 opacity-20 group-hover:opacity-40 transition-opacity duration-200">
                   <circle cx="50" cy="50" r="40" fill="none" stroke="#cfccbb" strokeWidth="0.5" />
                   <circle cx="50" cy="50" r="25" fill="none" stroke="#a39d7b" strokeWidth="0.5" strokeDasharray="3 4" />
                   <line x1="10" y1="50" x2="90" y2="50" stroke="#cfccbb" strokeWidth="0.3" opacity="0.5" />
@@ -130,7 +130,7 @@ export default function StudioSection() {
 
             {/* Labels */}
             <div className="space-y-1">
-              <p className="label-caps opacity-50">{exp.contextLabel}</p>
+              <p className="label-caps opacity-90">{exp.contextLabel}</p>
               <p className="font-sans font-medium text-sm text-parchment leading-tight tracking-tight">
                 {exp.title}
               </p>
@@ -141,11 +141,11 @@ export default function StudioSection() {
 
             {/* Year */}
             <div className="mt-auto">
-              <span className="label-caps opacity-30">{exp.year}</span>
+              <span className="label-caps opacity-90">{exp.year}</span>
             </div>
 
             {/* Hover corner accent */}
-            <div className="absolute top-2 right-2 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute top-2 right-2 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <svg viewBox="0 0 12 12" className="w-full h-full">
                 <path d="M0 0 L12 0 L12 12" fill="none" stroke="#cfccbb" strokeWidth="0.8" opacity="0.5" />
               </svg>

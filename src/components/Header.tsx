@@ -2,17 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { STATUS_CYCLE, BIO } from '../data/portfolio'
 import { useIntro } from './IntroContext'
 
-// ── Hardware-style pulsing dot ──────────────────────────────────────────────
+// ── Hardware-style signal meter ─────────────────────────────────────────────
 function PulseDot() {
   return (
-    <span className="relative inline-flex items-center justify-center w-2 h-2 mr-2 flex-shrink-0">
-      {/* Ripple */}
-      <span className="absolute inline-flex h-full w-full rounded-full bg-[#10b981]/30 animate-ping" style={{ animationDuration: '2s' }} />
-      {/* Core dot */}
-      <svg viewBox="0 0 8 8" className="relative w-2 h-2">
-        <circle cx="4" cy="4" r="3" fill="#10b981" />
-        <circle cx="4" cy="4" r="1.5" fill="#064e3b" />
-      </svg>
+    <span className="inline-flex items-end gap-[2px] h-2.5 mr-2 flex-shrink-0" aria-hidden="true">
+      <span className="w-[2px] h-full bg-gold/70 origin-bottom animate-signal-bar-1" />
+      <span className="w-[2px] h-full bg-gold/70 origin-bottom animate-signal-bar-2" />
+      <span className="w-[2px] h-full bg-gold/70 origin-bottom animate-signal-bar-3" />
     </span>
   )
 }
@@ -62,20 +58,20 @@ function StatusBar() {
     opacity: animState === 'enter' ? 0 : 1,
     transition:
       animState === 'exit'
-        ? 'transform 0.32s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.25s ease'
+        ? 'transform 0.22s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.2s ease'
         : animState === 'enter'
           ? 'none'
-          : 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease',
+          : 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease',
     willChange: 'transform, opacity',
   }
 
   if (!isPhase3) return null;
 
   return (
-    <div className={`flex items-center gap-0 px-3 py-1 border border-accent/40 rounded-sm bg-surface/20 backdrop-blur-sm transition-all duration-300 ease-in-out ${!hasLoaded ? 'animate-mask-right' : ''}`}>
+    <div className={`flex items-center gap-0 px-3 py-1 border border-accent/40 rounded-sm bg-surface/20 backdrop-blur-sm transition-all duration-200 ease-in-out ${!hasLoaded ? 'animate-mask-right' : ''}`}>
       <PulseDot />
       <div 
-        className="overflow-hidden flex items-center transition-all duration-300 ease-in-out"
+        className="overflow-hidden flex items-center transition-all duration-200 ease-in-out"
         style={{ width: containerWidth ? `${containerWidth}px` : 'auto', height: '1.1em' }}
       >
         <span
@@ -130,7 +126,7 @@ export default function Header() {
           >
             <img
               src="/favicon.svg"
-              className="w-[18px] h-[18px] transition-transform duration-300 group-hover:scale-110 object-contain"
+              className="w-[18px] h-[18px] transition-transform duration-200 group-hover:scale-110 object-contain"
               alt="Logo"
             />
             <span
@@ -165,7 +161,7 @@ export default function Header() {
           <a
             href="#studio"
             onClick={(e) => handleScroll(e, 'studio')}
-            className="font-mono text-xs tracking-label text-parchment/50 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
+            className="font-mono text-xs tracking-label text-parchment/65 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
           >
             Studio
           </a>
@@ -179,7 +175,7 @@ export default function Header() {
           <a
             href="#about"
             onClick={(e) => handleScroll(e, 'about')}
-            className="font-mono text-xs tracking-label text-parchment/50 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
+            className="font-mono text-xs tracking-label text-parchment/65 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
           >
             About
           </a>
@@ -189,10 +185,10 @@ export default function Header() {
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 px-3 py-1 border border-parchment/20 rounded-sm hover:border-parchment/60 hover:bg-parchment/5 transition-all duration-200 group flex-shrink-0"
           >
-            <span className="font-mono text-xs tracking-label text-parchment/60 group-hover:text-parchment uppercase transition-colors duration-200">
+            <span className="font-mono text-xs tracking-label text-parchment/65 group-hover:text-parchment uppercase transition-colors duration-200">
               Resume
             </span>
-            <svg viewBox="0 0 10 10" className="w-2 h-2 text-gold/60 group-hover:text-gold transition-colors">
+            <svg viewBox="0 0 10 10" className="w-2 h-2 text-gold/88 group-hover:text-gold transition-colors">
               <path
                 d="M2 8 L8 2 M4 2 L8 2 L8 6"
                 stroke="currentColor"
