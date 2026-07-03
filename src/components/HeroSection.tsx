@@ -102,7 +102,7 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
     if (images.length <= 1) return
     const interval = setInterval(() => {
       setActiveImageIdx((prev) => (prev + 1) % images.length)
-    }, 3000)
+    }, 2500)
     return () => clearInterval(interval)
   }, [images.length])
 
@@ -162,8 +162,12 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
                 opacity: i === activeImageIdx ? (isHovered ? 1 : 0.6) : 0,
                 transform: i === activeImageIdx ? (isHovered ? 'scale(1.05)' : 'scale(1)') : 'scale(1.025)',
                 visibility: i === activeImageIdx ? 'visible' : 'hidden',
-                // Expo-out: snaps to the new scale instantly, drifts to rest
-                transition: 'opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1)',
+                // Expo-out: snaps to the new scale instantly, drifts to rest.
+                // visibility is delayed on hide (not on show) so the outgoing image
+                // stays paintable long enough for its own fade-out to actually be seen.
+                transition: i === activeImageIdx
+                  ? 'opacity 1000ms cubic-bezier(0.16, 1, 0.3, 1), transform 1200ms cubic-bezier(0.16, 1, 0.3, 1)'
+                  : 'opacity 1000ms cubic-bezier(0.16, 1, 0.3, 1), transform 1200ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0ms linear 1200ms',
               }}
             />
           ))}
@@ -282,7 +286,7 @@ export default function HeroSection() {
   // ── AMBIENT AUTO-ROTATE ───────────────────────────────────────────────────
   // Slowly cycles the wheel to the next project on its own when idle; any
   // interaction (drag/scroll on the wheel, or the change it produces) resets the timer.
-  const AUTO_ADVANCE_MS = 6000
+  const AUTO_ADVANCE_MS = 7500
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const activeIndexRef = useRef(activeIndex)
 
