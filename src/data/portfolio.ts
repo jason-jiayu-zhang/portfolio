@@ -399,7 +399,7 @@ export const EXPERIMENTS: Experiment[] = [
     description: 'Promotional assets for Figma community events.',
     imageUrl: '/images/experiments/figma-cl-graphics.webp',
     thumbUrl: '/images/experiments/figma-cl-graphics-thumb.webp',
-    year: 'Present',
+    year: '2026',
     category: 'published',
     role: 'Campus Leader',
     log: {
