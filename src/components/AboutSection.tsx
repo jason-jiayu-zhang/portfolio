@@ -676,7 +676,7 @@ export default function AboutSection() {
               className="font-sans font-black text-parchment leading-tight mb-3"
               style={{ fontSize: 'clamp(1.4rem, 2vw, 1.8rem)', letterSpacing: '-0.04em' }}
             >
-              I’m Jason, a hybrid <span className="text-gold">design × engineer</span> who believes the ideal digital experiences live at the intersection of rigorous systems and poetic craft.
+              I’m Jason, a <span className="text-gold">design engineer</span> who believes the ideal digital experiences live at the intersection of systems and craft.
             </h2>
           </div>
 
@@ -688,7 +688,7 @@ export default function AboutSection() {
             </div>
             <div>
               <p className="font-mono text-xs text-parchment/65 leading-relaxed">
-                Beyond the editor, I'm deeply invested in coordination in all its forms, whether calling tactical plays as an In-Game Leader, organizing design events as a Figma Campus Leader, or mentoring student designers. I thrive in environments where collective effort meets structured play. The best leadership is simply about clearing the path so others can execute.
+                Beyond the editor, I'm deeply invested in coordination in all its forms, whether calling tactical plays as an In-Game Leader, organizing design events as a Figma Campus Leader, or mentoring student designers. I thrive in environments where collective effort meets structured play. The best leadership is simply about building a path so others can execute.
               </p>
             </div>
           </div>

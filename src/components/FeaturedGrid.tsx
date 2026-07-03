@@ -12,7 +12,7 @@ export default function FeaturedGrid() {
           <span className="label-caps text-gold">FEATURED /</span>
           <div className="w-px h-4 bg-accent/50" />
           <span className="font-mono text-xs text-parchment/65 tracking-wide">
-            ALL FOUR, AT A GLANCE
+            CASE STUDIES
           </span>
         </div>
         <span className="label-caps opacity-90">{PROJECTS.length.toString().padStart(2, '0')} PROJECTS</span>
