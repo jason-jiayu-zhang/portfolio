@@ -88,7 +88,7 @@ export default function StudioSection() {
       </div>
 
       {/* Experiment grid — denser columns keep each card small relative to Featured Work */}
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 bg-primary pl-px pt-px border-b border-r border-accent/20">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 bg-primary pl-px pt-px border-b border-r border-accent/20">
         {[...EXPERIMENTS].sort((a, b) => {
           const yearA = a.year === 'Present' ? 9999 : Number(a.year);
           const yearB = b.year === 'Present' ? 9999 : Number(b.year);
