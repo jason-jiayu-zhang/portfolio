@@ -166,13 +166,6 @@ export default function Header() {
             Studio
           </a>
           <a
-            href="#archive"
-            onClick={(e) => handleScroll(e, 'archive')}
-            className="font-mono text-xs tracking-label text-parchment/50 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
-          >
-            Index
-          </a>
-          <a
             href="#about"
             onClick={(e) => handleScroll(e, 'about')}
             className="font-mono text-xs tracking-label text-parchment/65 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"

@@ -79,34 +79,117 @@ const StaticBackground = memo(() => {
         0%, 100% { opacity: 0.7; }
         50% { opacity: 1; }
       }
+      @keyframes breathe-glow {
+        0%, 100% { transform: scale(1); opacity: 0.85; }
+        50% { transform: scale(1.05); opacity: 1; }
+      }
+      @keyframes breathe-core {
+        0%, 100% { transform: scale(1); opacity: 0.55; }
+        50% { transform: scale(1.15); opacity: 0.85; }
+      }
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.08; }
+        50% { opacity: 0.6; }
+      }
       .ambient-ring-cw {
         transform-origin: ${CX}px ${CY}px;
-        animation: spin-cw 400s linear infinite;
+        animation-name: spin-cw;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
         will-change: transform;
       }
       .ambient-ring-ccw {
         transform-origin: ${CX}px ${CY}px;
-        animation: spin-ccw 300s linear infinite;
+        animation-name: spin-ccw;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
         will-change: transform;
       }
       .pulse-active {
         animation: pulse-opacity 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
         will-change: opacity;
       }
+      .breathe-glow {
+        transform-origin: ${CX}px ${CY}px;
+        animation: breathe-glow 6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+        will-change: transform, opacity;
+      }
+      .breathe-core {
+        transform-origin: ${CX}px ${CY}px;
+        animation: breathe-core 4.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+        will-change: transform, opacity;
+      }
+      .twinkle-dot {
+        animation: twinkle 4s ease-in-out infinite;
+        will-change: opacity;
+      }
+      .orbit-satellite-a {
+        transform-origin: ${CX}px ${CY}px;
+        animation: spin-cw 26s linear infinite;
+        will-change: transform;
+      }
+      .orbit-satellite-b {
+        transform-origin: ${CX}px ${CY}px;
+        animation: spin-ccw 38s linear infinite;
+        will-change: transform;
+      }
     `}</style>
 
     <g className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '1.3s', animationDelay: !hasLoaded ? '450ms' : '0ms' }}>
-      <circle cx={CX} cy={CY} r={280} fill="url(#wheelGlow)" />
+      <circle className="breathe-glow" cx={CX} cy={CY} r={280} fill="url(#wheelGlow)" />
+    </g>
+
+    {/* Twinkling sparkle field — deterministic pseudo-random scatter via the golden angle */}
+    <g aria-hidden>
+      {Array.from({ length: 18 }, (_, i) => {
+        const angle = (i * 137.508) % 360
+        const radius = 40 + ((i * 29) % 230)
+        const pos = polarToCartesian(CX, CY, radius, angle)
+        const duration = 3.2 + (i % 5) * 0.6
+        const delay = (i * 0.37) % duration
+        return (
+          <circle
+            key={`twinkle-${i}`}
+            className="twinkle-dot"
+            cx={pos.x}
+            cy={pos.y}
+            r={i % 3 === 0 ? 1.4 : 0.9}
+            fill={i % 2 === 0 ? GOLD : PARCHMENT}
+            style={{ animationDuration: `${duration}s`, animationDelay: `${delay}s` }}
+          />
+        )
+      })}
+    </g>
+
+    {/* Orbiting accent satellites — slow independent motion for idle life */}
+    <g className="orbit-satellite-a">
+      <circle
+        cx={CX}
+        cy={CY - 252}
+        r={2.25}
+        fill={GOLD}
+        opacity={0.5}
+        style={{ filter: `drop-shadow(0px 0px 4px ${GOLD})` }}
+      />
+    </g>
+    <g className="orbit-satellite-b">
+      <circle
+        cx={CX}
+        cy={CY - 130}
+        r={1.75}
+        fill={PARCHMENT}
+        opacity={0.4}
+        style={{ filter: `drop-shadow(0px 0px 3px ${PARCHMENT})` }}
+      />
     </g>
 
     {RINGS.map((ring, i) => {
-      let ambientClass = ""
-      if (ring.dashed) {
-        ambientClass = i % 2 === 0 ? "ambient-ring-cw" : "ambient-ring-ccw"
-      }
+      const animated = ring.dashed || !!ring.ticks
+      const ambientClass = animated ? (i % 2 === 0 ? "ambient-ring-cw" : "ambient-ring-ccw") : ""
+      const duration = 190 + i * 24
       return (
         <g key={`ring-static-${i}`} className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '1.3s', animationDelay: !hasLoaded ? `${(RINGS.length - 1 - i) * 30}ms` : '0ms' }}>
-          <g className={ambientClass}>
+          <g className={ambientClass} style={animated ? { animationDuration: `${duration}s` } : undefined}>
             <circle
               cx={CX}
               cy={CY}
@@ -366,7 +449,7 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
       })()}
 
       {/* Center glow on active snap */}
-      <circle cx={CX} cy={CY} r={18} fill="url(#centerGlow)" opacity={0.6} />
+      <circle className="breathe-core" cx={CX} cy={CY} r={18} fill="url(#centerGlow)" opacity={0.6} />
 
       {/* Phase 01: Singular Vector Dot at center */}
       {!hasLoaded && (
