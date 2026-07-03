@@ -125,7 +125,7 @@ export const ROTATIONS: RotationEntry[] = [
   { artist: 'Ado', note: 'Aishite Aishite Aishite' },
   { artist: 'Lewis Capaldi', note: 'Bruises' },
   { artist: '秋野樱', note: '破旧世界 (Broken World)' },
-  { artist: 'Arknights: Endfield', note: 'Rewrite the Prophecy' },
+  { artist: 'Xomu', note: 'Amaterasu' },
   { artist: 'Eve', note: 'Underdog' },
   { artist: 'ENHYPEN', note: 'Given-Taken' },
 ]

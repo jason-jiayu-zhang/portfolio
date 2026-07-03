@@ -75,16 +75,16 @@ function TiltCard({ to, children, style, className }: TiltCardProps) {
 export default function StudioSection() {
   return (
     <section id="studio" className="relative py-10 md:py-14 px-4 sm:px-6 lg:px-12">
-      {/* Section header — deliberately quieter than the Featured header above */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-8 pb-3 border-b border-accent/15">
-        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
-          <span className="font-mono text-[10px] tracking-label uppercase text-parchment/50">STUDIO /</span>
-          <div className="w-px h-3 bg-accent/30" />
-          <span className="font-mono text-[11px] text-parchment/45 tracking-wide">
+      {/* Section header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12 pb-4 border-b border-accent/30">
+        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+          <span className="label-caps">STUDIO /</span>
+          <div className="w-px h-4 bg-accent/40" />
+          <span className="font-mono text-xs text-parchment/65 tracking-wide">
             OFF-A-WHIM EXPERIMENTS
           </span>
         </div>
-        <span className="font-mono text-[10px] tracking-label uppercase text-parchment/50">{EXPERIMENTS.length.toString().padStart(2, '0')} PIECES</span>
+        <span className="label-caps opacity-90">{EXPERIMENTS.length.toString().padStart(2, '0')} PIECES</span>
       </div>
 
       {/* Experiment grid — denser columns keep each card small relative to Featured Work */}
