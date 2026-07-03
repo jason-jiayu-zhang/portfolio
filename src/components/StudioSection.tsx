@@ -107,7 +107,7 @@ export default function StudioSection() {
             >
               {exp.imageUrl ? (
                 <img
-                  src={exp.imageUrl}
+                  src={exp.thumbUrl ?? exp.imageUrl}
                   alt={exp.title}
                   loading="lazy"
                   decoding="async"

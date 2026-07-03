@@ -87,6 +87,8 @@ export interface Experiment {
   visualAssetType: ExperimentType
   description: string
   imageUrl?: string
+  /** Smaller variant for the dense studio grid; falls back to imageUrl */
+  thumbUrl?: string
   year: string | number
   category: ExperimentCategory
   role?: string
