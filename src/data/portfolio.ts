@@ -13,7 +13,7 @@ export const BIO: BioProfile = {
   roles: ['DESIGN ENGINEER', 'PRODUCT DESIGNER'],
   email: 'jason.jiayu.zhang@gmail.com',
   resumeUrl:
-    '/JasonResume.pdf',
+    '/Resume.pdf',
   tagline: 'to nurture others to love the art of making.',
   socials: [
     {
