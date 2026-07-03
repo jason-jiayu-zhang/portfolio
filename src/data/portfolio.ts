@@ -425,6 +425,44 @@ export const EXPERIMENTS: Experiment[] = [
         'The days where I had the least inspiration produced the most interesting constraints. Running out of "ideas" forced me toward systems thinking, which is where the real design education happened. These became the inspiration for my entire portfolio.',
     },
   },
+  {
+    id: 'collection-52-font-series',
+    title: 'Collection 52 // Font Series',
+    contextLabel: 'Conceptual / Typography',
+    visualAssetType: 'Typography',
+    description: 'A typography exploration from the series.',
+    imageUrl: '/images/experiments/collection-52-font-series.webp',
+    year: 2026,
+    category: 'conceptual',
+    role: 'Self-Initiated',
+    log: {
+      spark:
+        'Part of the same 52-day discipline experiment, but narrowed entirely to type: could a single day\'s constraint be pairing, scale, or rhythm instead of a whole UI?',
+      output:
+        'A curated set of typography-first explorations from Collection 52, focused on pairing, scale, and rhythm.',
+      sandbox:
+        'Typography turned out to be the most unforgiving constraint of the entire series: get the rhythm wrong and nothing else in the composition can save it.',
+    },
+  },
+  {
+    id: 'collection-52-config-series',
+    title: 'Collection 52 // Config Series',
+    contextLabel: 'Conceptual / UI Exploration',
+    visualAssetType: 'UI Exploration',
+    description: 'A config-panel exploration from the series.',
+    imageUrl: '/images/experiments/collection-52-config-series.webp',
+    year: 2026,
+    category: 'conceptual',
+    role: 'Self-Initiated',
+    log: {
+      spark:
+        'Some days in the 52-day series pulled toward the unglamorous parts of a product: settings screens, toggles, preference panels. This collection is that thread.',
+      output:
+        'A curated set of configuration and settings-panel explorations from Collection 52, treating utility screens as seriously as marketing surfaces.',
+      sandbox:
+        'Designing a settings panel taught me more about information hierarchy than any hero screen: when everything is equally important, nothing is.',
+    },
+  },
 
   {
     id: 'linkedin-graphics',
