@@ -157,7 +157,7 @@ export default function Header() {
 
         {/* ── Right: Nav links ── */}
         {isPhase3 && (
-        <nav className={`flex items-center gap-4 overflow-x-auto no-scrollbar justify-end min-w-0 ${!hasLoaded ? 'animate-fade-down' : ''}`}>
+        <nav className={`flex items-center gap-2.5 sm:gap-4 overflow-x-auto no-scrollbar min-w-0 ${!hasLoaded ? 'animate-fade-down' : ''}`}>
           <a
             href="#studio"
             onClick={(e) => handleScroll(e, 'studio')}
@@ -183,7 +183,7 @@ export default function Header() {
             href={BIO.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1 border border-parchment/20 rounded-sm hover:border-parchment/60 hover:bg-parchment/5 transition-all duration-200 group flex-shrink-0"
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1 border border-parchment/20 rounded-sm hover:border-parchment/60 hover:bg-parchment/5 transition-all duration-200 group flex-shrink-0"
           >
             <span className="font-mono text-xs tracking-label text-parchment/65 group-hover:text-parchment uppercase transition-colors duration-200">
               Resume

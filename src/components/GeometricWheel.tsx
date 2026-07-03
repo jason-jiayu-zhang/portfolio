@@ -196,15 +196,30 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
   const rot = rotationAngle
   const rotatingGroupRef = useRef<SVGGElement>(null)
   const degreeTextRef = useRef<SVGTextElement>(null)
+  const labelRefs = useRef<(SVGGElement | null)[]>([])
 
   const { hasLoaded, phase } = useIntro()
+
+  // A label rotated past the bottom half of the wheel reads upside-down unless
+  // we counter-flip it 180° around its own anchor — recomputed every frame since
+  // setRotation drives the wheel imperatively, bypassing React re-renders.
+  const updateLabelOrientations = (angle: number) => {
+    labelRefs.current.forEach((g, i) => {
+      if (!g) return
+      const angleDeg = -i * SNAP_INTERVAL
+      const effective = normalizeAngle(angle + angleDeg)
+      const flip = effective > 90 && effective < 270
+      const pos = polarToCartesian(CX, CY, LABEL_RADIUS, angleDeg)
+      g.setAttribute('transform', `rotate(${angleDeg + (flip ? 180 : 0)} ${pos.x} ${pos.y})`)
+    })
+  }
 
   useImperativeHandle(ref, () => ({
     setRotation: (angle: number, velocity?: number) => {
       if (rotatingGroupRef.current) {
         const speed = Math.abs(velocity || 0)
         const scale = 1 - Math.min(speed * 0.005, 0.08)
-        
+
         // Use pure SVG transform math to avoid Safari CSS transform-origin bugs.
         // translate(CX, CY) -> scale & rotate from 0,0 -> translate(-CX, -CY)
         rotatingGroupRef.current.setAttribute(
@@ -216,6 +231,7 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
         const norm = ((angle % 360) + 360) % 360
         degreeTextRef.current.textContent = `${Math.round(norm).toString().padStart(3, '0')}°`
       }
+      updateLabelOrientations(angle)
     },
   }))
 
@@ -283,12 +299,20 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
           const angleDeg = -i * SNAP_INTERVAL
           const pos = polarToCartesian(CX, CY, LABEL_RADIUS, angleDeg)
           const isActive = i === activeIndex
-          
+
           const isPhase2 = hasLoaded || phase === 'phase02' || phase === 'phase03'
           const baseTextOpacity = isActive ? 1 : 0.65
 
+          // Keep label upright: flip 180° if it currently sits in the bottom half of the wheel
+          const effective = normalizeAngle(rot + angleDeg)
+          const initialFlip = effective > 90 && effective < 270
+
           return (
-            <g key={`proj-label-${i}`} transform={`rotate(${angleDeg} ${pos.x} ${pos.y})`}>
+            <g
+              key={`proj-label-${i}`}
+              ref={(el) => { labelRefs.current[i] = el }}
+              transform={`rotate(${angleDeg + (initialFlip ? 180 : 0)} ${pos.x} ${pos.y})`}
+            >
               {/* Outer bracket arc segments */}
               <text
                 className={isActive ? 'wheel-label-active' : 'wheel-label'}

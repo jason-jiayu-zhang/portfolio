@@ -14,7 +14,7 @@
     --color-accent: #38406a;
     --color-parchment: #cfccbb;
     --color-gold: #a39d7b;
-    --wheel-size: min(calc(100vw - 120px), calc(100vh - 300px)); /* Mobile-first default size */
+    --wheel-size: min(calc(100vw - 140px), calc(100vh - 300px)); /* Mobile-first default size */
     --header-h: 48px;
 
     /* ── Easing tokens ── */
@@ -304,32 +304,14 @@ a:active:not([aria-disabled='true']) {
 }
 
 /* ─── WHEEL RESPONSIVE TYPOGRAPHY ────────────────────────────────────────── */
+/* SVG user-unit font sizes must grow as --wheel-size shrinks to hold a roughly
+   constant on-screen pixel size. Fluid clamp() instead of fixed breakpoint
+   jumps so legibility doesn't snap/mismatch on odd-aspect-ratio viewports. */
 .wheel-label {
-  font-size: 9px;
+  font-size: clamp(9px, calc(30px - 2vw), 22px);
 }
 .wheel-label-active {
-  font-size: 11px;
-}
-
-@media (max-width: 1024px) {
-  /* On tablets/smaller screens where wheel size is reduced */
-  .wheel-label {
-    font-size: 14px;
-  }
-  .wheel-label-active {
-    font-size: 18px;
-  }
-}
-
-@media (max-width: 768px) {
-  /* On mobile where wheel size is further reduced (var(--wheel-size) shrinks SVG) */
-  /* We scale up the SVG user units to maintain legible screen pixels */
-  .wheel-label {
-    font-size: 22px;
-  }
-  .wheel-label-active {
-    font-size: 28px;
-  }
+  font-size: clamp(11px, calc(38px - 2.62vw), 28px);
 }
 
 /* ─── VIEW TRANSITIONS ────────────────────────────────────────────────────── */

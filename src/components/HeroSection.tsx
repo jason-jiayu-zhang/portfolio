@@ -430,7 +430,7 @@ export default function HeroSection() {
         {/* ── LEFT 45% — Project Metadata Panel ── */}
         <div
           ref={leftPanelRef}
-          className="relative flex flex-col justify-start px-4 sm:px-6 lg:px-12 min-h-full pt-16 sm:pt-20 lg:pt-32 pb-24 lg:pb-24 w-full"
+          className="relative flex flex-col justify-start px-4 sm:px-6 lg:px-12 min-h-full pt-16 sm:pt-20 lg:pt-32 pb-6 sm:pb-8 lg:pb-24 w-full"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
@@ -598,7 +598,7 @@ export default function HeroSection() {
                     </div>
                     {project.url && (
                       <>
-                        <div className="w-px h-3 bg-white/20 hidden xs:block" />
+                        <div className="w-px h-3 bg-white/20 hidden sm:block" />
                         <a
                           href={project.url}
                           target="_blank"
