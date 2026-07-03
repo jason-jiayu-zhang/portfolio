@@ -166,8 +166,8 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
                 // visibility is delayed on hide (not on show) so the outgoing image
                 // stays paintable long enough for its own fade-out to actually be seen.
                 transition: i === activeImageIdx
-                  ? 'opacity 1000ms cubic-bezier(0.16, 1, 0.3, 1), transform 1200ms cubic-bezier(0.16, 1, 0.3, 1)'
-                  : 'opacity 1000ms cubic-bezier(0.16, 1, 0.3, 1), transform 1200ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0ms linear 1200ms',
+                  ? 'opacity 250ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)'
+                  : 'opacity 250ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0ms linear 300ms',
               }}
             />
           ))}
