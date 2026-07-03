@@ -6,8 +6,8 @@ import { useScanline } from './components/ScanlineContext'
 import './index.css'
 import { lazy, Suspense } from 'react'
 
+const FeaturedGrid = lazy(() => import('./components/FeaturedGrid'))
 const StudioSection = lazy(() => import('./components/StudioSection'))
-const ArchiveSection = lazy(() => import('./components/ArchiveSection'))
 const AboutSection = lazy(() => import('./components/AboutSection'))
 const Footer = lazy(() => import('./components/Footer'))
 
@@ -27,14 +27,14 @@ function AppContent() {
 
         {isPhase3 && (
           <Suspense fallback={null}>
+            {/* § 1.5 — Featured grid: static fallback for the 4 wheel projects */}
+            <div className="contain-section">
+              <FeaturedGrid />
+            </div>
+
             {/* § 2 — Studio section: off-a-whim experiments */}
             <div className="contain-section">
               <StudioSection />
-            </div>
-
-            {/* § 3 — Archive section: masterlist of all work */}
-            <div className="contain-section">
-              <ArchiveSection />
             </div>
 
             {/* § 4 — 3-column About / Foundations */}
