@@ -408,7 +408,7 @@ export const EXPERIMENTS: Experiment[] = [
   },
   {
     id: 'collection-52',
-    title: 'Collection 52',
+    title: 'Collection 52 // Portfolio Series',
     contextLabel: 'Conceptual / Branding',
     visualAssetType: 'Branding',
     description: 'A personal brand identity exploration.',
