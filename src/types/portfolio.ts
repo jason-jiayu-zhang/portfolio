@@ -12,14 +12,7 @@ export type ProjectCategory =
   | 'Marketing'
   | 'Tooling'
 
-export type ExperimentType =
-  | 'Promotional Graphic'
-  | 'Ad Poster Graphic'
-  | 'Social Media Asset'
-  | 'Launch Graphic'
-  | 'Event Banner'
-  | 'UI Exploration'
-  | 'Branding'
+export type ExperimentType = string
 
 export interface ProjectMetric {
   label: string
