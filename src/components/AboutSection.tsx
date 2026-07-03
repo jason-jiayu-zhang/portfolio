@@ -149,23 +149,22 @@ function TimelineRow({ entry, index }: { entry: TimelineEntry; index: number }) 
 }
 
 // ─── Belief block ─────────────────────────────────────────────────────────────
-function BeliefBlock({ belief }: { belief: Belief }) {
-  const [hovered, setHovered] = useState(false)
-
+function BeliefBlock({
+  belief, active, onHover, onLeave,
+}: { belief: Belief; active: boolean; onHover: () => void; onLeave: () => void }) {
   return (
     <div
       className="relative py-5 border-b border-accent/20 last:border-b-0 cursor-default"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
     >
       {/* Vertical index bar */}
       <div
         className="absolute left-0 top-0 bottom-0 w-px"
         style={{
           background: 'linear-gradient(to bottom, transparent, #a39d7b, transparent)',
-          opacity: hovered ? 0.6 : 0,
-          // Expo-out: the bar whips in instantly, fades out quickly on leave
-          transition: 'opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+          opacity: active ? 0.6 : 0,
+          transition: 'opacity 0.2s ease',
         }}
       />
 
@@ -176,9 +175,9 @@ function BeliefBlock({ belief }: { belief: Belief }) {
             className="h-px flex-1"
             style={{
               background: 'linear-gradient(90deg, rgba(163,157,123,0.4), transparent)',
-              width: hovered ? '100%' : '24px',
-              maxWidth: hovered ? '80px' : '24px',
-              transition: 'max-width 0.26s cubic-bezier(0.16, 1, 0.3, 1)',
+              width: active ? '100%' : '24px',
+              maxWidth: active ? '80px' : '24px',
+              transition: 'max-width 0.2s ease',
             }}
           />
         </div>
@@ -186,8 +185,8 @@ function BeliefBlock({ belief }: { belief: Belief }) {
           className="font-sans font-bold text-sm text-parchment leading-tight mb-2"
           style={{
             letterSpacing: '-0.025em',
-            color: hovered ? '#fff' : '#cfccbb',
-            transition: 'color 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            color: active ? '#fff' : '#cfccbb',
+            transition: 'color 0.2s ease',
           }}
         >
           {belief.headline}
@@ -195,13 +194,46 @@ function BeliefBlock({ belief }: { belief: Belief }) {
         <p
           className="font-mono text-xs leading-relaxed"
           style={{
-            color: hovered ? 'rgba(207,204,187,0.85)' : 'rgba(207,204,187,0.65)',
-            transition: 'color 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            color: active ? 'rgba(207,204,187,0.85)' : 'rgba(207,204,187,0.65)',
+            transition: 'color 0.2s ease',
           }}
         >
           {belief.body}
         </p>
       </div>
+    </div>
+  )
+}
+
+// ─── Beliefs list — auto-cycles the active block, hover takes over instantly ──
+function BeliefsList() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const pausedRef = useRef(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (pausedRef.current) return
+      setActiveIndex((prev) => (prev + 1) % BELIEFS.length)
+    }, 2500)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="space-y-0 divide-y divide-transparent">
+      {BELIEFS.map((belief, i) => (
+        <BeliefBlock
+          key={belief.index}
+          belief={belief}
+          active={i === activeIndex}
+          onHover={() => {
+            pausedRef.current = true
+            setActiveIndex(i)
+          }}
+          onLeave={() => {
+            pausedRef.current = false
+          }}
+        />
+      ))}
     </div>
   )
 }
@@ -648,9 +680,9 @@ export default function AboutSection() {
       {/* Section header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12 px-6 lg:px-10 pb-4 border-b border-accent/20">
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-          <span className="label-caps">FOUNDATIONS /</span>
+          <span className="label-caps">ABOUT /</span>
           <div className="w-px h-4 bg-accent/40" />
-          <span className="font-mono text-xs text-parchment/65">ABOUT + BELIEFS + CATALOG</span>
+          <span className="font-mono text-xs text-parchment/65">FOUNDATIONS + BELIEFS + CATALOG</span>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-mono text-xs text-parchment/65">{EDUCATION.institution}</span>
@@ -696,17 +728,17 @@ export default function AboutSection() {
           {/* Terminal-like metadata */}
           <div className="mt-8 flex flex-wrap gap-6 pt-6 border-t border-accent/20">
             <div className="flex flex-col gap-1.5">
-              <span className="font-mono text-xs text-parchment/65 uppercase tracking-wider">Location</span>
+              <span className="font-mono text-xs text-gold uppercase tracking-wider">Location</span>
               <span className="font-mono text-xs text-parchment/70">Davis, CA</span>
             </div>
             <div className="w-px h-8 bg-accent/20 hidden sm:block" />
             <div className="flex flex-col gap-1.5">
-              <span className="font-mono text-xs text-parchment/65 uppercase tracking-wider">Class</span>
+              <span className="font-mono text-xs text-gold uppercase tracking-wider">Class</span>
               <span className="font-mono text-xs text-parchment/70">Design Engineer</span>
             </div>
             <div className="w-px h-8 bg-accent/20 hidden sm:block" />
             <div className="flex flex-col gap-1.5">
-              <span className="font-mono text-xs text-parchment/65 uppercase tracking-wider">Status</span>
+              <span className="font-mono text-xs text-gold uppercase tracking-wider">Status</span>
               <RotatingStatusText />
             </div>
           </div>
@@ -865,11 +897,7 @@ export default function AboutSection() {
           </div>
 
           {/* Beliefs list */}
-          <div className="space-y-0 divide-y divide-transparent">
-            {BELIEFS.map((belief) => (
-              <BeliefBlock key={belief.index} belief={belief} />
-            ))}
-          </div>
+          <BeliefsList />
         </div>
 
         {/* ═══════════════════════════════════════════════════════════════════
