@@ -430,7 +430,7 @@ export const EXPERIMENTS: Experiment[] = [
     title: 'Collection 52 // Font Series',
     contextLabel: 'Conceptual / Typography',
     visualAssetType: 'Typography Exploration',
-    description: 'A typography exploration from the series.',
+    description: 'A typography exploration in pairing, scale, and rhythm.',
     imageUrl: '/images/experiments/collection-52-font-series.webp',
     year: 2026,
     category: 'conceptual',
@@ -447,20 +447,20 @@ export const EXPERIMENTS: Experiment[] = [
   {
     id: 'collection-52-config-series',
     title: 'Collection 52 // Config Series',
-    contextLabel: 'Conceptual / UI Exploration',
-    visualAssetType: 'Config Panel Exploration',
-    description: 'A config-panel exploration from the series.',
+    contextLabel: 'Conceptual / Album Cover',
+    visualAssetType: 'Playlist Cover Art',
+    description: 'An album cover for a Spotify playlist made for Figma\'s Config conference.',
     imageUrl: '/images/experiments/collection-52-config-series.webp',
     year: 2026,
     category: 'conceptual',
     role: 'Self-Initiated',
     log: {
       spark:
-        'Some days in the 52-day series pulled toward the unglamorous parts of a product: settings screens, toggles, preference panels. This collection is that thread.',
+        'Made a Spotify playlist for Figma\'s Config conference and it needed cover art, so this became one of the 52 days.',
       output:
-        'A curated set of configuration and settings-panel explorations from Collection 52, treating utility screens as seriously as marketing surfaces.',
+        'A playlist cover for Config, carrying the same visual language as the rest of Collection 52.',
       sandbox:
-        'Designing a settings panel taught me more about information hierarchy than any hero screen: when everything is equally important, nothing is.',
+        'Album art is a different problem than a UI screen: no hierarchy to guide the eye, just a single square that has to hold attention on its own.',
     },
   },
 
