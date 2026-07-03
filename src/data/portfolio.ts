@@ -250,43 +250,43 @@ export const PROJECTS: Project[] = [
     year: 2024,
     slug: 'Spot',
     title: 'Spot',
-    subtitle: 'Real-Time Campus Study Space Mapping',
+    subtitle: 'Real-Time Space Mapping for Study & Work, Indoors and Out',
     role: 'Product Designer',
     tools: ['Figma'],
     categories: ['Product', 'UI/UX'],
     wheelIndex: 3,
     accentColor: '#ebd648',
-    tagline: 'Empowering students to find, track, and reserve optimal study environments.',
+    tagline: 'Finding the exact desk, courtyard bench, or quiet corner that Google Maps never tells you about.',
     metrics: [
       { label: 'Award', value: '1st Place' },
       { label: 'Event', value: 'ProdCon 2025' }
     ],
     awards: ['1st Place'],
     narrative: [
-      'A real-time, data-driven mapping application built to eliminate the friction of finding study spaces.',
+      'A real-time, data-driven mapping application built to eliminate the friction of finding a good place to sit down and get work done.',
       'Designed, researched, and prototyped within a 24-hour product competition at ProdCon 2025.',
     ],
     url: '',
     status: 'offline',
     caseStudy: {
       executiveSummary:
-        'Designed, researched, and prototyped within a 24-hour product competition at ProdCon 2025, Spot is a real-time, data-driven mapping application built to eliminate the friction of finding study spaces on campus. By aggregating occupancy data, structural facility layouts, and student preferences into an intuitive mobile interface, Spot empowers students to find, track, and reserve optimal study environments in real time.',
+        'Designed, researched, and prototyped within a 24-hour product competition at ProdCon 2025, Spot is a real-time, data-driven mapping application built to close the gap between what maps show and what people actually need to know: not just which building or park exists nearby, but which floor, wing, courtyard, or shaded bench is actually free, quiet, and outlet-friendly right now. The original prototype targeted campus study spaces, but the underlying problem, that conventional maps stop at the building entrance or the park boundary, applies just as much to remote workers, freelancers, and anyone hunting for a good outdoor or indoor spot across a city.',
       problemSpace: [
-        'The "Wandering" Tax: Students lose an average of 15 to 30 minutes just looking for an open desk, causing frustration and interrupting study momentum.',
-        'Information Asymmetry: While individual library websites might show general building hours, there is no centralized, live indicator showing which floors or specific tables are full.',
-        'Environmental Disconnect: Students have unique sensory needs (e.g., dead silence vs. ambient noise, outlet proximity, group collaboration spaces) that standard maps completely ignore.',
+        'The "Wandering" Tax: People lose 15 to 30 minutes just looking for an open desk, table, or bench, causing frustration and interrupting momentum, whether it is a student between classes or a remote worker looking for a sunny patch of grass.',
+        'Information Asymmetry: Google Maps and building websites can tell you a location exists and when it opens, but nothing about what is inside or around it: which floor has open seating, which courtyard is quiet, or whether a specific outdoor corner even has shade or an outlet nearby.',
+        'Environmental Disconnect: People have distinct sensory needs (dead silence vs. ambient noise, sun vs. shade, outlet proximity, group collaboration space) that standard maps, built for wayfinding rather than dwelling, completely ignore, whether the spot is inside a library or outside on a quad.',
       ],
       systemArchitecture: [
-        'Live Occupancy Heatmapping: A visual map interface utilizing real-time crowd-sourced data, campus Wi-Fi pings, and facility sensors to color-code the density of study spaces.',
-        'Contextual Filtering: A robust filtering engine allowing users to sort spaces by real-time metrics: noise level, outlet availability, and group size capability.',
-        'Spot Creation & Reviews: A user-generated content loop that empowers students to add undocumented study areas to the map and submit real-time environmental reviews, ensuring the catalog expands organically.',
+        'Live Occupancy Heatmapping: A visual map interface utilizing real-time crowd-sourced data, Wi-Fi pings, and facility sensors to color-code the density of specific rooms, floors, and outdoor areas, not just entire buildings or parks.',
+        'Contextual Filtering: A robust filtering engine allowing users to sort indoor and outdoor spaces alike by real-time metrics: noise level, outlet availability, sun/shade, and group size capability.',
+        'Spot Creation & Reviews: A user-generated content loop that lets anyone add undocumented spaces, be it a library alcove, a shaded quad bench, or a coworking corner, and submit real-time environmental reviews, ensuring the catalog expands organically into the detail no map provider tracks.',
       ],
       validation: [
-        'Rapid User Research: A survey deployed to student channels yielded over 50 responses in hours, with over 80% noting they frequently struggle to find open seating. 5 in-depth user interviews uncovered nuanced environmental preferences.',
-        'The Winning Edge: Out of more than 20 competing teams at ProdCon 2025, Spot took home First Place due to its airtight alignment with real student data and highly polished, production-ready interface parity.',
+        'Rapid User Research: A survey deployed to student channels yielded over 50 responses in hours, with over 80% noting they frequently struggle to find open seating, indoors or outdoors. 5 in-depth user interviews uncovered nuanced environmental preferences that generalize well beyond the campus context.',
+        'The Winning Edge: Out of more than 20 competing teams at ProdCon 2025, Spot took home First Place due to its airtight alignment with real user data and highly polished, production-ready interface parity.',
       ],
       roadmap:
-        'Scaling the product with a lightweight full-stack implementation to consume live location data and campus network connection density, plus introducing micro-reservations to optimize underutilized university real estate.',
+        'Scaling beyond the original campus prototype with a lightweight full-stack implementation to consume live location data and network connection density across indoor and outdoor spaces alike, plus introducing micro-reservations to optimize underutilized real estate in libraries, courtyards, parks, and other shared work environments.',
       images: [
         {
           src: '/images/projects/spot/onboarding.webp',
