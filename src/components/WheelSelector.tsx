@@ -19,13 +19,15 @@ import { useIntro } from './IntroContext'
 interface WheelSelectorProps {
   onProjectChange: (index: number) => void
   activeIndex: number
+  autoAdvanceRef?: React.RefObject<boolean>
 }
 
 const FRICTION = 0.95
 const SPRING_STIFFNESS = 0.15
+const AUTO_SPRING_STIFFNESS = SPRING_STIFFNESS / 2 // ambient auto-advance rotates at half the speed of a manual snap
 const SNAP_THRESHOLD = 0.4 // deg/frame
 
-export default function WheelSelector({ onProjectChange, activeIndex }: WheelSelectorProps) {
+export default function WheelSelector({ onProjectChange, activeIndex, autoAdvanceRef }: WheelSelectorProps) {
   const svgRef = useRef<SVGSVGElement>(null)
   const rafRef = useRef<number>(0)
   const wheelHandleRef = useRef<WheelHandle>(null)
@@ -44,8 +46,10 @@ export default function WheelSelector({ onProjectChange, activeIndex }: WheelSel
   // Only used to trigger re-render when active project changes (not every rAF frame)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_renderIndex, setRenderIndex] = useState(0)
+  const [isPressed, setIsPressed] = useState(false)
   const wheelAccumulator = useRef(0)
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const stiffnessRef = useRef(SPRING_STIFFNESS)
 
   // ── ANIMATION LOOP ────────────────────────────────────────────────────────
 
@@ -62,7 +66,7 @@ export default function WheelSelector({ onProjectChange, activeIndex }: WheelSel
         w.velocity = applyFriction(w.velocity, FRICTION)
 
         if (Math.abs(w.velocity) < SNAP_THRESHOLD) {
-          w.angle = springToward(w.angle, w.targetAngle, SPRING_STIFFNESS)
+          w.angle = springToward(w.angle, w.targetAngle, stiffnessRef.current)
 
           const newIndex = angleToProjectIndex(w.targetAngle)
           if (newIndex !== w.activeIndex) {
@@ -110,6 +114,7 @@ export default function WheelSelector({ onProjectChange, activeIndex }: WheelSel
     dragStartTime.current = performance.now()
     wheelRef.current.isDragging = true
     wheelRef.current.velocity = 0
+    setIsPressed(true)
   }
 
   const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
@@ -135,6 +140,7 @@ export default function WheelSelector({ onProjectChange, activeIndex }: WheelSel
   }
 
   const onPointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+    setIsPressed(false)
     if (wheelRef.current.isDragging) {
       wheelRef.current.isDragging = false
       
@@ -219,7 +225,14 @@ export default function WheelSelector({ onProjectChange, activeIndex }: WheelSel
     wheelRef.current.targetAngle = target
     wheelRef.current.activeIndex = activeIndex
     wheelRef.current.velocity = 0
-  }, [activeIndex])
+
+    if (autoAdvanceRef?.current) {
+      stiffnessRef.current = AUTO_SPRING_STIFFNESS
+      autoAdvanceRef.current = false
+    } else {
+      stiffnessRef.current = SPRING_STIFFNESS
+    }
+  }, [activeIndex, autoAdvanceRef])
 
   return (
     <svg
@@ -230,13 +243,18 @@ export default function WheelSelector({ onProjectChange, activeIndex }: WheelSel
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerLeave={onPointerUp}
-      style={{ touchAction: 'none' }}
+      style={{
+        touchAction: 'none',
+        transform: isPressed ? 'scale(0.97)' : 'scale(1)',
+        transition: 'transform 0.2s var(--ease-out)',
+      }}
     >
       <GeometricWheel
         ref={wheelHandleRef}
         rotationAngle={wheelRef.current.angle}
         activeIndex={activeIndex}
         projects={PROJECTS}
+        pressed={isPressed}
       />
     </svg>
   )

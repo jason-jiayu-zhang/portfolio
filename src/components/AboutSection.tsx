@@ -746,15 +746,6 @@ export default function AboutSection() {
 
         {/* Imagery Pane */}
         <div className="col-span-1 lg:col-span-1 px-4 sm:px-6 lg:px-8 py-8 lg:py-10 flex flex-col justify-center items-center relative overflow-hidden bg-[#16192b]">
-          {/* Subtle dotted background for the image pane */}
-          <div
-            className="absolute inset-0 opacity-[0.15] pointer-events-none"
-            style={{
-              backgroundImage: 'radial-gradient(#cfccbb 1px, transparent 1px)',
-              backgroundSize: '16px 16px'
-            }}
-          />
-
           <div className="relative w-full max-w-[280px] aspect-[4/5] mx-auto flex items-center justify-center">
             {/* Image 1: Main portrait */}
             <div className="group absolute -top-2 right-0 w-[75%] aspect-[3/4] z-10 p-1 border border-accent/30 bg-[#0b0c10]/80 backdrop-blur-sm shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-200" style={{ transition: 'transform 0.26s cubic-bezier(0.16, 1, 0.3, 1)' }}>

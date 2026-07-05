@@ -102,7 +102,7 @@ function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
     if (images.length <= 1) return
     const interval = setInterval(() => {
       setActiveImageIdx((prev) => (prev + 1) % images.length)
-    }, 2500)
+    }, 5000)
     return () => clearInterval(interval)
   }, [images.length])
 
@@ -286,9 +286,10 @@ export default function HeroSection() {
   // ── AMBIENT AUTO-ROTATE ───────────────────────────────────────────────────
   // Slowly cycles the wheel to the next project on its own when idle; any
   // interaction (drag/scroll on the wheel, or the change it produces) resets the timer.
-  const AUTO_ADVANCE_MS = 7500
+  const AUTO_ADVANCE_MS = 15000
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const activeIndexRef = useRef(activeIndex)
+  const isAutoAdvanceRef = useRef(false)
 
   useEffect(() => {
     activeIndexRef.current = activeIndex
@@ -297,6 +298,7 @@ export default function HeroSection() {
   const resetAutoAdvance = useCallback(() => {
     if (autoAdvanceTimerRef.current) clearInterval(autoAdvanceTimerRef.current)
     autoAdvanceTimerRef.current = setInterval(() => {
+      isAutoAdvanceRef.current = true
       handleProjectChange((activeIndexRef.current + 1) % PROJECTS.length)
     }, AUTO_ADVANCE_MS)
   }, [handleProjectChange])
@@ -745,6 +747,7 @@ export default function HeroSection() {
               <WheelSelector
                 onProjectChange={handleProjectChange}
                 activeIndex={activeIndex}
+                autoAdvanceRef={isAutoAdvanceRef}
               />
             </div>
 

@@ -16,6 +16,7 @@ interface GeometricWheelProps {
   rotationAngle: number
   activeIndex: number
   projects: Project[]
+  pressed?: boolean
 }
 
 // ── RING DEFINITIONS ──────────────────────────────────────────────────────────
@@ -275,7 +276,7 @@ const StaticRotatingMandalas = memo(() => {
 })
 StaticRotatingMandalas.displayName = 'StaticRotatingMandalas'
 
-const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rotationAngle, activeIndex, projects }, ref) => {
+const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rotationAngle, activeIndex, projects, pressed }, ref) => {
   const rot = rotationAngle
   const rotatingGroupRef = useRef<SVGGElement>(null)
   const degreeTextRef = useRef<SVGTextElement>(null)
@@ -456,11 +457,34 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
         <circle cx={CX} cy={CY} r={2} fill={GOLD} className="animate-scale-dot" style={{ transformOrigin: `${CX}px ${CY}px` }} />
       )}
 
-      {/* Center crosshair — static (rendered on top) */}
-      <line x1={CX - 12} y1={CY} x2={CX + 12} y2={CY} stroke={PARCHMENT} strokeWidth={0.5} opacity={0.4} />
-      <line x1={CX} y1={CY - 12} x2={CX} y2={CY + 12} stroke={PARCHMENT} strokeWidth={0.5} opacity={0.4} />
-      <circle cx={CX} cy={CY} r={5} fill="none" stroke={PARCHMENT} strokeWidth={0.8} opacity={0.5} />
-      <circle cx={CX} cy={CY} r={1.5} fill={PARCHMENT} opacity={0.6} />
+      {/* Center crosshair — static (rendered on top); flashes gold on press, echoing the cursor's lock-on state */}
+      <line
+        x1={CX - 12} y1={CY} x2={CX + 12} y2={CY}
+        stroke={pressed ? GOLD : PARCHMENT}
+        strokeWidth={pressed ? 1 : 0.5}
+        opacity={pressed ? 0.9 : 0.4}
+        style={{ transition: 'all 0.15s ease' }}
+      />
+      <line
+        x1={CX} y1={CY - 12} x2={CX} y2={CY + 12}
+        stroke={pressed ? GOLD : PARCHMENT}
+        strokeWidth={pressed ? 1 : 0.5}
+        opacity={pressed ? 0.9 : 0.4}
+        style={{ transition: 'all 0.15s ease' }}
+      />
+      <circle
+        cx={CX} cy={CY} r={5} fill="none"
+        stroke={pressed ? GOLD : PARCHMENT}
+        strokeWidth={pressed ? 1.2 : 0.8}
+        opacity={pressed ? 0.9 : 0.5}
+        style={{ transition: 'all 0.15s ease', filter: pressed ? `drop-shadow(0px 0px 4px ${GOLD})` : 'none' }}
+      />
+      <circle
+        cx={CX} cy={CY} r={1.5}
+        fill={pressed ? GOLD : PARCHMENT}
+        opacity={pressed ? 1 : 0.6}
+        style={{ transition: 'all 0.15s ease' }}
+      />
 
       {/* Degree readout — top of wheel */}
       <text

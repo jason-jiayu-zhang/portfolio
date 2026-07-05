@@ -1,6 +1,7 @@
 
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
+import CustomCursor from './components/CustomCursor'
 import { useIntro, IntroProvider } from './components/IntroContext'
 import { useScanline } from './components/ScanlineContext'
 import './index.css'
@@ -18,6 +19,8 @@ function AppContent() {
 
   return (
     <div className={`min-h-screen flex flex-col bg-primary${scanlineActive ? ' scanline-overlay' : ''}`}>
+      <CustomCursor />
+
       {/* Persistent nav */}
       <Header />
 

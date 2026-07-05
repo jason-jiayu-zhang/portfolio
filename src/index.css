@@ -61,11 +61,6 @@
     font-family: 'Satoshi', 'SF Pro Display', ui-sans-serif, system-ui, sans-serif;
     height: 100%;
     overflow-x: hidden;
-    /* Subtle grid overlay */
-    background-image:
-      linear-gradient(rgba(163, 157, 123, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(163, 157, 123, 0.03) 1px, transparent 1px);
-    background-size: 48px 48px;
   }
 
   #root {
@@ -120,6 +115,34 @@
   .glass-panel {
     @apply bg-surface/30 border border-accent/30 backdrop-blur-sm;
   }
+}
+
+/* ─── CUSTOM CURSOR ──────────────────────────────────────────────────────── */
+
+@media (pointer: fine) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  will-change: transform;
+}
+
+.custom-cursor svg {
+  display: block;
+  transition: transform 0.15s var(--ease-out);
+}
+
+.custom-cursor.is-active svg {
+  transform: scale(0.8);
 }
 
 /* ─── WHEEL INTERACTION ──────────────────────────────────────────────────── */
