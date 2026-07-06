@@ -166,11 +166,11 @@ export default function Header() {
             Studio
           </a>
           <a
-            href="#about"
-            onClick={(e) => handleScroll(e, 'about')}
+            href="#featured"
+            onClick={(e) => handleScroll(e, 'featured')}
             className="font-mono text-xs tracking-label text-parchment/65 hover:text-parchment transition-colors duration-200 uppercase flex-shrink-0"
           >
-            About
+            Work
           </a>
           <a
             href={BIO.resumeUrl}

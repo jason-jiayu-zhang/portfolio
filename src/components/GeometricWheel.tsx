@@ -5,7 +5,7 @@ import {
   SNAP_INTERVAL,
   normalizeAngle,
 } from '../utils/wheelMath'
-import type { Project, WheelRing } from '../types/portfolio'
+import type { WheelSection, WheelRing } from '../types/portfolio'
 import { useIntro } from './IntroContext'
 
 export interface WheelHandle {
@@ -15,7 +15,7 @@ export interface WheelHandle {
 interface GeometricWheelProps {
   rotationAngle: number
   activeIndex: number
-  projects: Project[]
+  sections: WheelSection[]
   pressed?: boolean
 }
 
@@ -276,7 +276,7 @@ const StaticRotatingMandalas = memo(() => {
 })
 StaticRotatingMandalas.displayName = 'StaticRotatingMandalas'
 
-const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rotationAngle, activeIndex, projects, pressed }, ref) => {
+const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rotationAngle, activeIndex, sections, pressed }, ref) => {
   const rot = rotationAngle
   const rotatingGroupRef = useRef<SVGGElement>(null)
   const degreeTextRef = useRef<SVGTextElement>(null)
@@ -332,13 +332,13 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
         <StaticRotatingMandalas />
 
         {/* Dynamic cross-hairs at snap points */}
-        {Array.from({ length: projects.length }, (_, i) => {
+        {Array.from({ length: sections.length }, (_, i) => {
           const deg = -i * SNAP_INTERVAL
           const outer = polarToCartesian(CX, CY, 276, deg)
           const inner = polarToCartesian(CX, CY, 246, deg)
           const dotPos = polarToCartesian(CX, CY, 246, deg)
           const isActive = i === activeIndex
-          const projColor = projects[i]?.accentColor ?? PARCHMENT
+          const projColor = sections[i]?.accentColor ?? PARCHMENT
           
           const isPhase2 = hasLoaded || phase === 'phase02' || phase === 'phase03'
           const baseLineOpacity = isActive ? 0.9 : 0.25
@@ -378,8 +378,8 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
           )
         })}
 
-        {/* Project label slugs at compass points */}
-        {projects.map((proj, i) => {
+        {/* Section label slugs at compass points */}
+        {sections.map((section, i) => {
           const angleDeg = -i * SNAP_INTERVAL
           const pos = polarToCartesian(CX, CY, LABEL_RADIUS, angleDeg)
           const isActive = i === activeIndex
@@ -393,7 +393,7 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
 
           return (
             <g
-              key={`proj-label-${i}`}
+              key={`section-label-${i}`}
               ref={(el) => { labelRefs.current[i] = el }}
               transform={`rotate(${angleDeg + (initialFlip ? 180 : 0)} ${pos.x} ${pos.y})`}
             >
@@ -406,12 +406,12 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
                 dominantBaseline="middle"
                 fontFamily='"IBM Plex Mono", monospace'
                 fontWeight={isActive ? 500 : 400}
-                fill={isActive ? proj.accentColor : PARCHMENT}
+                fill={isActive ? section.accentColor : PARCHMENT}
                 opacity={isPhase2 ? baseTextOpacity : 0}
                 letterSpacing="0.1em"
-                style={{ 
+                style={{
                   textTransform: 'uppercase',
-                  filter: isActive ? `drop-shadow(0px 0px 3px ${proj.accentColor})` : 'none', 
+                  filter: isActive ? `drop-shadow(0px 0px 3px ${section.accentColor})` : 'none',
                   transition: 'opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
                   transitionDelay: hasLoaded ? '0ms' : `${250 + i * 80}ms`,
                   willChange: 'filter, opacity',
@@ -419,7 +419,7 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
                   pointerEvents: 'auto'
                 }}
               >
-                {proj.slug}
+                {section.slug}
               </text>
             </g>
           )
@@ -428,10 +428,10 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
 
       {/* ── STATIC OVERLAY (never rotates) ─────────────────────────────────── */}
 
-      {/* Active project accent arc — drawn at top (0°), fixed */}
+      {/* Active section accent arc — drawn at top (0°), fixed */}
       {(() => {
-        const proj = projects[activeIndex]
-        const arcColor = proj?.accentColor ?? PARCHMENT
+        const active = sections[activeIndex]
+        const arcColor = active?.accentColor ?? PARCHMENT
         // Arc from -8° to 8° at main ring
         const arcR = 200
         const p1 = polarToCartesian(CX, CY, arcR, -8)
@@ -501,16 +501,16 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
         {Math.round(normalizeAngle(rotationAngle)).toString().padStart(3, '0')}°
       </text>
 
-      {/* Project count rings indicator — bottom */}
+      {/* Section count rings indicator — bottom */}
       <g transform={`translate(${CX}, ${CY + 300})`}>
-        {projects.map((_, i) => (
+        {sections.map((_, i) => (
           <circle
             key={`indicator-${i}`}
             className={i === activeIndex ? "pulse-active" : ""}
-            cx={(i - (projects.length - 1) / 2) * 10}
+            cx={(i - (sections.length - 1) / 2) * 10}
             cy={-8}
             r={i === activeIndex ? 2.5 : 1.5}
-            fill={i === activeIndex ? projects[i].accentColor : PARCHMENT}
+            fill={i === activeIndex ? sections[i].accentColor : PARCHMENT}
             opacity={i === activeIndex ? 0.9 : 0.25}
           />
         ))}

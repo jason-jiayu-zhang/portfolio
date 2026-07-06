@@ -14,7 +14,7 @@
     --color-accent: #38406a;
     --color-parchment: #cfccbb;
     --color-gold: #a39d7b;
-    --wheel-size: min(calc(100vw - 140px), calc(100vh - 300px)); /* Mobile-first default size */
+    --wheel-size: min(calc(100vw - 110px), calc(100vh - 300px)); /* Mobile-first default size — arrows are smaller here, so less horizontal padding is reserved for them */
     --header-h: 48px;
 
     /* ── Easing tokens ── */
@@ -365,6 +365,68 @@ a:active:not([aria-disabled='true']) {
   ::view-transition-new(*) {
     animation: none !important;
   }
+}
+
+/* ─── HERO ABOUT WHEEL — POLISH ANIMATIONS ───────────────────────────────── */
+
+/* Thin, low-contrast scrollbar for scroll-constrained hero content on md/below */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(207, 204, 187, 0.2) transparent;
+  scroll-padding-top: 1rem;
+}
+.thin-scrollbar::-webkit-scrollbar { width: 4px; }
+.thin-scrollbar::-webkit-scrollbar-thumb { background: rgba(207, 204, 187, 0.2); border-radius: 2px; }
+
+/* Pulsing glow ring on the active Description-panel photo — color set per-element via --glow-color */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5), 0 0 0px 0px var(--glow-color, transparent);
+  }
+  50% {
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5), 0 0 22px 3px var(--glow-color, transparent);
+  }
+}
+.glow-pulse {
+  animation: glowPulse 2.6s ease-in-out infinite;
+}
+
+/* Sonar ping — brief expanding ring drawing the eye to the active nav dot */
+@keyframes sonarPing {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* Left edge index bar — flashes to full opacity then settles when the section changes */
+@keyframes edgeFlash {
+  0% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Waveform bar — continuous organic height oscillation for the "now playing" track */
+@keyframes waveformPulse {
+  0%, 100% { transform: scaleY(0.5); }
+  50% { transform: scaleY(1.3); }
+}
+.waveform-bar {
+  animation-name: waveformPulse;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-origin: bottom center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-pulse,
+  .waveform-bar {
+    animation: none !important;
+  }
+}
+
+/* ─── FEATURED GRID CAROUSEL PROGRESS ─────────────────────────────────────── */
+
+@keyframes carousel-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 /* ─── LIGHTBOX CAPTION ANIMATION ──────────────────────────────────────────── */
