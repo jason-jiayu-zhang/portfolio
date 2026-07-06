@@ -9,7 +9,6 @@ import { lazy, Suspense } from 'react'
 
 const FeaturedGrid = lazy(() => import('./components/FeaturedGrid'))
 const StudioSection = lazy(() => import('./components/StudioSection'))
-const AboutSection = lazy(() => import('./components/AboutSection'))
 const Footer = lazy(() => import('./components/Footer'))
 
 function AppContent() {
@@ -38,11 +37,6 @@ function AppContent() {
             {/* § 2 — Studio section: off-a-whim experiments */}
             <div className="contain-section">
               <StudioSection />
-            </div>
-
-            {/* § 4 — 3-column About / Foundations */}
-            <div className="contain-section">
-              <AboutSection />
             </div>
           </Suspense>
         )}

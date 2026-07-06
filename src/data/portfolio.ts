@@ -46,14 +46,12 @@ export const BIO: BioProfile = {
 // ─── STATUS CYCLE ─────────────────────────────────────────────────────────────
 
 export const STATUS_CYCLE: StatusCycle[] = [
-  { text: 'Designing @ Cattlelog' },
+  { text: 'Designing Cattlelog' },
   { text: 'Refining design tokens' },
-  { text: 'Engineering full-stack products' },
-  { text: 'Drinking an iced matcha' },
-  { text: 'Building custom keyboards' },
-  { text: 'Figma Campus Leader' },
-  { text: 'Reading design system docs' },
+  { text: 'Building something cool...' },
   { text: 'Playing tennis' },
+  { text: 'Building custom keyboards' },
+  { text: 'Petting my cats' },
 ]
 
 // ─── FEATURED PROJECTS ────────────────────────────────────────────────────────
@@ -72,17 +70,17 @@ export const PROJECTS: Project[] = [
     accentColor: '#9cd5f8',
     tagline: 'Streamlining Course & Professor Discovery for UC Davis',
     metrics: [
-      { label: 'Total Users', value: '30,000+' },
+      { label: 'Total Users', value: '40,000+' },
       { label: 'Daily Actives', value: '1,000+' },
     ],
     narrative: [
-      'Cattlelog is a course and professor discovery platform serving 30,000+ UC Davis students, combining professor ratings, grade distributions, and comparison tools to simplify academic planning.',
+      'Cattlelog is a course and professor discovery platform serving 40,000+ UC Davis students, combining professor ratings, grade distributions, and comparison tools to simplify academic planning.',
     ],
     url: 'https://daviscattlelog.com',
     status: 'live',
     caseStudy: {
       executiveSummary:
-        'As Lead Product Designer & UI Engineer, I spearheaded the design and development of Cattlelog, a comprehensive course and professor discovery platform now serving over 30,000 students at UC Davis. Bridging my double-major in Design and Computer Engineering, I owned the full arc from Figma system design through production React implementation. By combining professor ratings, grade distributions, and side-by-side comparison tools, Cattlelog dramatically simplifies academic planning for one of the largest public universities in the US.',
+        'As Lead Product Designer & UI Engineer, I spearheaded the design and development of Cattlelog, a comprehensive course and professor discovery platform now serving over 40,000 students at UC Davis. Bridging my double-major in Design and Computer Engineering, I owned the full arc from Figma system design through production React implementation. By combining professor ratings, grade distributions, and side-by-side comparison tools, Cattlelog dramatically simplifies academic planning for one of the largest public universities in the US.',
       problemSpace: [
         'UC Davis students historically navigated six separate pages, from school-affiliated to reddit, just to plan a single quarter: cross-referencing RateMyProfessor, the official Course Registrar, GE requirement sheets, and grade-distribution PDFs in parallel browser tabs.',
         'The core challenge was consolidating this fractured information landscape, GE requirements, live course data, professor reviews, and historical grade distributions, into a single authoritative catalog without overwhelming users with information density.',
@@ -94,7 +92,7 @@ export const PROJECTS: Project[] = [
         'Supabase served as the backend layer for course and professor data, with a Postgres full-text search index powering the catalog search. The data pipeline fed directly into a React Query cache layer, keeping the UI reactive without redundant fetches.',
       ],
       validation: [
-        'Cattlelog scaled to 30,000+ total users and 1,000+ daily actives within its first academic year, driven entirely by word-of-mouth among UC Davis students.',
+        'Cattlelog scaled to 40,000+ total users and 1,000+ daily actives within its first academic year, driven entirely by word-of-mouth among UC Davis students.',
         'The component design system proved its value when the team shipped the Grade Distribution feature in under a week, the existing token system absorbed the new UI without regressions in visual consistency.',
       ],
       roadmap:
@@ -146,7 +144,7 @@ export const PROJECTS: Project[] = [
     narrative: [
       'A GitHub-style activity tracker that monitors your Figma version history, intelligently syncs edits to a Supabase database, and provides a beautiful visual dashboard of your design activity over time.'
     ],
-    url: 'https://figma-tracker-production.up.railway.app/',
+    url: 'https://figma-tracker.onrender.com/',
     status: 'live',
     caseStudy: {
       executiveSummary: 'Fimanu is a GitHub-style activity tracker designed to bring engineering-grade visibility to Figma design workflows. As the sole creator and developer, I architected this application from the ground up to continuously monitor Figma version history, intelligently sync file edits to a scalable Supabase database, and provide a premium, interactive visual dashboard of daily design activity. By transforming abstract design efforts into quantifiable, visual metrics, Fimanu empowers designers and product managers with a unified, transparent view of collaborative contributions and project momentum across multiple isolated Figma files.',

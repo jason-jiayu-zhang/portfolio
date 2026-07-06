@@ -12,7 +12,7 @@ import {
   SNAP_COUNT
 } from '../utils/wheelMath'
 import type { WheelState } from '../types/portfolio'
-import { PROJECTS } from '../data/portfolio'
+import { WHEEL_SECTIONS } from '../data/about'
 import GeometricWheel, { type WheelHandle } from './GeometricWheel'
 import { useIntro } from './IntroContext'
 
@@ -253,7 +253,7 @@ export default function WheelSelector({ onProjectChange, activeIndex, autoAdvanc
         ref={wheelHandleRef}
         rotationAngle={wheelRef.current.angle}
         activeIndex={activeIndex}
-        projects={PROJECTS}
+        sections={WHEEL_SECTIONS}
         pressed={isPressed}
       />
     </svg>

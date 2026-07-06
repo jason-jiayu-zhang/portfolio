@@ -119,6 +119,15 @@ export interface StatusCycle {
   emoji?: string
 }
 
+/** One of the 4 hero wheel content slots (About-section blocks) */
+export interface WheelSection {
+  id: 'description' | 'trajectory' | 'philosophy' | 'catalog'
+  /** Short codename shown on the wheel label */
+  slug: string
+  /** Hex accent color per section */
+  accentColor: string
+}
+
 /** Wheel rotation math state */
 export interface WheelState {
   /** Current rotation in degrees */

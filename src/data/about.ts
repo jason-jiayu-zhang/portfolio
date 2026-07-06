@@ -2,6 +2,19 @@
 // ABOUT SECTION DATA
 // ─────────────────────────────────────────────────────────────────────────────
 
+import type { WheelSection } from '../types/portfolio'
+
+// ─── HERO WHEEL SECTIONS ───────────────────────────────────────────────────────
+// The 4 slots on the hero wheel — each maps to a block of "about me" content
+// rendered in the hero's left panel. Order matches wheelIndex 0-3.
+
+export const WHEEL_SECTIONS: WheelSection[] = [
+  { id: 'description', slug: 'About', accentColor: '#9cd5f8' },
+  { id: 'trajectory', slug: 'Trajectory', accentColor: '#feb34f' },
+  { id: 'philosophy', slug: 'Philosophy', accentColor: '#a855f7' },
+  { id: 'catalog', slug: 'Catalog', accentColor: '#ebd648' },
+]
+
 export interface TimelineEntry {
   period: string
   role: string
@@ -40,28 +53,44 @@ export const TIMELINE: TimelineEntry[] = [
       'Selected as one of Figma\'s global Campus Leaders — hosting workshops, Tech Mixer events, and Sticker Café drops. Bridges the gap between professional-grade tooling and student design culture.',
   },
   {
-    period: 'Oct 2025 – Jan 2026',
-    role: 'Vice President of Design',
-    org: 'Product Space @ UC Davis',
-    tags: ['Leadership', 'Mentorship', 'UI/UX'],
-    detail:
-      'Leads the design vertical of UC Davis\'s premier product organization. Responsible for brand cohesion, design mentorship pipeline, and establishing a human-first design culture across 100+ members.',
-  },
-  {
     period: 'Mar 2025 – Present',
     role: 'Design Engineer',
     org: 'Cattlelog (AggieWorks)',
     tags: ['Full-Stack Engineering', 'UI/UX Design', 'Product'],
     detail:
-      'Architected the full design system and UI engineering layer for Cattlelog — a course discovery platform serving 30,000+ active UC Davis students. Drove 1:1 Figma-to-code component parity using React, TypeScript, Tailwind CSS, Vite, and Supabase.',
+      'Architected the full design system and UI engineering layer for Cattlelog — a course discovery platform serving 40,000+ active UC Davis students. Drove 1:1 Figma-to-code component parity using React, TypeScript, Tailwind CSS, Vite, and Supabase.',
   },
   {
     period: 'Jan 2026 – Present',
-    role: 'Full-Stack Designer',
+    role: 'Design Engineer',
     org: 'Fimanu',
     tags: ['Figma REST API', 'Full-Stack Engineering', 'Product Design'],
     detail:
       'Architected and built Fimanu, a web-based design inspector and asset visualization platform that leverages the Figma REST API to streamline asset tracking and developer handoff.',
+  },
+  {
+    period: 'Sep 2025 – Present',
+    role: 'Design Advisor',
+    org: 'Formula Racing @ UC Davis',
+    tags: ['Design Systems', 'Graphics', 'Marketing'],
+    detail:
+      'Guiding the Formula Racing Design Systems team to design a unified brand and asset ecosystem for the team\'s 200+ members.',
+  },
+  {
+    period: 'Oct 2025 – Jan 2026',
+    role: 'Vice President of Design',
+    org: 'Product Space @ UC Davis',
+    tags: ['Leadership', 'Mentorship', 'UI/UX'],
+    detail:
+      'Led the design vertical of UC Davis\'s premier product organization. Responsible for brand cohesion, design mentorship pipeline, and establishing a human-first design culture across 100+ members.',
+  },
+  {
+    period: 'Apr 2025 – Jul 2026',
+    role: 'Design Advisor',
+    org: 'Computer Science Tutoring Center @ UC Davis',
+    tags: ['UI/UX', 'Graphics', 'Education'],
+    detail:
+      'Mentored the design team for the Computer Science Tutoring Center at UC Davis organization, giving feedback into their website, graphics, and overall brand identity.',
   },
 ]
 

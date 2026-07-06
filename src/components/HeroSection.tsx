@@ -1,233 +1,38 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import { PROJECTS } from '../data/portfolio'
-import type { Project } from '../types/portfolio'
+import { WHEEL_SECTIONS } from '../data/about'
 import WheelSelector from './WheelSelector'
 import { SNAP_INTERVAL } from '../utils/wheelMath'
 import { useIntro } from './IntroContext'
+import { DescriptionPanel, TrajectoryPanel, PhilosophyPanel, CatalogPanel, usePrefersReducedMotion } from './HeroAboutPanels'
 
-// ── Featured content reveal groups ─────────────────────────────────────────
-// Elements cluster into a few large groups instead of cascading individually —
-// fewer stagger steps means each group's own animation can run longer.
-const GROUP_HEADER = 0
-const GROUP_META = 90
-const GROUP_CTA = 180
-const GROUP_NARRATIVE = 270
+const SECTION_PANELS = [DescriptionPanel, TrajectoryPanel, PhilosophyPanel, CatalogPanel]
 
-// ── Animated Element Wrapper ───────────────────────────────────────────────
-interface AnimatedElementProps {
-  delay: number
-  children: React.ReactNode
-  className?: string
-}
-
-function AnimatedElement({ delay, children, className = '' }: AnimatedElementProps) {
-  const [show, setShow] = useState(false)
+// ── Section content transition wrapper ─────────────────────────────────────
+// Outgoing content fades out with a slight upward drift; the freshly-mounted
+// incoming content (remounted via `key`) slides up into place from below —
+// gives the swap a sense of vertical flow that echoes the wheel's rotation.
+function SectionTransitionWrapper({ isExiting, children }: { isExiting: boolean; children: React.ReactNode }) {
+  const [entered, setEntered] = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => setShow(true), delay)
-    return () => clearTimeout(t)
-  }, [delay])
+    const raf = requestAnimationFrame(() => setEntered(true))
+    return () => cancelAnimationFrame(raf)
+  }, [])
 
   return (
-    <div className={`${className}`}>
-      <div
-        style={{
-          transform: show ? 'translateY(0)' : 'translateY(10px)',
-          opacity: show ? 1 : 0,
-          // Expo-out: 70% of travel happens in first 15% of time — feels instant,
-          // but the curve coasts gently to rest over the full duration.
-          // Elements reveal in a few larger groups (shared delay), which frees up
-          // budget for each group's own animation to run longer without the
-          // overall reveal feeling slow.
-          transition: `transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
-          willChange: 'transform, opacity',
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
-
-// ── Narrative text panel ───────────────────────────────────────────────────
-interface NarrativePanelProps {
-  project: Project
-}
-
-function NarrativePanel({ project }: NarrativePanelProps) {
-  const [shown, setShown] = useState(false)
-
-  useEffect(() => {
-    setShown(false)
-    const t = setTimeout(() => setShown(true), GROUP_NARRATIVE)
-    return () => clearTimeout(t)
-  }, [project.id])
-
-  return (
-    <div className="space-y-4">
-      {project.narrative.map((para, i) => (
-        <div key={i} className="">
-          <p
-            className="font-mono text-sm text-parchment/65 leading-[1.65] tracking-tight"
-            style={{
-              transform: shown ? 'translateY(0)' : 'translateY(8px)',
-              opacity: shown ? 1 : 0,
-              // Expo-out: the whole paragraph group snaps into place together, then flows to rest
-              transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-              willChange: 'transform, opacity',
-            }}
-          >
-            {para}
-          </p>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ── Visual Preview Carousel ────────────────────────────────────────────────
-interface ProjectPreviewCarouselProps {
-  project: Project
-}
-
-function ProjectPreviewCarousel({ project }: ProjectPreviewCarouselProps) {
-  const [activeImageIdx, setActiveImageIdx] = useState(0)
-  const [isHovered, setIsHovered] = useState(false)
-  const images = project.caseStudy?.images || []
-  const acc = project.accentColor
-
-  // Auto-play the carousel
-  useEffect(() => {
-    if (images.length <= 1) return
-    const interval = setInterval(() => {
-      setActiveImageIdx((prev) => (prev + 1) % images.length)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [images.length])
-
-  // Reset index when project changes
-  useEffect(() => {
-    setActiveImageIdx(0)
-  }, [project.id])
-
-  const handleDotClick = (e: React.MouseEvent, idx: number) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setActiveImageIdx(idx)
-  }
-
-  // Geometric symbols per project matching their concept
-  const projectSymbols = {
-    cattlelog: '◈',
-    fimanu: '⬡',
-    'product-space': '◉',
-    spot: '⬢',
-  } as Record<string, string>
-
-  const currentSymbol = projectSymbols[project.id] || '◈'
-
-  return (
-    <Link
-      to={`/work/${project.id}`}
-      viewTransition
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group/carousel relative block w-full aspect-[21/9] rounded-sm overflow-hidden border transition-all duration-200 bg-surface/10 hover:bg-surface/20 shadow-lg mb-4"
+    <div
+      className="flex-1 flex flex-col justify-start"
       style={{
-        borderColor: isHovered ? `${acc}60` : `${acc}25`,
-        boxShadow: isHovered ? `0 12px 48px -12px ${acc}20` : `0 8px 32px -8px ${acc}08`,
+        opacity: isExiting ? 0 : entered ? 1 : 0,
+        transform: isExiting ? 'translateY(-4px)' : entered ? 'translateY(0)' : 'translateY(6px)',
+        transition: isExiting
+          ? 'opacity 0.16s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
+          : 'opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        willChange: entered && !isExiting ? 'auto' : 'transform, opacity',
       }}
     >
-      {/* Scanlines / Grid lines overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-        backgroundImage: `linear-gradient(rgba(207,204,187,0.1) 1px, transparent 1px),
-                          linear-gradient(90deg, rgba(207,204,187,0.1) 1px, transparent 1px)`,
-        backgroundSize: '16px 16px'
-      }} />
-
-      {images.length > 0 ? (
-        <div className="w-full h-full relative">
-          {images.map((img, i) => (
-            <img
-              key={i}
-              src={img.src}
-              alt={img.label}
-              /* LCP candidate (first slide of first project): prioritize fetch */
-              fetchPriority={i === 0 ? 'high' : 'low'}
-              loading={i === 0 ? 'eager' : 'lazy'}
-              decoding={i === 0 ? 'sync' : 'async'}
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{
-                opacity: i === activeImageIdx ? (isHovered ? 1 : 0.6) : 0,
-                transform: i === activeImageIdx ? (isHovered ? 'scale(1.05)' : 'scale(1)') : 'scale(1.025)',
-                visibility: i === activeImageIdx ? 'visible' : 'hidden',
-                // Expo-out: snaps to the new scale instantly, drifts to rest.
-                // visibility is delayed on hide (not on show) so the outgoing image
-                // stays paintable long enough for its own fade-out to actually be seen.
-                transition: i === activeImageIdx
-                  ? 'opacity 250ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)'
-                  : 'opacity 250ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0ms linear 300ms',
-              }}
-            />
-          ))}
-
-          {/* Banner screen label */}
-          <div className="absolute bottom-3 left-3 pointer-events-none transition-opacity duration-200">
-            <span className="font-mono text-[9px] tracking-widest uppercase text-parchment/70 font-semibold drop-shadow-md">
-              // {images[activeImageIdx].label}
-            </span>
-          </div>
-        </div>
-      ) : (
-        // Render geometric Spec/Placeholder with hover states matching Studio style
-        <div className="w-full h-full flex flex-col items-center justify-center relative p-6">
-          {/* Spinning dashed rings */}
-          <div className="absolute w-40 h-40 border rounded-full border-dashed animate-[spin_120s_linear_infinite]"
-               style={{ borderColor: `${acc}15` }} />
-          <div className="absolute w-28 h-28 border rounded-full border-dashed animate-[spin_80s_linear_infinite_reverse]"
-               style={{ borderColor: `${acc}10` }} />
-
-          {/* Glowing central glyph */}
-          <div 
-            className="font-mono text-5xl transition-all duration-200 select-none"
-            style={{ 
-              color: acc,
-              opacity: isHovered ? 0.75 : 0.25,
-              transform: isHovered ? 'scale(1.1)' : 'scale(1)',
-              textShadow: isHovered ? `0 0 24px ${acc}60` : `0 0 8px ${acc}20`
-            }}
-          >
-            {currentSymbol}
-          </div>
-
-          <div className="absolute bottom-3 text-center w-full px-4">
-            <p className="font-mono text-xs tracking-label uppercase text-parchment/65 group-hover/carousel:text-[#cfccbbe6] transition-colors">
-              [{project.title} Spec Template]
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Pagination dots */}
-      {images.length > 1 && (
-        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 z-10 px-2 py-1 rounded bg-[#0a0c16]/50 backdrop-blur-sm">
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={(e) => handleDotClick(e, i)}
-              className="w-1 h-1 rounded-full transition-all duration-200"
-              style={{
-                backgroundColor: i === activeImageIdx ? acc : '#cfccbb',
-                opacity: i === activeImageIdx ? 1 : 0.3,
-                transform: i === activeImageIdx ? 'scale(1.35)' : 'scale(1)',
-              }}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
-    </Link>
+      {children}
+    </div>
   )
 }
 
@@ -236,10 +41,11 @@ export default function HeroSection() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [displayIndex, setDisplayIndex] = useState(0)
   const [isFadingOut, setIsFadingOut] = useState(false)
-  const [projKey, setProjKey] = useState('proj-0')
+  const [sectionKey, setSectionKey] = useState('section-0')
   const keyRef = useRef(0)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  
+  const prefersReducedMotion = usePrefersReducedMotion()
+
   const wheelContainerRef = useRef<HTMLDivElement>(null)
   const wheelPosRef = useRef<number | null>(null)
   const leftPanelRef = useRef<HTMLDivElement>(null)
@@ -263,7 +69,7 @@ export default function HeroSection() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  const handleProjectChange = useCallback((index: number) => {
+  const handleSectionChange = useCallback((index: number) => {
     if (index === activeIndex) return;
     setActiveIndex(index)
 
@@ -278,13 +84,13 @@ export default function HeroSection() {
 
       setDisplayIndex(index)
       keyRef.current += 1
-      setProjKey(`proj-${index}-${keyRef.current}`)
+      setSectionKey(`section-${index}-${keyRef.current}`)
       setIsFadingOut(false)
-    }, 300)
+    }, 220)
   }, [activeIndex])
 
   // ── AMBIENT AUTO-ROTATE ───────────────────────────────────────────────────
-  // Slowly cycles the wheel to the next project on its own when idle; any
+  // Slowly cycles the wheel to the next section on its own when idle; any
   // interaction (drag/scroll on the wheel, or the change it produces) resets the timer.
   const AUTO_ADVANCE_MS = 15000
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -297,11 +103,12 @@ export default function HeroSection() {
 
   const resetAutoAdvance = useCallback(() => {
     if (autoAdvanceTimerRef.current) clearInterval(autoAdvanceTimerRef.current)
+    if (prefersReducedMotion) return
     autoAdvanceTimerRef.current = setInterval(() => {
       isAutoAdvanceRef.current = true
-      handleProjectChange((activeIndexRef.current + 1) % PROJECTS.length)
+      handleSectionChange((activeIndexRef.current + 1) % WHEEL_SECTIONS.length)
     }, AUTO_ADVANCE_MS)
-  }, [handleProjectChange])
+  }, [handleSectionChange, prefersReducedMotion])
 
   useEffect(() => {
     resetAutoAdvance()
@@ -321,7 +128,7 @@ export default function HeroSection() {
     }
   }, [resetAutoAdvance])
 
-  // ── Touch swipe state (for mobile project switching) ─────────────────────
+  // ── Touch swipe state (for mobile section switching) ─────────────────────
   const touchStartXRef = useRef(0)
   const touchStartYRef = useRef(0)
   const touchStartTimeRef = useRef(0)
@@ -344,11 +151,11 @@ export default function HeroSection() {
 
     if (Math.abs(deltaX) > 50 && elapsed < 250) {
       if (deltaX < 0) {
-        // Swipe left → next project
-        handleProjectChange((activeIndex + 1) % PROJECTS.length)
+        // Swipe left → next section
+        handleSectionChange((activeIndex + 1) % WHEEL_SECTIONS.length)
       } else {
-        // Swipe right → previous project
-        handleProjectChange((activeIndex - 1 + PROJECTS.length) % PROJECTS.length)
+        // Swipe right → previous section
+        handleSectionChange((activeIndex - 1 + WHEEL_SECTIONS.length) % WHEEL_SECTIONS.length)
       }
     }
 
@@ -386,7 +193,7 @@ export default function HeroSection() {
     if (wheelPosRef.current !== null && wheelContainerRef.current) {
       const newTop = wheelContainerRef.current.getBoundingClientRect().top
       const diff = newTop - wheelPosRef.current
-      
+
       // If the wheel moved relative to the viewport (e.g. because text above it changed height),
       // adjust the window scroll to keep it under the user's finger.
       if (Math.abs(diff) > 0) {
@@ -394,10 +201,12 @@ export default function HeroSection() {
       }
       wheelPosRef.current = null
     }
-  }, [displayIndex, projKey])
+  }, [displayIndex, sectionKey])
 
-  const activeProject = PROJECTS[activeIndex]
-  const project = PROJECTS[displayIndex]
+  const activeSection = WHEEL_SECTIONS[activeIndex]
+  const prevSection = WHEEL_SECTIONS[(activeIndex - 1 + WHEEL_SECTIONS.length) % WHEEL_SECTIONS.length]
+  const nextSection = WHEEL_SECTIONS[(activeIndex + 1) % WHEEL_SECTIONS.length]
+  const ActivePanel = SECTION_PANELS[displayIndex]
   const { hasLoaded, phase } = useIntro()
   const showPhase2 = hasLoaded || phase === 'phase02' || phase === 'phase03'
   const isPhase3 = hasLoaded || phase === 'phase03'
@@ -424,230 +233,95 @@ export default function HeroSection() {
 
       {/* ── SPLIT LAYOUT ── */}
       <div className="grid grid-cols-1 lg:grid-cols-[45%_55%] min-h-full flex-1 relative">
-        
+
         {/* Vertical split line */}
         {showPhase2 && (
-          <div 
+          <div
             className={`hidden lg:block absolute left-[45%] top-0 bottom-0 border-l ${!hasLoaded ? 'animate-slice-y' : ''}`}
             style={{ borderColor: 'rgba(56, 64, 106, 0.35)' }}
           />
         )}
 
-        {/* ── LEFT 45% — Project Metadata Panel ── */}
+        {/* ── LEFT 45% — About Content Panel ── */}
         <div
           ref={leftPanelRef}
-          className="relative flex flex-col justify-start px-4 sm:px-6 lg:px-12 min-h-full pt-16 sm:pt-20 lg:pt-32 pb-6 sm:pb-8 lg:pb-24 w-full"
+          className="relative flex flex-col justify-start px-3 sm:px-6 lg:px-12 min-h-full pt-12 sm:pt-20 lg:pt-32 pb-6 sm:pb-8 lg:pb-24 w-full"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
+          {/* Subtle color wash tying this panel to the active section's accent */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `radial-gradient(ellipse at 30% 35%, ${activeSection.accentColor}08 0%, transparent 60%)`,
+              transition: 'background 0.4s ease',
+            }}
+          />
+
           {showPhase2 && (
             <>
               {/* Top label & Nav dots */}
-              <div className="absolute top-4 sm:top-6 left-4 sm:left-6 lg:left-12 right-4 sm:right-6 lg:right-12 flex items-center justify-between">
-                <span className="label-caps">FEATURED /</span>
-                <div className="flex items-center gap-2">
-                  {PROJECTS.map((p, i) => (
-                    <button
-                      key={p.id}
-                      onClick={() => handleProjectChange(i)}
-                      className="group relative"
-                      aria-label={p.title}
-                    >
-                      <div
-                        className="w-1.5 h-1.5 rounded-full transition-all duration-200"
-                        style={{
-                          backgroundColor: i === activeIndex ? p.accentColor : '#cfccbb',
-                          opacity: i === activeIndex ? 1 : 0.2,
-                          transform: i === activeIndex ? 'scale(1.4)' : 'scale(1)',
-                        }}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div 
-                key={projKey}
-                className="flex-1 flex flex-col justify-start transition-opacity duration-200 ease-in-out"
-                style={{ opacity: isFadingOut ? 0 : 1 }}
-              >
-                {/* 1. Header Cluster (Tight Spacing) */}
-                <div className="flex flex-col gap-1 mb-4 sm:mb-8">
-                  <AnimatedElement delay={GROUP_HEADER}>
-                    <div className="font-mono text-xs tracking-label uppercase text-[#a39d7b]">
-                      0{project.wheelIndex + 1} / 0{PROJECTS.length}
-                    </div>
-                  </AnimatedElement>
-                  <AnimatedElement delay={GROUP_HEADER}>
-                    <div className="font-mono text-xs tracking-label uppercase" style={{ color: project.accentColor }}>
-                      {project.categories[0]}
-                    </div>
-                  </AnimatedElement>
-                  <AnimatedElement delay={GROUP_HEADER} className="mt-1">
-                    <Link
-                      to={`/work/${project.id}`}
-                      viewTransition
-                      className="font-sans font-bold text-4xl text-parchment leading-none tracking-tight block hover:opacity-80 transition-opacity cursor-pointer"
-                      style={{
-                        viewTransitionName: `project-title-${project.id}`,
-                      }}
-                    >
-                      {project.title}
-                    </Link>
-                  </AnimatedElement>
-                  <AnimatedElement delay={GROUP_HEADER}>
-                    <div className="font-mono text-sm text-parchment/65 tracking-tight mt-1">
-                      {project.subtitle}
-                    </div>
-                  </AnimatedElement>
-                </div>
-
-                {/* 2. Project Metadata Cluster (Tight Spacing) */}
-                <div className="flex flex-col gap-2 mb-6 sm:mb-10">
-                  <AnimatedElement delay={GROUP_META}>
-                    <div className="flex items-center gap-2 font-mono text-xs tracking-label text-parchment/65 uppercase">
-                      <div className="w-3 h-px" style={{ backgroundColor: project.accentColor, opacity: 0.4 }} />
-                      <span>{project.role}</span>
-                    </div>
-                  </AnimatedElement>
-
-                  <div className="flex flex-col gap-2 my-1">
-                    {/* Tech Stack Tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tools.map((t) => (
-                        <AnimatedElement key={t} delay={GROUP_META} className="inline-block">
-                          <span
-                            className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono tracking-label rounded-sm border cursor-default transition-all duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] border-[#38406a80] text-[#cfccbbe6] bg-transparent hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-bg)]"
-                            style={{
-                              '--accent': project.accentColor,
-                              '--accent-bg': `${project.accentColor}10`,
-                              textBox: 'trim-both cap alphabetic',
-                            } as React.CSSProperties}
-                          >
-                            {t}
-                          </span>
-                        </AnimatedElement>
-                      ))}
-                    </div>
-
-                    {/* Classification & Award Tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tools.length >= 4 && (
-                        <AnimatedElement delay={GROUP_META} className="inline-block">
-                          <span
-                            className="font-mono text-xs tracking-label px-2 py-0.5 border rounded-sm"
-                            style={{ borderColor: `${project.accentColor}40`, color: project.accentColor, textBox: 'trim-both cap alphabetic' } as React.CSSProperties}
-                          >
-                            [Design System Parity]
-                          </span>
-                        </AnimatedElement>
-                      )}
-                      {project.categories.includes('Full-Stack Engineering') && (
-                        <AnimatedElement delay={GROUP_META} className="inline-block">
-                          <span
-                            className="font-mono text-xs tracking-label px-2 py-0.5 border rounded-sm"
-                            style={{ borderColor: `${project.accentColor}40`, color: project.accentColor, textBox: 'trim-both cap alphabetic' } as React.CSSProperties}
-                          >
-                            [UI Engineering]
-                          </span>
-                        </AnimatedElement>
-                      )}
-                      {project.awards?.map((award) => (
-                        <AnimatedElement key={award} delay={GROUP_META} className="inline-block">
-                          <span
-                            className="font-mono text-xs tracking-label px-2 py-0.5 border rounded-sm"
-                            style={{ borderColor: `${project.accentColor}40`, color: project.accentColor, textBox: 'trim-both cap alphabetic' } as React.CSSProperties}
-                          >
-                            ★ {award}
-                          </span>
-                        </AnimatedElement>
-                      ))}
-                    </div>
-                  </div>
-
-                  {project.metrics.length > 0 && (
-                    <div className="grid grid-cols-2 gap-2 pt-2">
-                      {project.metrics.map((m) => (
-                        <AnimatedElement key={m.label} delay={GROUP_META}>
-                          <div
-                            className="flex flex-col gap-0.5 px-3 py-2 rounded-sm border border-[rgba(255,255,255,0.05)] bg-transparent hover:bg-[var(--accent-bg-hover)] transition-colors duration-200"
-                            style={{ '--accent-bg-hover': `${project.accentColor}08` } as React.CSSProperties}
-                          >
-                            <span className="font-mono text-xs tracking-label text-[#cfccbbe6] uppercase">{m.label}</span>
-                            <span
-                              className="font-mono text-sm font-medium"
-                              style={{ color: project.accentColor }}
-                            >
-                              {m.value}
-                            </span>
-                          </div>
-                        </AnimatedElement>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* 3. Status badge & CTA */}
-                <AnimatedElement delay={GROUP_CTA}>
-                  <div className="flex flex-wrap items-center gap-y-2 gap-x-3 mb-8">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{
-                          backgroundColor: project.status === 'live' ? '#4ade80' : '#a39d7b',
-                          boxShadow: project.status === 'live' ? '0 0 6px #4ade80' : 'none',
-                        }}
-                      />
-                      <span className="label-caps">
-                        {project.status === 'live' ? 'Live' : project.status === 'offline' ? 'Offline' : 'Archived'}
-                      </span>
-                    </div>
-                    {project.url && (
-                      <>
-                        <div className="w-px h-3 bg-white/20 hidden sm:block" />
-                        <a
-                          href={project.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="label-caps hover:text-parchment transition-colors underline underline-offset-2"
+              <div className="absolute top-4 sm:top-6 left-3 sm:left-6 lg:left-12 right-3 sm:right-6 lg:right-12 flex items-center justify-between">
+                <span className="label-caps">ABOUT /</span>
+                <div className="flex items-center gap-2.5" role="tablist" aria-label="Hero about sections">
+                  {WHEEL_SECTIONS.map((s, i) => {
+                    const isActive = i === activeIndex
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => handleSectionChange(i)}
+                        className="group relative py-1"
+                        role="tab"
+                        aria-selected={isActive}
+                        aria-label={`Navigate to ${s.slug} section`}
+                      >
+                        {/* Hover tooltip */}
+                        <span
+                          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-1.5 py-0.5 whitespace-nowrap rounded-sm font-mono text-[9px] uppercase tracking-label opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none"
+                          style={{ backgroundColor: '#0b0c10', color: s.accentColor, border: `1px solid ${s.accentColor}40` }}
                         >
-                          {project.url.replace('https://', '')} ↗
-                        </a>
-                      </>
-                    )}
-                    <div className="w-px h-3 bg-white/20" />
-                    <Link
-                      to={`/work/${project.id}`}
-                      viewTransition
-                      className="label-caps transition-opacity hover:opacity-80 underline underline-offset-2"
-                      style={{ color: project.accentColor }}
-                    >
-                      Read Case Study →
-                    </Link>
-                  </div>
-                </AnimatedElement>
-
-                {/* Visual Preview Carousel */}
-                <AnimatedElement delay={GROUP_CTA}>
-                  <ProjectPreviewCarousel project={project} />
-                </AnimatedElement>
- 
-                {/* 3 & 4. Description Block with Macro Margin above */}
-                <div className="mb-8">
-                  <NarrativePanel project={project} />
+                          {s.slug}
+                        </span>
+                        {/* Sonar ping on active change */}
+                        {isActive && (
+                          <span
+                            key={`ping-${sectionKey}`}
+                            className="absolute inset-0 m-auto w-2 h-2 rounded-full pointer-events-none"
+                            style={{ backgroundColor: s.accentColor, animation: 'sonarPing 0.7s ease-out' }}
+                          />
+                        )}
+                        <div
+                          className="w-2 h-2 rounded-full transition-all duration-200"
+                          style={{
+                            backgroundColor: isActive ? s.accentColor : '#cfccbb',
+                            opacity: isActive ? 1 : 0.2,
+                            transform: isActive ? 'scale(1.35)' : 'scale(1)',
+                          }}
+                        />
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
+              <div className="thin-scrollbar flex-1 flex flex-col max-lg:overflow-y-auto max-lg:max-h-[calc(100dvh-128px)] max-lg:px-1 max-lg:-mx-1">
+                <SectionTransitionWrapper key={sectionKey} isExiting={isFadingOut}>
+                  <ActivePanel />
+                </SectionTransitionWrapper>
+              </div>
 
               {/* Left edge index line */}
-              <div 
-                key={`edge-${projKey}`}
-                className="absolute left-0 top-1/2 -translate-y-1/2 h-32 flex items-center transition-opacity duration-200 ease-in-out"
+              <div
+                key={`edge-${sectionKey}`}
+                className="absolute left-0 top-1/2 -translate-y-1/2 h-48 flex items-center transition-opacity duration-200 ease-in-out"
                 style={{ opacity: isFadingOut ? 0 : 1 }}
               >
                 <div
-                  className={`w-px h-full transition-all duration-200 ${!hasLoaded ? 'animate-slice-y' : ''}`}
-                  style={{ backgroundColor: project.accentColor, opacity: 0.6 }}
+                  className="w-px h-full"
+                  style={{
+                    background: `linear-gradient(to bottom, transparent, ${activeSection.accentColor}, transparent)`,
+                    animation: 'edgeFlash 0.6s ease-out forwards',
+                  }}
                 />
               </div>
             </>
@@ -682,59 +356,71 @@ export default function HeroSection() {
             {isPhase3 && (
               <>
                 {/* Left Arrow Button */}
-                <div className="absolute left-3 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-20">
+                <div className="group/arrow absolute left-1.5 sm:left-3 md:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2">
                   <button
-                    onClick={() => handleProjectChange((activeIndex - 1 + PROJECTS.length) % PROJECTS.length)}
-                    className="hero-arrow-btn p-2 md:p-3 rounded-full border bg-primary/40 backdrop-blur-md transition-all duration-200 group focus:outline-none hover:bg-surface/50 active:scale-95 animate-arrow-left-in"
+                    onClick={() => handleSectionChange((activeIndex - 1 + WHEEL_SECTIONS.length) % WHEEL_SECTIONS.length)}
+                    className="hero-arrow-btn p-1 sm:p-2 md:p-3 rounded-full border bg-primary/40 backdrop-blur-md transition-all duration-200 group focus:outline-none hover:bg-surface/50 active:scale-95 animate-arrow-left-in"
                     style={{
-                      borderColor: `${activeProject.accentColor}33`,
-                      color: activeProject.accentColor,
+                      borderColor: `${activeSection.accentColor}33`,
+                      color: activeSection.accentColor,
                       boxShadow: '0 0 0px transparent',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = activeProject.accentColor
-                      e.currentTarget.style.boxShadow = `0 0 12px ${activeProject.accentColor}33`
+                      e.currentTarget.style.borderColor = activeSection.accentColor
+                      e.currentTarget.style.boxShadow = `0 0 12px ${activeSection.accentColor}33`
                       e.currentTarget.style.color = '#cfccbb'
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = `${activeProject.accentColor}33`
+                      e.currentTarget.style.borderColor = `${activeSection.accentColor}33`
                       e.currentTarget.style.boxShadow = 'none'
-                      e.currentTarget.style.color = activeProject.accentColor
+                      e.currentTarget.style.color = activeSection.accentColor
                     }}
-                    aria-label="Previous Project"
+                    aria-label={`Navigate to ${prevSection.slug} section`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transform group-hover:-translate-x-0.5 transition-transform duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 transform group-hover:-translate-x-0.5 transition-transform duration-200">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
                   </button>
+                  <span
+                    className="hidden md:inline-block font-mono text-[9px] uppercase tracking-label opacity-0 group-hover/arrow:opacity-60 transition-opacity duration-150 pointer-events-none whitespace-nowrap"
+                    style={{ color: prevSection.accentColor }}
+                  >
+                    ← {prevSection.slug}
+                  </span>
                 </div>
 
                 {/* Right Arrow Button */}
-                <div className="absolute right-3 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-20">
+                <div className="group/arrow absolute right-1.5 sm:right-3 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2 flex-row-reverse">
                   <button
-                    onClick={() => handleProjectChange((activeIndex + 1) % PROJECTS.length)}
-                    className="hero-arrow-btn p-2 md:p-3 rounded-full border bg-primary/40 backdrop-blur-md transition-all duration-200 group focus:outline-none hover:bg-surface/50 active:scale-95 animate-arrow-right-in"
+                    onClick={() => handleSectionChange((activeIndex + 1) % WHEEL_SECTIONS.length)}
+                    className="hero-arrow-btn p-1 sm:p-2 md:p-3 rounded-full border bg-primary/40 backdrop-blur-md transition-all duration-200 group focus:outline-none hover:bg-surface/50 active:scale-95 animate-arrow-right-in"
                     style={{
-                      borderColor: `${activeProject.accentColor}33`,
-                      color: activeProject.accentColor,
+                      borderColor: `${activeSection.accentColor}33`,
+                      color: activeSection.accentColor,
                       boxShadow: '0 0 0px transparent',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = activeProject.accentColor
-                      e.currentTarget.style.boxShadow = `0 0 12px ${activeProject.accentColor}33`
+                      e.currentTarget.style.borderColor = activeSection.accentColor
+                      e.currentTarget.style.boxShadow = `0 0 12px ${activeSection.accentColor}33`
                       e.currentTarget.style.color = '#cfccbb'
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = `${activeProject.accentColor}33`
+                      e.currentTarget.style.borderColor = `${activeSection.accentColor}33`
                       e.currentTarget.style.boxShadow = 'none'
-                      e.currentTarget.style.color = activeProject.accentColor
+                      e.currentTarget.style.color = activeSection.accentColor
                     }}
-                    aria-label="Next Project"
+                    aria-label={`Navigate to ${nextSection.slug} section`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transform group-hover:translate-x-0.5 transition-transform duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 transform group-hover:translate-x-0.5 transition-transform duration-200">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                     </svg>
                   </button>
+                  <span
+                    className="hidden md:inline-block font-mono text-[9px] uppercase tracking-label opacity-0 group-hover/arrow:opacity-60 transition-opacity duration-150 pointer-events-none whitespace-nowrap"
+                    style={{ color: nextSection.accentColor }}
+                  >
+                    {nextSection.slug} →
+                  </span>
                 </div>
               </>
             )}
@@ -745,17 +431,17 @@ export default function HeroSection() {
               style={{ width: 'var(--wheel-size)', height: 'var(--wheel-size)' }}
             >
               <WheelSelector
-                onProjectChange={handleProjectChange}
+                onProjectChange={handleSectionChange}
                 activeIndex={activeIndex}
                 autoAdvanceRef={isAutoAdvanceRef}
               />
             </div>
 
-            {/* Active project accent glow behind wheel */}
+            {/* Active section accent glow behind wheel */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                background: `radial-gradient(ellipse at center, ${activeProject.accentColor}08 0%, transparent 65%)`,
+                background: `radial-gradient(ellipse at center, ${activeSection.accentColor}08 0%, transparent 65%)`,
                 transition: 'background 0.25s ease',
               }}
             />

@@ -3,9 +3,9 @@
 // Trigonometry for multi-layered mandala wheel selector
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { PROJECTS } from '../data/portfolio'
+import { WHEEL_SECTIONS } from '../data/about'
 
-export const SNAP_COUNT = PROJECTS.length
+export const SNAP_COUNT = WHEEL_SECTIONS.length
 export const SNAP_INTERVAL = 360 / Math.max(1, SNAP_COUNT)
 
 export const toRad = (deg: number): number => (deg * Math.PI) / 180
