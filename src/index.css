@@ -14,7 +14,7 @@
     --color-accent: #38406a;
     --color-parchment: #cfccbb;
     --color-gold: #a39d7b;
-    --wheel-size: min(calc(100vw - 110px), calc(100vh - 300px)); /* Mobile-first default size — arrows are smaller here, so less horizontal padding is reserved for them */
+    --wheel-size: min(150vw, 40vh); /* Bottom-dome diameter — enlarged 1.5x in HeroSection so ~1/3 of the circle shows above the fold */
     --header-h: 48px;
 
     /* ── Easing tokens ── */
@@ -28,15 +28,23 @@
     --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   }
 
+  /* Short, narrow viewports (small phones): the visible band is scarce, so pull
+     the dome in further to keep each section scroll-free. */
+  @media (max-width: 767px) and (max-height: 820px) {
+    :root {
+      --wheel-size: min(150vw, 28vh);
+    }
+  }
+
   @media (min-width: 768px) {
     :root {
-      --wheel-size: min(calc(100vw - 160px), calc(100vh - 300px)); /* Tablet size */
+      --wheel-size: min(110vw, 52vh); /* Tablet dome */
     }
   }
 
   @media (min-width: 1024px) {
     :root {
-      --wheel-size: min(calc(55vw - 200px), calc(100vh - 120px)); /* Desktop split-panel size */
+      --wheel-size: min(62vh, 72vw); /* Desktop dome */
     }
   }
 
@@ -138,11 +146,6 @@
 
 .custom-cursor svg {
   display: block;
-  transition: transform 0.15s var(--ease-out);
-}
-
-.custom-cursor.is-active svg {
-  transform: scale(0.8);
 }
 
 /* ─── WHEEL INTERACTION ──────────────────────────────────────────────────── */
@@ -397,6 +400,36 @@ a:active:not([aria-disabled='true']) {
   100% { transform: scale(2.4); opacity: 0; }
 }
 
+/* Scroll cue — gentle vertical bob on the chevron, opacity-only intro so the
+   button's -translate-x-1/2 centering isn't clobbered by a transform keyframe. */
+@keyframes scrollCueBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+.animate-scroll-cue-in {
+  animation: scrollCueIn 0.6s var(--ease-expo-out) 0.2s both;
+}
+@keyframes scrollCueIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Name marquee — the hero name cycles horizontally across the band above the
+   portraits. Two identical halves; shifting by 50% loops seamlessly. */
+@keyframes nameMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.name-marquee-track {
+  animation: nameMarquee 26s linear infinite;
+}
+.group\/marquee:hover .name-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .name-marquee-track { animation: none !important; }
+}
+
 /* Left edge index bar — flashes to full opacity then settles when the section changes */
 @keyframes edgeFlash {
   0% { opacity: 1; }
@@ -440,5 +473,22 @@ a:active:not([aria-disabled='true']) {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Secondary hero copy that only earns its place when the viewport is tall
+   enough — on short screens it would force the section to scroll. */
+@media (max-height: 820px) {
+  .short-hide { display: none !important; }
 }
 
