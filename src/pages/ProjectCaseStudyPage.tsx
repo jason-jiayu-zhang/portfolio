@@ -984,6 +984,36 @@ export default function ProjectCaseStudyPage() {
             </section>
           )}
 
+          {/* §04.5 Design Activity — live Fimanu widget */}
+          {cs?.figmaActivityEmbedUrl && (
+            <section>
+              <SectionRule index="◇" label="Design Activity" accentColor={acc} mounted={mounted} mountDelay={840} />
+              <div
+                className="rounded-[3px] border overflow-hidden"
+                style={{
+                  borderColor: 'rgba(56,64,106,0.35)',
+                  backgroundColor: 'rgba(28,32,53,0.6)',
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(10px)',
+                  transition: 'opacity 0.2s ease 860ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) 860ms',
+                }}
+              >
+                <iframe
+                  src={cs.figmaActivityEmbedUrl}
+                  width="100%"
+                  height="196"
+                  frameBorder="0"
+                  scrolling="no"
+                  style={{ border: 'none', overflow: 'hidden', display: 'block' }}
+                  title="Figma activity"
+                />
+              </div>
+              <p className="font-mono text-xs text-parchment/65 mt-2.5">
+                Live design activity for the Cattlelog Figma file, tracked via Fimanu.
+              </p>
+            </section>
+          )}
+
           {/* §05 Validation & Impact */}
           {cs?.validation && cs.validation.length > 0 && (
             <section>

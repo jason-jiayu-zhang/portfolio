@@ -40,6 +40,8 @@ export interface CaseStudyContent {
   roadmap?: string
   /** Optional visual screenshots or mockups of the interface */
   images?: CaseStudyImage[]
+  /** Optional Fimanu Figma-activity embed URL, rendered as a live widget */
+  figmaActivityEmbedUrl?: string
 }
 
 export interface Project {

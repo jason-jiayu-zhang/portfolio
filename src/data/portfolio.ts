@@ -113,7 +113,8 @@ export const PROJECTS: Project[] = [
           label: 'Cattleblog',
           description: 'Academic planning resources, tips, and student announcements.'
         }
-      ]
+      ],
+      figmaActivityEmbedUrl: 'https://figma-tracker.onrender.com/embed-widget?slug=jason&files=OmcL296OeqZ4xsHzNcap65&style=fimanu'
     },
   },
   {
