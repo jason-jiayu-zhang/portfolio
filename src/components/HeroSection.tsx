@@ -233,7 +233,6 @@ export default function HeroSection() {
   const ActivePanel = SECTION_PANELS[displayIndex]
   const { hasLoaded, phase } = useIntro()
   const showPhase2 = hasLoaded || phase === 'phase02' || phase === 'phase03'
-  const isPhase3 = hasLoaded || phase === 'phase03'
 
   useEffect(() => {
     if (phase === 'phase03' && !hasLoaded) {

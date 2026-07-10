@@ -1071,7 +1071,7 @@ function DraggableWindow({
 const PAINT_COLORS = ['#ebd648', '#9cd5f8', '#a855f7', '#4ade80', '#f87171', '#cfccbb']
 const PAINT_BG = '#0b0c10'
 
-function MiniPaint({ accent, className = '' }: { accent: string; className?: string }) {
+function MiniPaint({ className = '' }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const [color, setColor] = useState(PAINT_COLORS[0])
@@ -1612,7 +1612,7 @@ export function CatalogPanel() {
 
           {/* Mini paint */}
           <DraggableWindow z={zOrder.paint} onFocus={() => focusWindow('paint')} className="min-h-[220px]">
-            <MiniPaint accent={accent} className="h-full" />
+            <MiniPaint className="h-full" />
           </DraggableWindow>
         </div>
       </AnimatedElement>
