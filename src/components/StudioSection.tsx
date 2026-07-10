@@ -1,6 +1,30 @@
 import { Link } from 'react-router-dom'
 import { useRef, useState, useCallback } from 'react'
 import { EXPERIMENTS } from '../data/portfolio'
+import { useInViewOnce } from '../hooks/useInViewOnce'
+import { usePrefersReducedMotion } from './HeroAboutPanels'
+
+// Scroll-triggered fade-up — mirrors the Featured grid's entrance so both
+// sections share one motion language.
+function Reveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
+  const [ref, inView] = useInViewOnce<HTMLDivElement>()
+  const reduced = usePrefersReducedMotion()
+  const shown = inView || reduced
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: shown ? 1 : 0,
+        transform: shown ? 'translateY(0)' : 'translateY(24px)',
+        transition: reduced ? 'none' : `opacity 800ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 800ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+        willChange: shown ? 'auto' : 'transform, opacity',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
 
 // ─── 3D Tilt + Spotlight Card ─────────────────────────────────────────────────
 interface TiltCardProps {
@@ -76,7 +100,7 @@ export default function StudioSection() {
   return (
     <section id="studio" className="relative py-10 md:py-14 px-4 sm:px-6 lg:px-12">
       {/* Section header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12 pb-4 border-b border-accent/30">
+      <Reveal className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12 pb-4 border-b border-accent/30">
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
           <span className="label-caps">STUDIO /</span>
           <div className="w-px h-4 bg-accent/40" />
@@ -85,10 +109,10 @@ export default function StudioSection() {
           </span>
         </div>
         <span className="label-caps opacity-90">{EXPERIMENTS.length.toString().padStart(2, '0')} PIECES</span>
-      </div>
+      </Reveal>
 
       {/* Experiment grid — denser columns keep each card small relative to Featured Work */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 bg-primary pl-px pt-px border-b border-r border-accent/20">
+      <Reveal delay={80} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 bg-primary pl-px pt-px border-b border-r border-accent/20">
         {[...EXPERIMENTS].sort((a, b) => {
           const yearA = a.year === 'Present' ? 9999 : Number(a.year);
           const yearB = b.year === 'Present' ? 9999 : Number(b.year);
@@ -152,7 +176,7 @@ export default function StudioSection() {
             </div>
           </TiltCard>
         ))}
-      </div>
+      </Reveal>
     </section>
   )
 }
