@@ -1,12 +1,14 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { TIMELINE, BELIEFS, BOOKSHELF, ROTATIONS, PLAYGROUND, EDUCATION, WHEEL_SECTIONS } from '../data/about'
-import type { TimelineEntry, Belief, BookEntry } from '../data/about'
+import type { BookEntry } from '../data/about'
 import { useScanline } from './ScanlineContext'
 import { BIO, STATUS_CYCLE } from '../data/portfolio'
+import { useMagnetic } from '../hooks/useMagnetic'
 
 // ── Section accent colors ───────────────────────────────────────────────────
-// Single source of truth so each panel's own chrome (headers, accent lines,
-// glows) stays tied to the same color the wheel shows for that section.
+// Single source of truth so each panel's own chrome (eyebrows, hairlines,
+// rails) stays tied to the same color the wheel shows for that section.
 export const SECTION_ACCENTS = {
   description: WHEEL_SECTIONS[0].accentColor,
   trajectory: WHEEL_SECTIONS[1].accentColor,
@@ -31,8 +33,7 @@ export function usePrefersReducedMotion(): boolean {
 }
 
 // ── Reveal groups ───────────────────────────────────────────────────────────
-// Mirrors the hero's original stagger pattern: content clusters into a few
-// large groups instead of cascading individually.
+// Content clusters into a few large groups instead of cascading individually.
 export const GROUP_HEADER = 0
 export const GROUP_META = 90
 export const GROUP_CTA = 180
@@ -42,9 +43,12 @@ interface AnimatedElementProps {
   delay: number
   children: React.ReactNode
   className?: string
+  /** Stretch both wrapper divs to full height so a filling child can consume
+      the panel band's leftover vertical space. */
+  fill?: boolean
 }
 
-export function AnimatedElement({ delay, children, className = '' }: AnimatedElementProps) {
+export function AnimatedElement({ delay, children, className = '', fill = false }: AnimatedElementProps) {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -53,8 +57,9 @@ export function AnimatedElement({ delay, children, className = '' }: AnimatedEle
   }, [delay])
 
   return (
-    <div className={`${className}`}>
+    <div className={`${fill ? 'min-h-0' : ''} ${className}`}>
       <div
+        className={fill ? 'h-full min-h-0' : ''}
         style={{
           transform: show ? 'translateY(0)' : 'translateY(10px)',
           opacity: show ? 1 : 0,
@@ -64,6 +69,85 @@ export function AnimatedElement({ delay, children, className = '' }: AnimatedEle
       >
         {children}
       </div>
+    </div>
+  )
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// SHARED PANEL SKELETON
+// ═════════════════════════════════════════════════════════════════════════════
+// Every hero-about section is one horizontal "instrument readout" sized for the
+// wide, short band above the radar dome:
+//   ┌ masthead ── eyebrow + title ─────────────────── meta ┐
+//   │ body (fills width & height)                          │
+//   └ telemetry rail (docks to the radar) ────────────────┘
+// Sharing this rhythm makes switching sections feel like retuning one
+// instrument rather than swapping four unrelated layouts.
+
+function PanelShell({
+  accent, eyebrow, title, meta, rail, children, bodyClassName = '',
+}: {
+  accent: string
+  eyebrow: string
+  title?: React.ReactNode
+  meta?: React.ReactNode
+  rail?: React.ReactNode
+  children: React.ReactNode
+  bodyClassName?: string
+}) {
+  return (
+    <div className="h-full flex flex-col min-h-0">
+      <AnimatedElement delay={GROUP_HEADER}>
+        <header
+          className="shrink-0 flex items-end justify-between gap-4 pb-3 mb-4 border-b"
+          style={{ borderColor: `${accent}26` }}
+        >
+          <div className="min-w-0">
+            <div className="label-caps flex items-center gap-2" style={{ color: accent }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accent }} />
+              {eyebrow}
+            </div>
+            {title && <div className="mt-2">{title}</div>}
+          </div>
+          {meta && (
+            <div className="hidden sm:block shrink-0 text-right font-mono text-[10px] tracking-label uppercase text-parchment/40 leading-relaxed whitespace-pre-line">
+              {meta}
+            </div>
+          )}
+        </header>
+      </AnimatedElement>
+
+      <div className={`flex-1 min-h-0 flex flex-col ${bodyClassName}`}>{children}</div>
+
+      {rail && (
+        <AnimatedElement delay={GROUP_CTA}>
+          <div className="shrink-0 mt-4 pt-3 border-t" style={{ borderColor: 'rgba(56,64,106,0.45)' }}>
+            {rail}
+          </div>
+        </AnimatedElement>
+      )}
+    </div>
+  )
+}
+
+// Horizontal telemetry strip — labeled mono readouts split by hairlines. The
+// recurring bottom-of-band element that ties each section to the instrument.
+function TelemetryRail({
+  accent, items,
+}: { accent: string; items: Array<{ label: string; value: React.ReactNode }> }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-5 sm:gap-x-6 gap-y-2">
+      {items.map((it, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && <span className="hidden sm:block w-px h-6 bg-accent/25" aria-hidden />}
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <span className="font-mono text-[9px] tracking-label uppercase" style={{ color: accent }}>
+              {it.label}
+            </span>
+            <span className="font-mono text-xs text-parchment/75 leading-tight">{it.value}</span>
+          </div>
+        </React.Fragment>
+      ))}
     </div>
   )
 }
@@ -90,11 +174,11 @@ function RotatingStatusText() {
     opacity: animState === 'enter' ? 0 : 1,
     transition: animState === 'exit' ? 'transform 0.22s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.2s ease' : animState === 'enter' ? 'none' : 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease',
     willChange: 'transform, opacity',
-    display: 'block'
+    display: 'block',
   }
 
   return (
-    <span className="font-mono text-xs text-parchment/70 overflow-hidden block min-h-[1.2em]">
+    <span className="overflow-hidden block min-h-[1.2em]">
       <span style={textStyle}>{STATUS_CYCLE[currentIdx].text}</span>
     </span>
   )
@@ -111,11 +195,9 @@ function AnchorLine({
       rel={external ? 'noopener noreferrer' : undefined}
       className="group relative inline-block"
     >
-      <span className="text-parchment/70 group-hover:text-parchment transition-colors duration-200">
-        {children}
-      </span>
+      <span className="transition-colors duration-200">{children}</span>
       <span
-        className="absolute -bottom-px left-0 right-0 h-px bg-parchment/50"
+        className="absolute -bottom-px left-0 right-0 h-px bg-gold/60"
         style={{
           transform: 'scaleX(0)',
           transformOrigin: 'center',
@@ -123,233 +205,8 @@ function AnchorLine({
         }}
         data-underline
       />
-      <style>{`
-        a:hover [data-underline] { transform: scaleX(1) !important; }
-      `}</style>
+      <style>{`a:hover [data-underline] { transform: scaleX(1) !important; }`}</style>
     </a>
-  )
-}
-
-// ─── Timeline entry row ───────────────────────────────────────────────────────
-function TimelineRow({ entry, index }: { entry: TimelineEntry; index: number }) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div
-      className="group border-b border-accent/20 last:border-b-0"
-      style={{
-        paddingTop: '14px',
-        paddingBottom: '14px',
-        transition: 'padding 0.22s cubic-bezier(0.22,1,0.36,1)',
-      }}
-    >
-      <button
-        className="w-full flex items-start justify-between gap-4 text-left cursor-pointer"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-      >
-        <div className="flex flex-col gap-1 flex-1 min-w-0">
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <span className="font-mono text-xs text-parchment/65 w-5 text-right">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <span className="font-mono text-xs tracking-label text-parchment/65 truncate max-w-[130px] sm:max-w-none sm:whitespace-nowrap">
-              {entry.period}
-            </span>
-          </div>
-
-          <div className="flex-1 min-w-0 pl-8">
-            <p className="font-sans font-semibold text-sm text-parchment leading-snug" style={{ letterSpacing: '-0.02em' }}>
-              {entry.role}
-            </p>
-            <p className="font-mono text-xs text-gold/88 mt-0.5">{entry.org}</p>
-          </div>
-        </div>
-
-        <span
-          className="font-mono text-sm text-parchment/65 group-hover:text-[var(--row-accent)] flex-shrink-0 mt-0.5 transition-colors duration-200"
-          style={{
-            '--row-accent': SECTION_ACCENTS.trajectory,
-            transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
-            transition: 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease',
-          } as React.CSSProperties}
-        >
-          +
-        </span>
-      </button>
-
-      <div
-        className="grid"
-        style={{
-          gridTemplateRows: open ? '1fr' : '0fr',
-          transition: 'grid-template-rows 0.26s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
-      >
-        <div className="overflow-hidden">
-          <div className="pt-3 pl-8 space-y-2 pb-2">
-            <p className="font-mono text-xs text-parchment/65 leading-relaxed">{entry.detail}</p>
-            <div className="flex flex-wrap gap-1.5">
-              {entry.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="font-mono text-xs tracking-label px-1.5 py-0.5 border border-accent/30 text-parchment/70 rounded-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Belief block ─────────────────────────────────────────────────────────────
-function BeliefBlock({
-  belief, active, onHover, onLeave,
-}: { belief: Belief; active: boolean; onHover: () => void; onLeave: () => void }) {
-  return (
-    <div
-      className="relative py-5 border-b border-accent/20 last:border-b-0 cursor-default"
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-    >
-      <div
-        className="absolute left-0 top-0 bottom-0 w-px"
-        style={{
-          background: active
-            ? `linear-gradient(to bottom, transparent, ${SECTION_ACCENTS.philosophy}, transparent)`
-            : 'linear-gradient(to bottom, transparent, #a39d7b, transparent)',
-          opacity: active ? 0.7 : 0,
-          transition: 'opacity 0.2s ease, background 0.2s ease',
-        }}
-      />
-
-      <div className="pl-4">
-        <div className="flex items-center gap-3 mb-2">
-          <span
-            className="font-mono text-xs text-parchment/65 inline-block"
-            style={{
-              transform: active ? 'scale(1.15)' : 'scale(1)',
-              transformOrigin: 'left center',
-              transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          >
-            {belief.index}
-          </span>
-          <div
-            className="h-px flex-1"
-            style={{
-              background: 'linear-gradient(90deg, rgba(163,157,123,0.4), transparent)',
-              width: active ? '100%' : '24px',
-              maxWidth: active ? '80px' : '24px',
-              transition: 'max-width 0.2s ease',
-            }}
-          />
-        </div>
-        <h3
-          className="font-sans font-bold text-sm text-parchment leading-tight mb-2"
-          style={{
-            letterSpacing: '-0.025em',
-            color: active ? '#fff' : '#cfccbb',
-            transition: 'color 0.2s ease',
-          }}
-        >
-          {belief.headline}
-        </h3>
-        <p
-          className="font-mono text-xs leading-loose"
-          style={{
-            color: active ? 'rgba(207,204,187,0.85)' : 'rgba(207,204,187,0.65)',
-            transition: 'color 0.2s ease',
-          }}
-        >
-          {belief.body}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-// ─── Beliefs list — auto-cycles the active block, hover takes over instantly ──
-function BeliefsList() {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const pausedRef = useRef(false)
-  const prefersReducedMotion = usePrefersReducedMotion()
-
-  useEffect(() => {
-    if (prefersReducedMotion) return
-    const interval = setInterval(() => {
-      if (pausedRef.current) return
-      setActiveIndex((prev) => (prev + 1) % BELIEFS.length)
-    }, 2500)
-    return () => clearInterval(interval)
-  }, [prefersReducedMotion])
-
-  return (
-    <div>
-      <div className="space-y-0">
-        {BELIEFS.map((belief, i) => (
-          <BeliefBlock
-            key={belief.index}
-            belief={belief}
-            active={i === activeIndex}
-            onHover={() => {
-              pausedRef.current = true
-              setActiveIndex(i)
-            }}
-            onLeave={() => {
-              pausedRef.current = false
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Progress indicator — shows which belief is active in the auto-cycle */}
-      <div className="flex items-center gap-1.5 mt-4">
-        {BELIEFS.map((belief, i) => (
-          <div key={belief.index} className="h-0.5 flex-1 rounded-full overflow-hidden bg-accent/20">
-            <div
-              className="h-full rounded-full"
-              style={{
-                backgroundColor: SECTION_ACCENTS.philosophy,
-                transform: i === activeIndex ? 'scaleX(1)' : 'scaleX(0)',
-                transformOrigin: 'left center',
-                opacity: i === activeIndex ? 0.9 : 0,
-                transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease',
-              }}
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ─── Terminal list ─────────────────────────────────────────────────────────────
-const STATUS_ICONS: Record<BookEntry['status'], string> = {
-  reading: '▶',
-  done: '✓',
-  queued: '○',
-}
-const STATUS_COLORS: Record<BookEntry['status'], string> = {
-  reading: '#9cd5f8',
-  done: '#4ade80',
-  queued: 'rgba(207,204,187,0.5)',
-}
-
-function TerminalSection({
-  label, children,
-}: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="mb-6">
-      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-accent/20">
-        <span className="font-mono text-xs text-gold/88">›</span>
-        <span className="font-mono text-xs tracking-label text-gold/88 uppercase">{label}</span>
-      </div>
-      {children}
-    </div>
   )
 }
 
@@ -362,7 +219,20 @@ function Blink() {
   )
 }
 
-// ─── Virtual file system for ls / cat ──────────────────────────────────────────────
+// ═════════════════════════════════════════════════════════════════════════════
+// TERMINAL ENGINE (shared by the Catalog panel)
+// ═════════════════════════════════════════════════════════════════════════════
+const STATUS_ICONS: Record<BookEntry['status'], string> = {
+  reading: '▶',
+  done: '✓',
+  queued: '○',
+}
+const STATUS_COLORS: Record<BookEntry['status'], string> = {
+  reading: '#9cd5f8',
+  done: '#4ade80',
+  queued: 'rgba(207,204,187,0.5)',
+}
+
 function makeSlug(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') + '.md'
 }
@@ -390,7 +260,6 @@ const VFS: Record<string, Array<{ file: string; summary: string }>> = {
   })),
 }
 
-// ─── Session-persistent history helpers ─────────────────────────────────────────
 const HISTORY_KEY = 'jason_terminal_history'
 const HISTORY_CAP = 50
 
@@ -425,41 +294,18 @@ function persistHistory(history: HistoryEntry[]) {
 const ALL_COMMANDS = [
   'help', 'clear', 'ls', 'cd ', 'cat ', 'pwd', 'resume', 'contact', 'whoami',
   'sudo ', 'echo ', 'ping', 'coffee', 'uptime', 'rm -rf /', 'flip', 'unflip',
-  'sysinfo', 'scanline', 'scanline on', 'scanline off', 'scanline toggle'
-];
-
-// ─── Typewriter reveal — used by playground spec values on entry change ──────
-function TypewriterText({ text, className }: { text: string; className?: string }) {
-  const [count, setCount] = useState(text.length)
-
-  useEffect(() => {
-    setCount(0)
-    if (!text) return
-    const stepMs = Math.max(8, 300 / text.length)
-    let i = 0
-    const interval = setInterval(() => {
-      i++
-      setCount(i)
-      if (i >= text.length) clearInterval(interval)
-    }, stepMs)
-    return () => clearInterval(interval)
-  }, [text])
-
-  return <span className={className}>{text.slice(0, count)}</span>
-}
+  'sysinfo', 'scanline', 'scanline on', 'scanline off', 'scanline toggle',
+]
 
 function InteractiveTerminalPrompt({
-  history,
-  commandInput,
-  setCommandInput,
-  handleCommand,
-  inputRef,
+  history, commandInput, setCommandInput, handleCommand, inputRef, className = '',
 }: {
-  history: Array<{ cmd: string, output: React.ReactNode }>;
-  commandInput: string;
-  setCommandInput: (val: string) => void;
-  handleCommand: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
+  history: Array<{ cmd: string, output: React.ReactNode }>
+  commandInput: string
+  setCommandInput: (val: string) => void
+  handleCommand: (e: React.KeyboardEvent<HTMLInputElement>) => void
+  inputRef: React.RefObject<HTMLInputElement | null>
+  className?: string
 }) {
   const historyEndRef = useRef<HTMLDivElement>(null)
   const isInitialMount = useRef(true)
@@ -468,169 +314,257 @@ function InteractiveTerminalPrompt({
 
   useEffect(() => {
     if (historyEndRef.current && historyEndRef.current.parentElement) {
-      const parent = historyEndRef.current.parentElement;
+      const parent = historyEndRef.current.parentElement
       parent.scrollTo({
         top: parent.scrollHeight,
-        behavior: isInitialMount.current ? 'auto' : 'smooth'
-      });
-      isInitialMount.current = false;
+        behavior: isInitialMount.current ? 'auto' : 'smooth',
+      })
+      isInitialMount.current = false
     }
   }, [history])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowUp') {
-      e.preventDefault();
+      e.preventDefault()
       if (history.length > 0) {
-        const nextIndex = historyIndex === -1 ? history.length - 1 : Math.max(0, historyIndex - 1);
-        setHistoryIndex(nextIndex);
-        setCommandInput(history[nextIndex].cmd);
+        const nextIndex = historyIndex === -1 ? history.length - 1 : Math.max(0, historyIndex - 1)
+        setHistoryIndex(nextIndex)
+        setCommandInput(history[nextIndex].cmd)
       }
     } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
+      e.preventDefault()
       if (historyIndex !== -1) {
-        const nextIndex = historyIndex + 1;
+        const nextIndex = historyIndex + 1
         if (nextIndex >= history.length) {
-          setHistoryIndex(-1);
-          setCommandInput('');
+          setHistoryIndex(-1)
+          setCommandInput('')
         } else {
-          setHistoryIndex(nextIndex);
-          setCommandInput(history[nextIndex].cmd);
+          setHistoryIndex(nextIndex)
+          setCommandInput(history[nextIndex].cmd)
         }
       }
     } else {
-      if (e.key === 'Enter') {
-        setHistoryIndex(-1);
-      }
-      handleCommand(e);
+      if (e.key === 'Enter') setHistoryIndex(-1)
+      handleCommand(e)
     }
-  };
+  }
 
   return (
-    <div className="mt-8 flex flex-col border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-lg shadow-sm">
-        <div className="flex items-center px-3 py-1.5 border-b border-accent/20 bg-accent/5">
-          <div className="flex gap-1.5 w-[36px] shrink-0">
-            <div className="w-2 h-2 rounded-full bg-red-500/60" />
-            <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
-            <div className={`w-2 h-2 rounded-full bg-green-400/60 ${isFocused ? 'animate-pulse' : ''}`} />
-          </div>
-          <div className="flex-1 text-center font-mono text-xs text-parchment/65 uppercase tracking-widest">
-            bash
-          </div>
-          <div className="w-[36px] shrink-0" />
+    <div className={`flex flex-col border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-lg shadow-sm ${className}`}>
+      <div data-window-handle className="shrink-0 flex items-center px-3 py-1.5 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
+        <div className="flex gap-1.5 w-[36px] shrink-0">
+          <div className="w-2 h-2 rounded-full bg-red-500/60" />
+          <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
+          <div className={`w-2 h-2 rounded-full bg-green-400/60 ${isFocused ? 'animate-pulse' : ''}`} />
         </div>
+        <div className="flex-1 text-center font-mono text-xs text-parchment/65 uppercase tracking-widest">bash</div>
+        <div className="w-[36px] shrink-0" />
+      </div>
 
-        <div className="p-3 flex flex-col gap-2">
-          {history.length > 0 && (
-            <div className="thin-scrollbar space-y-2 max-h-[200px] sm:max-h-[320px] overflow-y-auto pr-2">
-              {history.map((h, i) => (
-                <div key={i} className="space-y-1" style={{ animation: 'fadeIn 0.2s ease both' }}>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-xs text-gold/88">›_</span>
-                    <span className="font-mono text-xs text-parchment/70">{h.cmd}</span>
-                  </div>
-                  {h.output && (
-                    <div className="font-mono text-xs text-parchment/70 pl-4 whitespace-pre-wrap">
-                      {h.output}
-                    </div>
-                  )}
+      <div className="flex-1 min-h-0 p-3 flex flex-col gap-2">
+        {history.length > 0 && (
+          <div className="thin-scrollbar space-y-2 overflow-y-auto pr-2 flex-1 min-h-0 max-h-[clamp(100px,19vh,280px)] lg:max-h-none">
+            {history.map((h, i) => (
+              <div key={i} className="space-y-1" style={{ animation: 'fadeIn 0.2s ease both' }}>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono text-xs text-gold/88">›_</span>
+                  <span className="font-mono text-xs text-parchment/70">{h.cmd}</span>
                 </div>
-              ))}
-              <div ref={historyEndRef} />
-            </div>
-          )}
-          <div
-            className="flex items-center gap-1.5 relative cursor-text min-h-[20px] shrink-0"
-            onClick={() => inputRef.current?.focus()}
-          >
-            <span className="font-mono text-xs text-parchment/65">›_</span>
-            <span
-              className="font-mono text-xs flex-1 whitespace-pre-wrap break-all pointer-events-none select-none"
-              aria-hidden
-            >
-              <span className="text-parchment/70">{commandInput}</span>
-              <Blink />
-            </span>
-            <input
-              ref={inputRef}
-              type="text"
-              value={commandInput}
-              onChange={(e) => setCommandInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              className="absolute opacity-0 inset-0 w-full h-full cursor-text"
-              spellCheck={false}
-              autoComplete="off"
-            />
+                {h.output && (
+                  <div className="font-mono text-xs text-parchment/70 pl-4 whitespace-pre-wrap">{h.output}</div>
+                )}
+              </div>
+            ))}
+            <div ref={historyEndRef} />
           </div>
+        )}
+        <div
+          className="flex items-center gap-1.5 relative cursor-text min-h-[20px] shrink-0"
+          onClick={() => inputRef.current?.focus()}
+        >
+          <span className="font-mono text-xs text-parchment/65">›_</span>
+          <span className="font-mono text-xs flex-1 whitespace-pre-wrap break-all pointer-events-none select-none" aria-hidden>
+            <span className="text-parchment/70">{commandInput}</span>
+            <Blink />
+          </span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={commandInput}
+            onChange={(e) => setCommandInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className="absolute opacity-0 inset-0 w-full h-full cursor-text"
+            spellCheck={false}
+            autoComplete="off"
+          />
         </div>
+      </div>
       <style>{`
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(6px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </div>
   )
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// WHEEL SLOT 0 — Description ("Behind the Pixels")
+// WHEEL SLOT 0 — About ("Behind the Pixels")
 // ═════════════════════════════════════════════════════════════════════════════
 interface DescriptionImage {
   src: string
   alt: string
-  /** Small resting rotation + vertical offset — the "slight misalignment" of a hand-placed photo row */
-  rotateDeg: number
-  offsetY: number
   objectClassName: string
+  /** Extra cover-zoom so the subject reads at a consistent scale across frames. */
+  zoom?: number
+  /** Post-zoom pan (translate args, e.g. '-14%, -14%') to re-center the subject. */
+  pan?: string
 }
 
 const DESCRIPTION_IMAGES: DescriptionImage[] = [
-  {
-    src: '/images/jason-headshot-1.webp',
-    alt: 'Jason Portrait',
-    rotateDeg: -3,
-    offsetY: 0,
-    objectClassName: 'object-top',
-  },
-  {
-    src: '/images/jason-headshot-2.webp',
-    alt: 'Jason at work',
-    rotateDeg: 2,
-    offsetY: -8,
-    objectClassName: 'object-[center_30%]',
-  },
-  {
-    src: '/images/jason-thinking.webp',
-    alt: 'Jason thinking',
-    rotateDeg: -2,
-    offsetY: 6,
-    objectClassName: 'object-center',
-  },
-  {
-    src: '/images/jason-solemn.webp',
-    alt: 'Jason, solemn portrait',
-    rotateDeg: 3,
-    offsetY: -4,
-    objectClassName: 'object-center',
-  },
+  { src: '/images/jason-headshot-1.webp', alt: 'Jason Portrait', objectClassName: 'object-top' },
+  { src: '/images/jason-headshot-2.webp', alt: 'Jason at work', objectClassName: 'object-[center_30%]', zoom: 1.15, pan: '-5.4%, 0' },
+  { src: '/images/jason-thinking.webp', alt: 'Jason thinking', objectClassName: 'object-[center_35%]', zoom: 1.4, pan: '-9.5%, -7%' },
 ]
 
-// The hero wheel dwells on each section for 15s (see HeroSection's
-// AUTO_ADVANCE_MS) — split that evenly across however many portraits there
-// are so the color highlight has cycled through all of them once per visit.
 const IMAGE_CYCLE_MS = 15000 / DESCRIPTION_IMAGES.length
+
+// ── Recruiter-facing signals ────────────────────────────────────────────────
+// Proof pulled from real roles (see TIMELINE / PROJECTS); keywords are the
+// role-match terms a recruiter skims for. Availability — edit to match status.
+const CREDIBILITY_STATS: Array<{ value: string; label: string }> = [
+  { value: '50K+', label: 'Users Shipped' },
+  { value: 'Figma', label: 'Campus Leader' },
+  { value: 'Design, Computer Engineering', label: 'UC Davis Degrees' },
+]
+const SKILL_KEYWORDS = ['Design Systems', 'Front-End', 'Figma-to-Code', 'Prototyping']
+const AVAILABILITY = 'Open to Full-Time & Internship Roles'
+
+function AvailabilityPill({ accent }: { accent: string }) {
+  return (
+    <span
+      className="inline-flex items-center gap-2 shrink-0 rounded-full border px-3 py-1 font-mono text-[10px] tracking-label uppercase text-parchment/80"
+      style={{ borderColor: `${accent}59`, background: `${accent}14` }}
+    >
+      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accent }} />
+      {AVAILABILITY}
+    </span>
+  )
+}
+
+function WorkCta() {
+  const ref = useMagnetic<HTMLButtonElement>(0.28)
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={() => document.getElementById('featured-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+      className="group inline-flex items-center gap-2 shrink-0 rounded-full border border-gold/45 bg-gold/5 px-3.5 py-1 font-mono text-[10px] tracking-label uppercase text-gold/90 hover:border-gold/80 hover:text-gold"
+      style={{ transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, border-color 0.2s ease' }}
+    >
+      View the Work
+      <span className="inline-block transition-transform duration-200 group-hover:translate-y-0.5">↓</span>
+    </button>
+  )
+}
+
+function CredibilityStrip({ accent }: { accent: string }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+      {CREDIBILITY_STATS.map((s, i) => (
+        <React.Fragment key={s.label}>
+          {i > 0 && <span className="hidden sm:block w-px h-7 bg-accent/25" aria-hidden />}
+          <div className="flex flex-col">
+            <span
+              className="font-sans font-black leading-none text-parchment"
+              style={{ fontSize: 'clamp(1.1rem, 1.7vw, 1.55rem)', letterSpacing: '-0.03em' }}
+            >
+              {s.value}
+            </span>
+            <span className="font-mono text-[9px] tracking-label uppercase mt-1" style={{ color: accent }}>
+              {s.label}
+            </span>
+          </div>
+        </React.Fragment>
+      ))}
+    </div>
+  )
+}
+
+function SkillChips({ accent }: { accent: string }) {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {SKILL_KEYWORDS.map((k) => (
+        <span
+          key={k}
+          className="font-mono text-[10px] tracking-label px-2 py-0.5 border rounded-sm text-parchment/70"
+          style={{ borderColor: `${accent}33` }}
+        >
+          {k}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+// ── Name marquee ─────────────────────────────────────────────────────────────
+// The hero name cycles horizontally across the full width above the portraits.
+// Four copies (two identical halves) scroll left; a 50% shift loops seamlessly.
+// Full-bleed via negative margins; edges dissolve into the background.
+function NameMarquee() {
+  const Unit = () => (
+    <span className="inline-flex shrink-0 items-center">
+      <span className="whitespace-pre">
+        <span className="text-gold">JASON </span>
+        <span className="text-parchment">JIAYU</span>
+        <span className="text-gold"> ZHANG</span>
+      </span>
+      <img
+        src="/favicon.svg"
+        alt=""
+        aria-hidden
+        className="shrink-0 mx-7 sm:mx-10 opacity-85"
+        style={{ height: '0.64em', width: 'auto' }}
+      />
+    </span>
+  )
+  const Half = () => (
+    <span className="inline-flex shrink-0 items-center">
+      <Unit />
+      <Unit />
+    </span>
+  )
+
+  return (
+    <div className="group/marquee relative">
+      <h1 className="sr-only">Jason Jiayu Zhang — Design Engineer</h1>
+      <div
+        aria-hidden
+        className="overflow-hidden -mx-4 sm:-mx-6 lg:-mx-12 py-2 -my-2"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)',
+          maskImage: 'linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)',
+        }}
+      >
+        <div
+          className="name-marquee-track flex w-max whitespace-nowrap font-sans font-black tracking-ultra-tight"
+          style={{ fontSize: 'clamp(2.6rem, 6.4vw, 5.25rem)', lineHeight: 0.86, willChange: 'transform' }}
+        >
+          <Half />
+          <Half />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function DescriptionPanel() {
   const { scanlineActive } = useScanline()
   const [activeImageIdx, setActiveImageIdx] = useState(0)
   const [hoveredImageIdx, setHoveredImageIdx] = useState<number | null>(null)
   const prefersReducedMotion = usePrefersReducedMotion()
+  const accent = SECTION_ACCENTS.description
 
   useEffect(() => {
     if (DESCRIPTION_IMAGES.length <= 1 || prefersReducedMotion) return
@@ -640,341 +574,787 @@ export function DescriptionPanel() {
     return () => clearInterval(interval)
   }, [prefersReducedMotion])
 
+  const featured = hoveredImageIdx ?? activeImageIdx
+
   return (
-    <div className="flex flex-col">
-      <AnimatedElement delay={GROUP_HEADER}>
-        <div className="label-caps mb-2 flex items-center gap-2" style={{ color: SECTION_ACCENTS.description }}>
-          <span className="w-1.5 h-1.5 rounded-full bg-gold/70 animate-pulse" />
-          BEHIND THE PIXELS
-        </div>
-        <h2
-          className="font-sans font-black text-parchment leading-tight mb-6"
-          style={{ fontSize: 'clamp(1.4rem, 2.4vw, 2.2rem)', letterSpacing: '-0.04em' }}
-        >
-          I'm Jason, a{' '}
-          <span className="text-gold">
-            design engineer
-          </span>{' '}
-          who believes the ideal digital experiences live at the intersection of systems and craft.
-        </h2>
-      </AnimatedElement>
+    <PanelShell
+      accent={accent}
+      eyebrow="BEHIND THE PIXELS"
+      meta={`PROFILE\n${String(featured + 1).padStart(2, '0')} / ${String(DESCRIPTION_IMAGES.length).padStart(2, '0')}`}
+      rail={
+        <TelemetryRail
+          accent={accent}
+          items={[
+            { label: 'Location', value: 'Davis, CA' },
+            { label: 'Class', value: 'Design Engineer' },
+            { label: 'Status', value: <RotatingStatusText /> },
+          ]}
+        />
+      }
+    >
+      {/* Name — the panel's hero statement, oversized and edge-to-edge */}
+      <div className="shrink-0 mb-5 sm:mb-6">
+        <AnimatedElement delay={0}>
+          <NameMarquee />
+        </AnimatedElement>
+      </div>
 
-      <AnimatedElement delay={GROUP_META} className="mb-6">
-        <div className="flex flex-col gap-4">
-          <p className="font-mono text-xs text-parchment/65 leading-relaxed">
-            My work is driven by a curiosity for how systems, and teams, operate. Whether architecting a front-end component library or detailing micro-interactions, I make it a priority to understand the workflows and constraints of my engineering and product partners. By designing the collaboration as intentionally as the interface, I streamline how we design and ship together.
-          </p>
-          <p className="font-mono text-xs text-parchment/65 leading-relaxed">
-            Beyond the editor, I'm deeply invested in coordination in all its forms, whether calling tactical plays as an In-Game Leader, organizing design events as a Figma Campus Leader, or mentoring student designers. I thrive in environments where collective effort meets structured play. The best leadership is simply about building a path so others can execute.
-          </p>
-        </div>
-      </AnimatedElement>
-
-      <AnimatedElement delay={GROUP_META} className="mb-8">
-        <div className="flex flex-wrap gap-6 pt-6 pb-4 border-t border-b border-accent/20">
-          <div className="group flex flex-col gap-1.5 cursor-default">
-            <span className="font-mono text-xs text-gold uppercase tracking-wider">Location</span>
-            <span className="font-mono text-xs text-parchment/70 group-hover:text-parchment/90 transition-colors duration-200">Davis, CA</span>
-          </div>
-          <div className="w-px h-8 bg-accent/20 hidden sm:block" />
-          <div className="group flex flex-col gap-1.5 cursor-default">
-            <span className="font-mono text-xs text-gold uppercase tracking-wider">Class</span>
-            <span className="font-mono text-xs text-parchment/70 group-hover:text-parchment/90 transition-colors duration-200">Design Engineer</span>
-          </div>
-          <div className="w-px h-8 bg-accent/20 hidden sm:block" />
-          <div className="group flex flex-col gap-1.5 cursor-default">
-            <span className="font-mono text-xs text-gold uppercase tracking-wider">Status</span>
-            <RotatingStatusText />
-          </div>
-        </div>
-      </AnimatedElement>
-
-      <AnimatedElement delay={GROUP_CTA}>
-        <div className="relative w-full mx-auto flex items-center justify-center py-8 px-3 sm:px-2 lg:px-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[8px] text-accent/40 z-0 select-none">
-            ASSET_SYS_READY
-          </div>
-
-          {DESCRIPTION_IMAGES.map((img, i) => {
-            const isActive = i === activeImageIdx
-            const isHovered = hoveredImageIdx === i
-            // Stacking priority: 1) hovered photo, 2) the auto-cycling active photo, 3) original array order
-            const zIndex = isHovered ? 60 : isActive ? 45 : 10 + i
-            const flatten = isHovered || isActive
-            const scale = isHovered ? 1.08 : isActive ? 1.05 : 1
-
-            return (
-              <div
-                key={img.src}
-                className={`group relative flex-1 min-w-0 aspect-[3/4] p-1 border backdrop-blur-sm ${i === 0 ? '' : '-ml-2 sm:-ml-3'} ${
-                  isActive ? 'glow-pulse border-gold/60 bg-[#0b0c10]/90' : 'border-accent/30 bg-[#0b0c10]/80 shadow-xl'
-                }`}
-                style={{
-                  zIndex,
-                  transform: `translateY(${flatten ? 0 : img.offsetY}px) rotate(${flatten ? 0 : img.rotateDeg}deg) scale(${scale})`,
-                  transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease',
-                  ...(isActive ? { '--glow-color': `${SECTION_ACCENTS.description}80` } as React.CSSProperties : {}),
-                }}
-                onMouseEnter={() => setHoveredImageIdx(i)}
-                onMouseLeave={() => setHoveredImageIdx(null)}
+      <div className="flex-1 min-h-0 grid lg:grid-cols-[1fr_minmax(0,1.05fr)] gap-6 lg:gap-10">
+        {/* Narrative */}
+        <AnimatedElement delay={220} fill className="min-h-0">
+          <div className="h-full flex flex-col justify-center gap-4">
+            <div>
+              <h2
+                className="font-sans font-black text-parchment leading-[1.02] max-w-xl"
+                style={{ fontSize: 'clamp(1.35rem, 2.1vw, 1.9rem)', letterSpacing: '-0.04em' }}
               >
-                <div className="relative w-full h-full overflow-hidden">
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    loading={isActive ? 'eager' : 'lazy'}
-                    className={`w-full h-full object-cover ${img.objectClassName} contrast-125 group-hover:saturate-100 group-hover:brightness-100 ${isActive ? 'saturate-100 brightness-100' : 'saturate-[0.35] brightness-[0.7]'}`}
-                    style={{ transition: 'filter 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1)' }}
-                  />
-                  <div
-                    className={`absolute inset-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-0 ${isActive ? 'opacity-0' : scanlineActive ? 'opacity-100' : 'opacity-30'}`}
-                    style={{
-                      background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
-                      backgroundSize: '100% 4px, 3px 100%'
-                    }}
-                  />
-                </div>
+                A <span className="text-gold">design engineer</span> building where systems and craft meet.
+              </h2>
+              <div className="flex flex-wrap items-center gap-2.5 mt-4">
+                <AvailabilityPill accent={accent} />
+                <WorkCta />
               </div>
-            )
-          })}
-
-          <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-accent/50 z-50 pointer-events-none" />
-          <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-accent/50 z-50 pointer-events-none" />
-          <div className="absolute bottom-2 right-2 font-mono text-[9px] text-accent/50 z-50 pointer-events-none select-none">
-            {String(activeImageIdx + 1).padStart(2, '0')}/{String(DESCRIPTION_IMAGES.length).padStart(2, '0')}
+            </div>
+            <CredibilityStrip accent={accent} />
+            <div className="relative max-w-xl pl-4" style={{ borderLeft: `2px solid ${accent}59` }}>
+              <span
+                aria-hidden
+                className="absolute -left-[2px] top-0 w-[2px] h-6"
+                style={{ background: accent }}
+              />
+              <p className="font-mono text-xs text-parchment/55 leading-relaxed">
+                <span className="text-parchment/90">My work is driven by a curiosity for how systems, and teams, operate.</span> Whether architecting a front-end component library or detailing micro-interactions, I make it a priority to understand the workflows and constraints of my engineering and product partners. By designing the collaboration as intentionally as the interface, I streamline how we design and ship together.
+              </p>
+            </div>
+            <SkillChips accent={accent} />
           </div>
-        </div>
-      </AnimatedElement>
-    </div>
+        </AnimatedElement>
+
+        {/* Portrait filmstrip — active frame expands; the rest stay slim and desaturated */}
+        <AnimatedElement delay={420} fill className="min-h-0">
+          <div className="relative h-full min-h-[190px] flex items-stretch gap-1.5 sm:gap-2">
+            {DESCRIPTION_IMAGES.map((img, i) => {
+              const isFeatured = i === featured
+              return (
+                <button
+                  key={img.src}
+                  type="button"
+                  onMouseEnter={() => setHoveredImageIdx(i)}
+                  onMouseLeave={() => setHoveredImageIdx(null)}
+                  onFocus={() => setHoveredImageIdx(i)}
+                  onBlur={() => setHoveredImageIdx(null)}
+                  className={`group relative min-w-0 h-full overflow-hidden rounded-sm border p-1 bg-[#0b0c10]/80 ${
+                    isFeatured ? 'border-gold/60' : 'border-accent/30'
+                  }`}
+                  style={{
+                    flexGrow: isFeatured ? 2.4 : 1,
+                    flexBasis: 0,
+                    transition: 'flex-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease',
+                  }}
+                  aria-label={img.alt}
+                >
+                  <div className="relative w-full h-full overflow-hidden rounded-[1px]">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                      className={`w-full h-full object-cover ${img.objectClassName} contrast-125 ${
+                        isFeatured ? 'saturate-100 brightness-100' : 'saturate-[0.35] brightness-[0.65]'
+                      }`}
+                      style={{
+                        transition: 'filter 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                        transform: img.zoom ? `scale(${img.zoom}) translate(${img.pan ?? '0, 0'})` : undefined,
+                        transformOrigin: 'center 35%',
+                      }}
+                    />
+                    <div
+                      className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+                        isFeatured ? 'opacity-0' : scanlineActive ? 'opacity-100' : 'opacity-40'
+                      }`}
+                      style={{
+                        background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                        backgroundSize: '100% 4px, 3px 100%',
+                      }}
+                    />
+                    {/* vertical caption on slim frames */}
+                    <span
+                      className={`absolute bottom-2 left-2 font-mono text-[9px] tracking-label uppercase transition-opacity duration-300 ${
+                        isFeatured ? 'opacity-0' : 'opacity-60'
+                      }`}
+                      style={{ writingMode: 'vertical-rl', color: '#cfccbb' }}
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+                  {isFeatured && (
+                    <>
+                      <span className="absolute top-2 right-2 w-3 h-3 border-t border-r border-gold/60 pointer-events-none" />
+                      <span className="absolute bottom-2 right-2 font-mono text-[9px] text-gold/70 pointer-events-none select-none">
+                        {String(i + 1).padStart(2, '0')}/{String(DESCRIPTION_IMAGES.length).padStart(2, '0')}
+                      </span>
+                    </>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </AnimatedElement>
+      </div>
+    </PanelShell>
   )
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// WHEEL SLOT 1 — Trajectory
+// WHEEL SLOT 1 — Trajectory (horizontal timeline)
 // ═════════════════════════════════════════════════════════════════════════════
-export function TrajectoryPanel() {
+function TimelineStation({
+  entry, above, accent,
+}: { entry: typeof TIMELINE[number]; above: boolean; accent: string }) {
   return (
-    <div className="flex flex-col">
-      <AnimatedElement delay={GROUP_HEADER} className="mb-8">
-        <div className="flex items-start gap-3">
-          <div className="w-0.5 h-10 mt-1 flex-shrink-0" style={{ backgroundColor: SECTION_ACCENTS.trajectory }} />
-          <div>
-            <div className="label-caps mb-2" style={{ color: SECTION_ACCENTS.trajectory }}>TRAJECTORY</div>
-            <h2
-              className="font-sans font-black text-parchment leading-none mb-3"
-              style={{ fontSize: 'clamp(1.4rem, 2vw, 1.8rem)', letterSpacing: '-0.04em' }}
-            >
-              Design × Engineering
-            </h2>
-            <p className="font-mono text-xs text-parchment/70 leading-relaxed">
-              {EDUCATION.note}
-            </p>
+    <div className="group relative flex-1 min-w-0 h-full px-1.5">
+      {/* connector from node to card */}
+      <div
+        className={`absolute left-1/2 -translate-x-1/2 w-px bg-accent/40 ${above ? 'bottom-1/2 h-5' : 'top-1/2 h-5'}`}
+      />
+      {/* node on the axis */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+        <span
+          className="relative block w-2.5 h-2.5 rounded-full border-2 transition-transform duration-200 group-hover:scale-125"
+          style={{ borderColor: accent, backgroundColor: '#0b0c10' }}
+        >
+          <span
+            className="absolute inset-[3px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            style={{ backgroundColor: accent }}
+          />
+        </span>
+      </div>
+      {/* card — grows away from the axis on hover */}
+      <div className={`absolute left-0 right-1.5 ${above ? 'bottom-1/2 mb-6' : 'top-1/2 mt-6'}`}>
+        <div className="font-mono text-[10px] tracking-label uppercase text-parchment/50">{entry.period}</div>
+        <div
+          className="font-sans font-semibold text-sm text-parchment leading-snug mt-1 transition-colors duration-200"
+          style={{ letterSpacing: '-0.02em' }}
+        >
+          {entry.role}
+        </div>
+        <div className="font-mono text-xs text-gold/85 mt-0.5 leading-snug">{entry.org}</div>
+        <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
+          <div className="overflow-hidden">
+            <div className="flex flex-wrap gap-1 mt-2">
+              {entry.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="font-mono text-[10px] tracking-label px-1.5 py-0.5 border rounded-sm text-parchment/70"
+                  style={{ borderColor: `${accent}40` }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
-      </AnimatedElement>
+      </div>
+    </div>
+  )
+}
 
-      <AnimatedElement delay={GROUP_META} className="mb-8">
-        <div className="flex flex-wrap gap-2">
-          {EDUCATION.degrees.map((d) => (
-            <div
-              key={d}
-              className="px-2 pt-0 pb-1 border border-accent/30 rounded-sm transition-colors duration-200 cursor-default"
-              style={{ background: 'rgba(56,64,106,0.15)' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = `${SECTION_ACCENTS.trajectory}80`
-                e.currentTarget.style.background = 'rgba(56,64,106,0.28)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = ''
-                e.currentTarget.style.background = 'rgba(56,64,106,0.15)'
-              }}
-            >
-              <span className="font-mono text-xs tracking-label text-gold/88">{d}</span>
-            </div>
-          ))}
+export function TrajectoryPanel() {
+  const accent = SECTION_ACCENTS.trajectory
+
+  return (
+    <PanelShell
+      accent={accent}
+      eyebrow="TRAJECTORY"
+      meta={`${String(TIMELINE.length).padStart(2, '0')} ROLES\n2025 → 2026`}
+      title={
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <h2
+            className="font-sans font-black text-parchment leading-none"
+            style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.3rem)', letterSpacing: '-0.04em' }}
+          >
+            Design × Engineering
+          </h2>
+          <span className="font-mono text-xs text-parchment/55 leading-snug max-w-md hidden md:block">
+            {EDUCATION.note}
+          </span>
         </div>
-      </AnimatedElement>
-
-      <AnimatedElement delay={GROUP_META} className="mb-8">
-        <div className="label-caps mb-3 opacity-90">RAPID PROTOTYPING STACK</div>
-        <div className="flex flex-wrap gap-1.5 bg-surface/5 border-l-2 border-accent/25 pl-3 pr-2 py-2 rounded-r-sm">
-          {EDUCATION.tools.map((tool) => (
-            <span
-              key={tool}
-              className="font-mono text-xs px-2 py-0.5 border border-accent/25 text-parchment/70 rounded-sm"
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
-      </AnimatedElement>
-
-      <AnimatedElement delay={GROUP_CTA} className="mb-8">
-        <div className="label-caps mb-4 opacity-90">EXPERIENCE</div>
-        <div className="space-y-0">
-          {TIMELINE.map((entry, i) => (
-            <TimelineRow key={`${entry.org}-${entry.role}`} entry={entry} index={i} />
-          ))}
-        </div>
-      </AnimatedElement>
-
-      <AnimatedElement delay={GROUP_CTA}>
-        <div className="pt-6 border-t border-accent/20">
+      }
+      rail={
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+          <div className="flex items-center gap-2 shrink-0">
+            {EDUCATION.degrees.map((d) => (
+              <span
+                key={d}
+                className="font-mono text-xs tracking-label text-gold/88 px-2 py-1 border rounded-sm whitespace-nowrap"
+                style={{ borderColor: `${accent}40`, background: 'rgba(56,64,106,0.18)' }}
+              >
+                {d}
+              </span>
+            ))}
+          </div>
+          <span className="hidden sm:block w-px h-6 bg-accent/25" aria-hidden />
+          <div className="thin-scrollbar flex gap-1.5 overflow-x-auto flex-1 min-w-0 py-0.5">
+            {EDUCATION.tools.map((tool) => (
+              <span
+                key={tool}
+                className="font-mono text-[11px] px-2 py-0.5 border border-accent/25 text-parchment/65 rounded-sm whitespace-nowrap shrink-0"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
+          <span className="hidden lg:block w-px h-6 bg-accent/25" aria-hidden />
           <AnchorLine href={BIO.resumeUrl}>
-            <span className="font-mono text-xs tracking-label uppercase text-gold/88 group-hover:text-gold transition-colors inline-flex items-center gap-1">
-              View Full Resume
+            <span className="font-mono text-xs tracking-label uppercase text-gold/88 group-hover:text-gold transition-colors inline-flex items-center gap-1 whitespace-nowrap">
+              Full Resume
               <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
             </span>
           </AnchorLine>
         </div>
+      }
+    >
+      {/* Desktop: horizontal time axis with alternating stations, vertically
+          centered in the band so cards clear the masthead and the rail */}
+      <AnimatedElement delay={GROUP_META} fill className="hidden lg:block flex-1 min-h-0">
+        <div className="h-full flex items-center">
+          <div className="relative w-full h-[72%] min-h-[220px] max-h-[320px]">
+            <div
+              className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-px"
+              style={{ background: `linear-gradient(90deg, transparent, ${accent}66 10%, ${accent}66 90%, transparent)` }}
+            />
+            <div className="relative h-full flex">
+              {TIMELINE.map((entry, i) => (
+                <TimelineStation key={`${entry.org}-${entry.role}`} entry={entry} above={i % 2 === 0} accent={accent} />
+              ))}
+            </div>
+          </div>
+        </div>
       </AnimatedElement>
-    </div>
+
+      {/* Mobile: vertical stacked timeline */}
+      <AnimatedElement delay={GROUP_META} className="lg:hidden min-h-0">
+        <div className="thin-scrollbar overflow-y-auto -mr-2 pr-2 max-h-[46vh] relative pl-4">
+          <div className="absolute left-1 top-1 bottom-1 w-px" style={{ backgroundColor: `${accent}55` }} />
+          {TIMELINE.map((entry) => (
+            <div key={`${entry.org}-${entry.role}`} className="relative py-2.5 border-b border-accent/15 last:border-b-0">
+              <span
+                className="absolute -left-[13px] top-4 w-2 h-2 rounded-full border-2"
+                style={{ borderColor: accent, backgroundColor: '#0b0c10' }}
+              />
+              <div className="font-mono text-[10px] tracking-label uppercase text-parchment/50">{entry.period}</div>
+              <div className="font-sans font-semibold text-sm text-parchment leading-snug mt-0.5">{entry.role}</div>
+              <div className="font-mono text-xs text-gold/85">{entry.org}</div>
+            </div>
+          ))}
+        </div>
+      </AnimatedElement>
+    </PanelShell>
   )
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// WHEEL SLOT 2 — Philosophy
+// WHEEL SLOT 2 — Philosophy (headline + full manifesto list)
 // ═════════════════════════════════════════════════════════════════════════════
 export function PhilosophyPanel() {
-  return (
-    <div className="flex flex-col">
-      <AnimatedElement delay={GROUP_HEADER} className="mb-8">
-        <div className="label-caps mb-2" style={{ color: SECTION_ACCENTS.philosophy }}>PHILOSOPHY</div>
-        <h2
-          className="font-sans font-black text-parchment leading-none mb-3"
-          style={{ fontSize: 'clamp(1.4rem, 2vw, 1.8rem)', letterSpacing: '-0.04em' }}
-        >
-          Human-First.
-          <br />
-          <span className="text-gold" style={{ textShadow: `0 0 20px ${SECTION_ACCENTS.philosophy}33` }}>Always.</span>
-        </h2>
-        <p className="font-mono text-xs text-parchment/70 leading-relaxed">
-          Servant leadership. Authentic community. Real products. The following principles aren't just values in a list. They're operating constraints for my entire design journey.
-        </p>
-      </AnimatedElement>
+  const accent = SECTION_ACCENTS.philosophy
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
-      <AnimatedElement delay={GROUP_META}>
-        <BeliefsList />
-      </AnimatedElement>
-    </div>
+  return (
+    <PanelShell
+      accent={accent}
+      eyebrow="PHILOSOPHY"
+      meta={`${String(BELIEFS.length).padStart(2, '0')} PRINCIPLES`}
+      rail={
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          {['Servant leadership', 'Authentic community', 'Real products'].map((creed, i) => (
+            <React.Fragment key={creed}>
+              {i > 0 && <span className="font-mono text-xs" style={{ color: accent }}>·</span>}
+              <span className="font-mono text-xs tracking-label uppercase text-parchment/70">{creed}</span>
+            </React.Fragment>
+          ))}
+        </div>
+      }
+    >
+      <div className="flex-1 min-h-0 grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.4fr)] gap-6 lg:gap-12">
+        {/* Manifesto headline */}
+        <AnimatedElement delay={GROUP_META} fill className="min-h-0">
+          <div className="h-full flex flex-col justify-center">
+            <h2
+              className="font-sans font-black text-parchment mb-3"
+              style={{ fontSize: 'clamp(1.9rem, 4vw, 3.4rem)', letterSpacing: '-0.04em', lineHeight: 0.95 }}
+            >
+              Human-First.
+              <br />
+              <span className="text-gold">Always.</span>
+            </h2>
+            <p className="font-mono text-xs text-parchment/70 leading-relaxed max-w-sm">
+              These aren't just values in a list. They're the operating constraints for my entire design journey.
+            </p>
+          </div>
+        </AnimatedElement>
+
+        {/* All five principles, always visible, filling the height */}
+        <AnimatedElement delay={GROUP_CTA} fill className="min-h-0">
+          <div className="thin-scrollbar h-full min-h-0 flex flex-col overflow-y-auto lg:overflow-visible max-h-[46vh] lg:max-h-none">
+            {BELIEFS.map((belief, i) => {
+              const isActive = activeIndex === i
+              return (
+                <div
+                  key={belief.index}
+                  onMouseEnter={() => setActiveIndex(i)}
+                  onMouseLeave={() => setActiveIndex(null)}
+                  className="group relative flex gap-3 sm:gap-4 lg:flex-1 lg:min-h-0 items-center py-2.5 pl-4 border-b border-accent/15 last:border-b-0 cursor-default"
+                >
+                  <span
+                    className="font-mono text-sm tabular-nums shrink-0 pt-0.5 transition-colors duration-200"
+                    style={{ color: isActive ? accent : 'rgba(207,204,187,0.4)' }}
+                  >
+                    {belief.index}
+                  </span>
+                  <div className="min-w-0">
+                    <h3
+                      className="font-sans font-bold text-sm sm:text-[15px] leading-snug transition-colors duration-200"
+                      style={{ letterSpacing: '-0.02em', color: isActive ? '#fff' : '#cfccbb' }}
+                    >
+                      {belief.headline}
+                    </h3>
+                    <p className="font-mono text-[11px] leading-snug text-parchment/60 mt-1">{belief.body}</p>
+                  </div>
+                  <span
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 rounded-full transition-all duration-300"
+                    style={{
+                      backgroundColor: accent,
+                      height: isActive ? '70%' : '0%',
+                      opacity: isActive ? 0.9 : 0,
+                    }}
+                  />
+                </div>
+              )
+            })}
+          </div>
+        </AnimatedElement>
+      </div>
+    </PanelShell>
   )
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// WHEEL SLOT 3 — Catalog (Terminal Interface)
+// WHEEL SLOT 3 — Catalog (registers + live terminal)
 // ═════════════════════════════════════════════════════════════════════════════
-const TAB_ORDER: Array<'books' | 'music' | 'play'> = ['books', 'music', 'play']
-// The hero wheel ambiently auto-advances to the next section every 15s (see
-// HeroSection's AUTO_ADVANCE_MS) — each catalog tab gets an equal 1/3 slice
-// of that window so all 3 have been shown by the time the wheel moves on.
-const TAB_CYCLE_MS = 5000
+type CatalogTab = 'books' | 'music' | 'play'
+
+const CATALOG_TABS: Array<{ id: CatalogTab; icon: string; label: string }> = [
+  { id: 'books', icon: '📚', label: 'Shelf' },
+  { id: 'music', icon: '♫', label: 'Playlist' },
+  { id: 'play', icon: '◈', label: 'Play' },
+]
+
+// Bookshelf grouped by category, categories sorted alphabetically.
+const BOOKS_BY_CATEGORY: Array<[string, BookEntry[]]> = Object.entries(
+  BOOKSHELF.reduce<Record<string, BookEntry[]>>((acc, b) => {
+    ;(acc[b.category] ??= []).push(b)
+    return acc
+  }, {})
+).sort(([a], [b]) => a.localeCompare(b))
+
+function useIsDesktop() {
+  const [desktop, setDesktop] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px) and (pointer: fine)').matches : false
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px) and (pointer: fine)')
+    const handler = () => setDesktop(mq.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+  return desktop
+}
+
+// Free-floating window. On desktop it renders through a portal into the hero
+// section (above the wheel's stacking layer and outside the content band's
+// overflow clip), positioned over an invisible placeholder that holds its grid
+// slot — so it can be dragged anywhere, including over the telemetry rail and the
+// radar dome. Any child title bar tagged `data-window-handle` is the drag grip;
+// grabbing raises it to the front. Buttons/inputs in the handle don't start a
+// drag. On smaller screens it just renders inline in the stacked grid.
+function DraggableWindow({
+  children, className = '', z, onFocus,
+}: { children: React.ReactNode; className?: string; z: number; onFocus: () => void }) {
+  const isDesktop = useIsDesktop()
+  const placeholderRef = useRef<HTMLDivElement>(null)
+  const [host, setHost] = useState<HTMLElement | null>(null)
+  const [slot, setSlot] = useState<{ left: number; top: number; width: number; height: number } | null>(null)
+  const [pos, setPos] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const drag = useRef<{ sx: number; sy: number; ox: number; oy: number } | null>(null)
+
+  useEffect(() => { setHost(document.getElementById('featured')) }, [])
+
+  // Keep the floating window locked onto its grid placeholder (offset by any drag).
+  useLayoutEffect(() => {
+    const ph = placeholderRef.current
+    if (!isDesktop || !ph || !host) return
+    const measure = () => {
+      const pr = ph.getBoundingClientRect()
+      const hr = host.getBoundingClientRect()
+      setSlot({ left: pr.left - hr.left, top: pr.top - hr.top, width: pr.width, height: pr.height })
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(ph)
+    ro.observe(host)
+    window.addEventListener('scroll', measure, true)
+    window.addEventListener('resize', measure)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('scroll', measure, true)
+      window.removeEventListener('resize', measure)
+    }
+  }, [isDesktop, host])
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    const target = e.target as HTMLElement
+    const handle = target.closest('[data-window-handle]')
+    if (!handle || !e.currentTarget.contains(handle)) return
+    if (target.closest('button, a, input, [role="button"]')) return
+    onFocus()
+    drag.current = { sx: e.clientX, sy: e.clientY, ox: pos.x, oy: pos.y }
+    setIsDragging(true)
+    try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* no active pointer */ }
+  }
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!drag.current) return
+    setPos({ x: drag.current.ox + (e.clientX - drag.current.sx), y: drag.current.oy + (e.clientY - drag.current.sy) })
+  }
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!drag.current) return
+    drag.current = null
+    setIsDragging(false)
+    try { e.currentTarget.releasePointerCapture(e.pointerId) } catch { /* not captured */ }
+  }
+
+  if (!isDesktop) {
+    return <div className={`h-full min-h-0 ${className}`}>{children}</div>
+  }
+
+  return (
+    <>
+      {/* Placeholder — reserves the grid slot; the real window floats over it. */}
+      <div ref={placeholderRef} className={`h-full min-h-0 ${className}`} aria-hidden />
+      {host && slot && createPortal(
+        <div
+          className="absolute"
+          style={{
+            left: slot.left + pos.x,
+            top: slot.top + pos.y,
+            width: slot.width,
+            height: slot.height,
+            zIndex: 40 + z,
+            transition: isDragging ? 'none' : 'left 0.35s cubic-bezier(0.16, 1, 0.3, 1), top 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+            touchAction: isDragging ? 'none' : undefined,
+            willChange: isDragging ? 'left, top' : 'auto',
+          }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+        >
+          {children}
+        </div>,
+        host
+      )}
+    </>
+  )
+}
+
+// ── Mini paint ────────────────────────────────────────────────────────────────
+const PAINT_COLORS = ['#ebd648', '#9cd5f8', '#a855f7', '#4ade80', '#f87171', '#cfccbb']
+const PAINT_BG = '#0b0c10'
+
+function MiniPaint({ className = '' }: { className?: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const [color, setColor] = useState(PAINT_COLORS[0])
+  const [erasing, setErasing] = useState(false)
+  const drawing = useRef(false)
+  const last = useRef<{ x: number; y: number } | null>(null)
+  const inited = useRef(false)
+
+  // Size the canvas to its container (DPR-aware) and lay down the backdrop.
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const wrap = wrapRef.current
+    if (!canvas || !wrap) return
+    const fit = () => {
+      const rect = wrap.getBoundingClientRect()
+      if (rect.width < 1 || rect.height < 1) return
+      const dpr = window.devicePixelRatio || 1
+      const ctx = canvas.getContext('2d')!
+      // Preserve the current drawing across a resize (skip the first fit — the
+      // default 300×150 buffer is transparent and would punch a hole in the fill).
+      const prev = inited.current ? ctx.getImageData(0, 0, canvas.width, canvas.height) : null
+      canvas.width = Math.floor(rect.width * dpr)
+      canvas.height = Math.floor(rect.height * dpr)
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.fillStyle = PAINT_BG
+      ctx.fillRect(0, 0, rect.width, rect.height)
+      if (prev) ctx.putImageData(prev, 0, 0)
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      inited.current = true
+    }
+    fit()
+    const ro = new ResizeObserver(fit)
+    ro.observe(wrap)
+    return () => ro.disconnect()
+  }, [])
+
+  const at = (e: React.PointerEvent) => {
+    const rect = canvasRef.current!.getBoundingClientRect()
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top }
+  }
+  const stroke = (e: React.PointerEvent) => {
+    if (!drawing.current) return
+    const ctx = canvasRef.current!.getContext('2d')!
+    const p = at(e)
+    const l = last.current ?? p
+    ctx.strokeStyle = erasing ? PAINT_BG : color
+    ctx.lineWidth = erasing ? 14 : 3
+    ctx.beginPath()
+    ctx.moveTo(l.x, l.y)
+    ctx.lineTo(p.x, p.y)
+    ctx.stroke()
+    last.current = p
+  }
+  const down = (e: React.PointerEvent) => {
+    drawing.current = true
+    last.current = at(e)
+    try { canvasRef.current!.setPointerCapture(e.pointerId) } catch { /* no active pointer */ }
+    stroke(e)
+  }
+  const up = () => { drawing.current = false; last.current = null }
+  const clear = () => {
+    const canvas = canvasRef.current!
+    const ctx = canvas.getContext('2d')!
+    const rect = canvas.getBoundingClientRect()
+    ctx.fillStyle = PAINT_BG
+    ctx.fillRect(0, 0, rect.width, rect.height)
+  }
+
+  return (
+    <div className={`flex flex-col min-h-0 border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-lg shadow-sm ${className}`}>
+      {/* Title bar (drag handle) */}
+      <div data-window-handle className="shrink-0 flex items-center px-3 py-1.5 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
+        <div className="flex gap-1.5 w-[36px] shrink-0">
+          <div className="w-2 h-2 rounded-full bg-red-500/60" />
+          <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
+          <div className="w-2 h-2 rounded-full bg-green-400/60" />
+        </div>
+        <div className="flex-1 text-center font-mono text-xs text-parchment/65 lowercase tracking-widest">paint</div>
+        <div className="w-[36px] shrink-0" />
+      </div>
+
+      {/* Toolbar — swatches, eraser, clear */}
+      <div className="shrink-0 flex items-center gap-2 px-3 py-1.5 border-b border-accent/20">
+        <div className="flex items-center gap-1.5">
+          {PAINT_COLORS.map((c) => {
+            const selected = !erasing && c === color
+            return (
+              <button
+                key={c}
+                type="button"
+                aria-label={`Color ${c}`}
+                onClick={() => { setColor(c); setErasing(false) }}
+                className="w-3.5 h-3.5 rounded-full transition-transform hover:scale-110"
+                style={{ background: c, outline: selected ? `1.5px solid ${c}` : 'none', outlineOffset: 2, boxShadow: selected ? `0 0 0 1px ${PAINT_BG}` : 'none' }}
+              />
+            )
+          })}
+        </div>
+        <div className="w-px h-3.5 bg-accent/25 shrink-0" />
+        <button
+          type="button"
+          onClick={() => setErasing((v) => !v)}
+          aria-pressed={erasing}
+          className={`font-mono text-[9px] tracking-label uppercase px-1.5 py-0.5 rounded-sm border transition-colors ${erasing ? 'text-parchment border-parchment/40 bg-accent/10' : 'text-parchment/50 border-accent/25 hover:text-parchment/80'}`}
+        >
+          Erase
+        </button>
+        <button
+          type="button"
+          onClick={clear}
+          className="font-mono text-[9px] tracking-label uppercase px-1.5 py-0.5 rounded-sm border border-accent/25 text-parchment/50 hover:text-parchment/80 transition-colors ml-auto"
+        >
+          Clear
+        </button>
+      </div>
+
+      {/* Canvas */}
+      <div ref={wrapRef} className="flex-1 min-h-[150px] relative">
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full touch-none cursor-crosshair"
+          onPointerDown={down}
+          onPointerMove={stroke}
+          onPointerUp={up}
+          onPointerCancel={up}
+          onPointerLeave={up}
+        />
+      </div>
+    </div>
+  )
+}
+
+// A browser window that mirrors the bash window's chrome — same dots, same
+// hairlines — but swaps the title for tabs and an address bar. It shares the
+// terminal's activeTab, so `cd music` flips the tab and clicking a tab moves the
+// shell's working directory. Two windows, one filesystem.
+function CatalogBrowser({
+  activeTab, setActiveTab, accent, counts, children,
+}: {
+  activeTab: CatalogTab
+  setActiveTab: (t: CatalogTab) => void
+  accent: string
+  counts: Record<CatalogTab, number>
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex flex-col h-full min-h-0 border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-lg shadow-sm">
+      {/* Title bar — traffic lights + browser tabs (drag handle) */}
+      <div data-window-handle className="shrink-0 flex items-end gap-2.5 pl-3 pr-2 pt-1.5 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
+        <div className="flex items-center gap-1.5 shrink-0 pb-2">
+          <div className="w-2 h-2 rounded-full bg-red-500/60" />
+          <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
+          <div className="w-2 h-2 rounded-full bg-green-400/60" />
+        </div>
+        <div className="thin-scrollbar flex items-end gap-0.5 flex-1 min-w-0 overflow-x-auto -mb-px">
+          {CATALOG_TABS.map((tab) => {
+            const isActive = tab.id === activeTab
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                aria-pressed={isActive}
+                className={`group relative flex items-center gap-1 shrink-0 px-2 py-1.5 rounded-t-md whitespace-nowrap font-mono text-[10px] tracking-label uppercase transition-colors ${
+                  isActive ? 'text-parchment' : 'text-parchment/45 hover:text-parchment/75'
+                }`}
+                style={
+                  isActive
+                    ? { background: `${accent}1f`, borderTop: `1px solid ${accent}`, boxShadow: `inset 0 -1px 0 0 rgba(11,12,16,0.55)` }
+                    : undefined
+                }
+              >
+                <span className="text-[11px] leading-none">{tab.icon}</span>
+                <span>{tab.label}</span>
+                <span className="text-[9px] text-parchment/40">{String(counts[tab.id]).padStart(2, '0')}</span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Address bar — reflects the shell's current working directory */}
+      <div className="shrink-0 flex items-center gap-2 px-3 py-1.5 border-b border-accent/20">
+        <span className="font-mono text-parchment/25 text-sm leading-none select-none" aria-hidden>‹ ›</span>
+        <div className="flex items-center gap-1.5 flex-1 min-w-0 rounded-full bg-accent/[0.08] px-2.5 py-0.5">
+          <svg width="9" height="9" viewBox="0 0 12 12" className="shrink-0" aria-hidden>
+            <circle cx="6" cy="6" r="5" fill="none" stroke={accent} strokeWidth="1" opacity="0.7" />
+            <path d="M1 6h10" stroke={accent} strokeWidth="0.7" opacity="0.7" />
+            <path d="M6 1c2 1.6 2 8.4 0 10M6 1c-2 1.6-2 8.4 0 10" fill="none" stroke={accent} strokeWidth="0.7" opacity="0.7" />
+          </svg>
+          <span className="font-mono text-[10px] text-parchment/55 truncate">jason.os/personal/{activeTab}</span>
+        </div>
+      </div>
+
+      {/* Page */}
+      <div
+        key={activeTab}
+        className="thin-scrollbar flex-1 min-h-0 overflow-y-auto p-3 max-h-[42vh] lg:max-h-none"
+        style={{ animation: 'fadeIn 0.25s ease both' }}
+      >
+        {children}
+      </div>
+      <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+    </div>
+  )
+}
 
 export function CatalogPanel() {
-  const [activeTab, setActiveTab] = useState<'books' | 'music' | 'play'>('books')
-  const [activeGameId, setActiveGameId] = useState<string>('01')
-  const [history, setHistory] = useState<Array<{ cmd: string, output: React.ReactNode }>>(
-    () => loadHistory()
-  )
+  const [history, setHistory] = useState<Array<{ cmd: string, output: React.ReactNode }>>(() => loadHistory())
   const [commandInput, setCommandInput] = useState('')
+  const [activeTab, setActiveTab] = useState<'books' | 'music' | 'play'>('books')
   const [uptimeStart] = useState(() => Date.now())
   const inputRef = useRef<HTMLInputElement>(null)
   const { scanlineActive, setScanlineActive, toggleScanline } = useScanline()
+  const accent = SECTION_ACCENTS.catalog
 
-  // ── AMBIENT TAB CYCLE ──────────────────────────────────────────────────
-  // Auto-rotates shelf → now → play. Clicking a tab doesn't stop the cycle —
-  // it just resets the timer, so the manually-picked tab gets the full
-  // dwell time before cycling continues.
-  const tabCycleTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const activeTabRef = useRef(activeTab)
-
-  useEffect(() => {
-    activeTabRef.current = activeTab
-  }, [activeTab])
-
-  const resetTabCycle = useCallback(() => {
-    if (tabCycleTimerRef.current) clearInterval(tabCycleTimerRef.current)
-    tabCycleTimerRef.current = setInterval(() => {
-      const nextIdx = (TAB_ORDER.indexOf(activeTabRef.current) + 1) % TAB_ORDER.length
-      setActiveTab(TAB_ORDER[nextIdx])
-    }, TAB_CYCLE_MS)
+  // Stacking order for the draggable windows — grabbing one raises it to the top.
+  const [zOrder, setZOrder] = useState<Record<'browser' | 'terminal' | 'paint', number>>({ browser: 1, terminal: 2, paint: 3 })
+  const zTop = useRef(3)
+  const focusWindow = useCallback((id: 'browser' | 'terminal' | 'paint') => {
+    zTop.current += 1
+    setZOrder(prev => (prev[id] === zTop.current ? prev : { ...prev, [id]: zTop.current }))
   }, [])
 
-  useEffect(() => {
-    resetTabCycle()
-    return () => {
-      if (tabCycleTimerRef.current) clearInterval(tabCycleTimerRef.current)
-    }
-  }, [resetTabCycle])
-
-  // Auto-focus the terminal when it scrolls into view, and blur when it leaves
-  // so we don't hijack keyboard scrolling when the user isn't looking at it.
+  // Auto-focus the terminal when it scrolls into view; blur when it leaves so
+  // we don't hijack keyboard scrolling when the user isn't looking at it.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          inputRef.current?.focus({ preventScroll: true })
-        } else {
-          inputRef.current?.blur()
-        }
+        if (entries[0].isIntersecting) inputRef.current?.focus({ preventScroll: true })
+        else inputRef.current?.blur()
       },
       { threshold: 0.1 }
     )
-
-    if (inputRef.current) {
-      observer.observe(inputRef.current)
-    }
-
+    if (inputRef.current) observer.observe(inputRef.current)
     return () => observer.disconnect()
-  }, [activeTab])
+  }, [])
 
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Tab') {
-      e.preventDefault();
-      if (!commandInput) return;
-      const lower = commandInput.toLowerCase();
-      let completions: string[] = [];
+      e.preventDefault()
+      if (!commandInput) return
+      const lower = commandInput.toLowerCase()
+      let completions: string[] = []
 
       if (lower.startsWith('cat ')) {
-        const arg = lower.slice(4);
-        const files = VFS[activeTab]?.map(f => f.file) ?? [];
-        completions = files.filter(f => f.startsWith(arg)).map(f => 'cat ' + f);
+        const arg = lower.slice(4)
+        const files = VFS[activeTab]?.map(f => f.file) ?? []
+        completions = files.filter(f => f.startsWith(arg)).map(f => 'cat ' + f)
       } else if (lower.startsWith('cd ')) {
-        const arg = lower.slice(3);
-        const dirs = ['books', 'music', 'play', 'shelf', 'now'];
-        completions = dirs.filter(d => d.startsWith(arg)).map(d => 'cd ' + d);
+        const arg = lower.slice(3)
+        const dirs = ['books', 'music', 'play', 'shelf', 'now']
+        completions = dirs.filter(d => d.startsWith(arg)).map(d => 'cd ' + d)
       } else {
-        completions = ALL_COMMANDS.filter(c => c.startsWith(lower));
+        completions = ALL_COMMANDS.filter(c => c.startsWith(lower))
       }
 
       if (completions.length === 1) {
-        setCommandInput(completions[0]);
+        setCommandInput(completions[0])
       } else if (completions.length > 1) {
-        let prefix = completions[0];
+        let prefix = completions[0]
         for (let i = 1; i < completions.length; i++) {
-          let j = 0;
-          while (j < prefix.length && j < completions[i].length && prefix[j] === completions[i][j]) {
-            j++;
-          }
-          prefix = prefix.slice(0, j);
+          let j = 0
+          while (j < prefix.length && j < completions[i].length && prefix[j] === completions[i][j]) j++
+          prefix = prefix.slice(0, j)
         }
-
         if (prefix.length > commandInput.length) {
-          setCommandInput(prefix);
+          setCommandInput(prefix)
         } else {
           const output = completions.map(c => {
-            if (c.startsWith('cat ') && commandInput.startsWith('cat ')) return c.slice(4);
-            if (c.startsWith('cd ') && commandInput.startsWith('cd ')) return c.slice(3);
-            return c.trim();
-          }).join('  ');
-
+            if (c.startsWith('cat ') && commandInput.startsWith('cat ')) return c.slice(4)
+            if (c.startsWith('cd ') && commandInput.startsWith('cd ')) return c.slice(3)
+            return c.trim()
+          }).join('  ')
           setHistory(prev => {
-            const next = [...prev, { cmd: commandInput, output }];
-            persistHistory(next);
-            return next;
-          });
+            const next = [...prev, { cmd: commandInput, output }]
+            persistHistory(next)
+            return next
+          })
         }
       }
-      return;
+      return
     }
 
     if (e.key === 'Enter') {
@@ -1027,11 +1407,8 @@ export function CatalogPanel() {
         const arg = lowerCmd.slice(4).trim()
         const vfsFiles = VFS[activeTab] ?? []
         const entry = vfsFiles.find(f => f.file === arg || f.file === arg + '.md')
-        if (entry) {
-          output = entry.summary
-        } else {
-          output = `cat: ${arg}: No such file in current directory\nRun "ls" to list available files.`
-        }
+        if (entry) output = entry.summary
+        else output = `cat: ${arg}: No such file in current directory\nRun "ls" to list available files.`
       } else if (lowerCmd === 'cat') {
         output = <pre className="font-mono text-xs leading-tight mt-1">{`
           ——————
@@ -1100,205 +1477,145 @@ export function CatalogPanel() {
     }
   }
 
+  const readingNow = BOOKSHELF.find(b => b.status === 'reading')
+
   return (
-    <div className="flex flex-col">
-      <AnimatedElement delay={GROUP_HEADER} className="mb-6">
-        <div className="label-caps mb-2" style={{ color: SECTION_ACCENTS.catalog }}>PERSONAL CATALOG</div>
-        <div
-          className="flex items-center gap-1.5 px-3 py-1.5 border border-accent/30 rounded-sm mb-4"
-          style={{ background: 'rgba(28,32,53,0.8)' }}
-        >
-          <div className="w-2 h-2 rounded-full bg-red-500/60" />
-          <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
-          <div className="w-2 h-2 rounded-full bg-green-400/60" />
-          <div className="flex-1" />
-          <span className="font-mono text-xs text-parchment/65">~/jjz/personal</span>
-        </div>
-
-        <div className="relative flex border border-accent/25 rounded-sm overflow-hidden">
-          {(['books', 'music', 'play'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => {
-                setActiveTab(tab)
-                setCommandInput('')
-                resetTabCycle()
-              }}
-              className="relative z-10 flex-1 py-1.5 font-mono text-xs tracking-label uppercase transition-colors duration-200"
-              style={{
-                color: activeTab === tab ? '#cfccbb' : 'rgba(207,204,187,0.65)',
-                borderRight: tab !== 'play' ? '1px solid rgba(56,64,106,0.25)' : undefined,
-              }}
-            >
-              <span className="sm:hidden">{tab === 'books' ? '📚' : tab === 'music' ? '♫' : '◈'}</span>
-              <span className="hidden sm:inline">{tab === 'books' ? '📚 shelf' : tab === 'music' ? '♫ now' : '◈ play'}</span>
-            </button>
-          ))}
-          {/* Sliding underline indicator */}
-          <div
-            className="absolute bottom-0 left-0 h-0.5 w-1/3"
-            style={{
-              backgroundColor: SECTION_ACCENTS.catalog,
-              transform: `translateX(${TAB_ORDER.indexOf(activeTab) * 100}%)`,
-              transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          />
-        </div>
-      </AnimatedElement>
-
-      <AnimatedElement delay={GROUP_META}>
-        {activeTab === 'books' && (
-          <TerminalSection label="The Bookshelf">
-            <div className="space-y-1.5">
-              {BOOKSHELF.map((book, i) => (
-                <div
-                  key={book.title}
-                  className="flex items-start gap-2.5 py-1.5 px-1 -mx-1 rounded-sm border-b border-accent/10 last:border-b-0 group cursor-default hover:bg-surface/5 transition-colors duration-200"
-                  style={{
-                    opacity: 1,
-                    animation: `fadeIn 0.25s ease ${i * 40}ms both`,
-                  }}
-                >
-                  <span
-                    className="font-mono text-xs flex-shrink-0 mt-0.5 transition-transform duration-200 group-hover:scale-125"
-                    style={{ color: STATUS_COLORS[book.status] }}
-                  >
-                    {STATUS_ICONS[book.status]}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="font-mono text-xs text-parchment/70 leading-tight">
-                      {book.title}
-                    </p>
-                    <p className="font-mono text-xs text-parchment/65 mt-0.5">
-                      {book.author}
-                      <span className="ml-2">— {book.category}</span>
-                    </p>
+    <PanelShell
+      accent={accent}
+      eyebrow="PERSONAL CATALOG"
+      meta={`~/jjz/personal`}
+      title={
+        <p className="font-mono text-xs text-parchment/60 leading-snug max-w-xl mt-1">
+          Off-hours registry — what I'm reading, hearing, and playing. The shell is real; type{' '}
+          <span className="text-gold/80">help</span> and poke around.
+        </p>
+      }
+      rail={
+        <TelemetryRail
+          accent={accent}
+          items={[
+            { label: 'Reading', value: readingNow ? readingNow.title : '—' },
+            { label: 'Playlist', value: String(ROTATIONS.length).padStart(2, '0') },
+            { label: 'Playing', value: PLAYGROUND.map(g => g.title).slice(0, 1).join('') },
+          ]}
+        />
+      }
+    >
+      <AnimatedElement delay={GROUP_META} fill className="flex-1 min-h-0">
+        <div className="relative h-full min-h-0 grid grid-cols-1 lg:grid-rows-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,1fr)] gap-5 lg:gap-6">
+          {/* Registers as a browser window — one tab at a time, synced to the shell */}
+          <DraggableWindow z={zOrder.browser} onFocus={() => focusWindow('browser')}>
+          <CatalogBrowser
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            accent={accent}
+            counts={{ books: BOOKSHELF.length, music: ROTATIONS.length, play: PLAYGROUND.length }}
+          >
+            {activeTab === 'books' && (
+              <div className="space-y-3">
+                {BOOKS_BY_CATEGORY.map(([category, books]) => (
+                  <div key={category}>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="font-mono text-[9px] tracking-label uppercase shrink-0" style={{ color: accent }}>{category}</span>
+                      <span className="h-px flex-1 bg-accent/15" />
+                      <span className="font-mono text-[9px] text-parchment/30 shrink-0">{String(books.length).padStart(2, '0')}</span>
+                    </div>
+                    <div className="space-y-1.5">
+                      {books.map((book) => (
+                        <div key={book.title} className="flex items-start gap-2 group cursor-default">
+                          <span
+                            className="font-mono text-xs shrink-0 mt-0.5 transition-transform duration-200 group-hover:scale-125"
+                            style={{ color: STATUS_COLORS[book.status] }}
+                          >
+                            {STATUS_ICONS[book.status]}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="font-mono text-xs text-parchment/75 leading-tight">{book.title}</p>
+                            <p className="font-mono text-[10px] text-parchment/45 mt-0.5">{book.author}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            <InteractiveTerminalPrompt
-              history={history}
-              commandInput={commandInput}
-              setCommandInput={setCommandInput}
-              handleCommand={handleCommand}
-              inputRef={inputRef}
-            />
-          </TerminalSection>
-        )}
+                ))}
+              </div>
+            )}
 
-        {activeTab === 'music' && (
-          <TerminalSection label="Current Rotations">
-            <div className="space-y-0">
-              {ROTATIONS.map((track, i) => (
-                <div
-                  key={track.artist}
-                  className="flex items-center justify-between py-2.5 border-b border-accent/10 last:border-b-0 group cursor-default"
-                  style={{ animation: `fadeIn 0.25s ease ${i * 35}ms both` }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs text-parchment/65 w-4">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div className="flex items-end gap-0.5 h-3">
-                      {[3, 5, 2, 4, 6, 3, 5].map((h, j) => (
+            {activeTab === 'music' && (
+              <div className="space-y-0">
+                {ROTATIONS.map((track, i) => (
+                  <div
+                    key={`${track.artist}-${track.note}`}
+                    className="flex items-center gap-2 py-1.5 border-b border-accent/10 last:border-b-0 group cursor-default"
+                  >
+                    <span className="font-mono text-[10px] text-parchment/40 w-4 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="flex items-end gap-0.5 h-3 shrink-0">
+                      {[3, 5, 2, 4, 6].map((h, j) => (
                         <div
                           key={j}
                           className={`w-0.5 bg-gold/30 group-hover:bg-gold/60 rounded-full ${i === 0 ? 'waveform-bar' : ''}`}
                           style={{
                             height: `${h * 2}px`,
-                            transition: `height 0.25s cubic-bezier(0.22,1,0.36,1) ${j * 25}ms, background-color 0.25s ease`,
+                            transition: 'background-color 0.25s ease',
                             animationDuration: i === 0 ? `${0.7 + (j % 4) * 0.22}s` : undefined,
                             animationDelay: i === 0 ? `${j * 0.09}s` : undefined,
                           }}
                         />
                       ))}
                     </div>
-                    <div>
-                      <p className="font-sans font-medium text-xs text-parchment/70 leading-none">
-                        {track.note}
-                      </p>
-                      <p className="font-mono text-xs text-parchment/65 mt-0.5">{track.artist}</p>
+                    <div className="min-w-0">
+                      <p className="font-sans font-medium text-xs text-parchment/75 leading-tight truncate">{track.note}</p>
+                      <p className="font-mono text-[10px] text-parchment/45">{track.artist}</p>
                     </div>
                   </div>
-                  <span className="font-mono text-xs text-parchment/65">♫</span>
-                </div>
-              ))}
-            </div>
-            <InteractiveTerminalPrompt
-              history={history}
-              commandInput={commandInput}
-              setCommandInput={setCommandInput}
-              handleCommand={handleCommand}
-              inputRef={inputRef}
-            />
-          </TerminalSection>
-        )}
-
-        {activeTab === 'play' && (
-          <TerminalSection label="The Playground">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="sm:w-1/4 shrink-0 flex sm:flex-col gap-4 pt-1 sm:border-r border-accent/10 sm:pr-2 overflow-x-auto">
-                {PLAYGROUND.map((game) => (
-                  <button
-                    key={game.id}
-                    onClick={() => setActiveGameId(game.id)}
-                    className="flex items-start gap-1.5 text-left group w-full cursor-pointer flex-shrink-0"
-                  >
-                    <span
-                      className="font-mono text-xs leading-[1.2] transition-colors duration-200 mt-[1px]"
-                      style={{ color: activeGameId === game.id ? '#ebd648' : 'transparent' }}
-                    >
-                      {'>'}
-                    </span>
-                    <span
-                      className="font-mono text-xs tracking-label uppercase leading-tight transition-colors duration-200"
-                      style={{ color: activeGameId === game.id ? '#cfccbb' : 'rgba(207,204,187,0.65)' }}
-                    >
-                      {game.id} <span>//</span><br />
-                      <span>{game.title}</span>
-                    </span>
-                  </button>
                 ))}
               </div>
+            )}
 
-              <div className="sm:w-3/4 flex-1 sm:pl-2">
-                <div className="space-y-0">
-                  {PLAYGROUND.find(g => g.id === activeGameId)?.specs.map((item, i) => (
-                    <div
-                      key={`${activeGameId}-${item.label}`}
-                      className="flex items-start justify-between py-2.5 border-b border-accent/10 last:border-b-0"
-                      style={{ animation: `fadeIn 0.25s ease ${i * 30}ms both` }}
-                    >
-                      <div>
-                        <span className="font-mono text-xs tracking-label text-parchment/65 uppercase block">
-                          {item.label}
-                        </span>
-                        <span className={`font-mono text-xs block mt-0.5 ${item.sublabel ? 'text-parchment/65' : 'opacity-0 select-none'}`}>
-                          {item.sublabel || '—'}
-                        </span>
-                      </div>
-                      <span
-                        className="font-mono text-xs text-right mt-0.5"
-                        style={{ color: i === 0 ? '#9cd5f8' : i === 2 ? '#ebd648' : '#cfccbb', opacity: 0.7 }}
-                      >
-                        <TypewriterText text={item.value} />
-                      </span>
+            {activeTab === 'play' && (
+              <div className="space-y-3.5">
+                {PLAYGROUND.map((game) => (
+                  <div key={game.id} className="cursor-default">
+                    <div className="flex items-baseline gap-1.5 mb-1.5 pb-1 border-b border-accent/10">
+                      <span className="font-mono text-[10px]" style={{ color: accent }}>{game.id}</span>
+                      <p className="font-sans font-semibold text-xs leading-tight" style={{ color: accent }}>{game.title}</p>
                     </div>
-                  ))}
-                </div>
+                    <dl className="grid grid-cols-[minmax(0,6.5rem)_1fr] gap-x-2 gap-y-1 pl-5">
+                      {game.specs.map((s) => (
+                        <React.Fragment key={s.label}>
+                          <dt className="font-mono text-[9px] tracking-label uppercase text-parchment/40 leading-snug">{s.label}</dt>
+                          <dd className="min-w-0 font-mono text-[10px] text-parchment/70 leading-snug">
+                            {s.value}
+                            {s.sublabel && <span className="text-parchment/35"> · {s.sublabel}</span>}
+                          </dd>
+                        </React.Fragment>
+                      ))}
+                    </dl>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
+          </CatalogBrowser>
+          </DraggableWindow>
+
+          {/* Live terminal */}
+          <DraggableWindow z={zOrder.terminal} onFocus={() => focusWindow('terminal')} className="min-h-[200px]">
             <InteractiveTerminalPrompt
               history={history}
               commandInput={commandInput}
               setCommandInput={setCommandInput}
               handleCommand={handleCommand}
               inputRef={inputRef}
+              className="h-full"
             />
-          </TerminalSection>
-        )}
+          </DraggableWindow>
+
+          {/* Mini paint */}
+          <DraggableWindow z={zOrder.paint} onFocus={() => focusWindow('paint')} className="min-h-[220px]">
+            <MiniPaint className="h-full" />
+          </DraggableWindow>
+        </div>
       </AnimatedElement>
-    </div>
+    </PanelShell>
   )
 }

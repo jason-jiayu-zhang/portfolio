@@ -1,32 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { PROJECTS } from '../data/portfolio'
 import type { Project } from '../types/portfolio'
 import { usePrefersReducedMotion } from './HeroAboutPanels'
-
-// ── Scroll-triggered reveal ─────────────────────────────────────────────────
-function useInViewOnce<T extends HTMLElement>(threshold = 0.12) {
-  const ref = useRef<T | null>(null)
-  const [inView, setInView] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setInView(true)
-          observer.disconnect()
-        }
-      },
-      { threshold }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold])
-
-  return [ref, inView] as const
-}
+import { useInViewOnce } from '../hooks/useInViewOnce'
 
 // ── Visual Preview Carousel ────────────────────────────────────────────────
 interface ProjectPreviewCarouselProps {

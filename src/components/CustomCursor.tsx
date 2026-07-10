@@ -71,6 +71,7 @@ export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null)
   const stateRef = useRef<CursorState>('default')
   const [state, setState] = useState<CursorState>('default')
+  const [down, setDown] = useState(false)
 
   useEffect(() => {
     if (!window.matchMedia('(pointer: fine)').matches) return
@@ -90,8 +91,8 @@ export default function CustomCursor() {
         setState(next)
       }
     }
-    const handleDown = () => cursor.classList.add('is-active')
-    const handleUp = () => cursor.classList.remove('is-active')
+    const handleDown = () => setDown(true)
+    const handleUp = () => setDown(false)
     const handleLeaveWindow = () => { cursor.style.opacity = '0' }
 
     window.addEventListener('mousemove', handleMove)
@@ -109,10 +110,17 @@ export default function CustomCursor() {
   }, [])
 
   const Glyph = GLYPHS[state]
+  const scale = down ? (state === 'pointer' ? 1.12 : 0.82) : state === 'pointer' ? 1.35 : 1
 
   return (
     <div ref={cursorRef} className="custom-cursor" aria-hidden style={{ opacity: 0 }}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        style={{ transform: `scale(${scale})`, transition: 'transform 0.18s var(--ease-out)' }}
+      >
         <Glyph />
       </svg>
     </div>
