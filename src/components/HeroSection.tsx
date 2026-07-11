@@ -403,7 +403,7 @@ export default function HeroSection() {
               </div>
             </div>
 
-            <div className="pt-1 pb-3 flex-1 flex flex-col min-h-0">
+            <div className="pt-1 pb-3 flex-1 flex flex-col min-h-fit">
               <SectionTransitionWrapper key={sectionKey} isExiting={isFadingOut}>
                 <ActivePanel />
               </SectionTransitionWrapper>

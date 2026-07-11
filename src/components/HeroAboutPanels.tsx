@@ -494,7 +494,7 @@ function CredibilityStrip({ accent }: { accent: string }) {
 
 function SkillChips({ accent }: { accent: string }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="hero-chips flex flex-wrap gap-1.5">
       {SKILL_KEYWORDS.map((k) => (
         <span
           key={k}
@@ -549,7 +549,7 @@ function NameMarquee() {
       >
         <div
           className="name-marquee-track flex w-max whitespace-nowrap font-sans font-black tracking-ultra-tight"
-          style={{ fontSize: 'clamp(2.6rem, 6.4vw, 5.25rem)', lineHeight: 0.86, willChange: 'transform' }}
+          style={{ fontSize: 'min(clamp(2.6rem, 6.4vw, 5.25rem), 10vh)', lineHeight: 0.86, willChange: 'transform' }}
         >
           <Half />
           <Half />
@@ -593,7 +593,7 @@ export function DescriptionPanel() {
       }
     >
       {/* Name — the panel's hero statement, oversized and edge-to-edge */}
-      <div className="shrink-0 mb-5 sm:mb-6">
+      <div className="hero-name-block shrink-0 mb-5 sm:mb-6">
         <AnimatedElement delay={0}>
           <NameMarquee />
         </AnimatedElement>
@@ -602,7 +602,7 @@ export function DescriptionPanel() {
       <div className="flex-1 min-h-0 grid lg:grid-cols-[1fr_minmax(0,1.05fr)] gap-6 lg:gap-10">
         {/* Narrative */}
         <AnimatedElement delay={220} fill className="min-h-0">
-          <div className="h-full flex flex-col justify-center gap-4">
+          <div className="hero-narrative h-full flex flex-col justify-center gap-4">
             <div>
               <h2
                 className="font-sans font-black text-parchment leading-[1.02] max-w-xl"
@@ -616,7 +616,7 @@ export function DescriptionPanel() {
               </div>
             </div>
             <CredibilityStrip accent={accent} />
-            <div className="relative max-w-xl pl-4" style={{ borderLeft: `2px solid ${accent}59` }}>
+            <div className="hero-bio relative max-w-xl pl-4" style={{ borderLeft: `2px solid ${accent}59` }}>
               <span
                 aria-hidden
                 className="absolute -left-[2px] top-0 w-[2px] h-6"
@@ -632,7 +632,7 @@ export function DescriptionPanel() {
 
         {/* Portrait filmstrip — active frame expands; the rest stay slim and desaturated */}
         <AnimatedElement delay={420} fill className="min-h-0">
-          <div className="relative h-full min-h-[190px] flex items-stretch gap-1.5 sm:gap-2">
+          <div className="hero-filmstrip relative h-full min-h-[190px] flex items-stretch gap-1.5 sm:gap-2">
             {DESCRIPTION_IMAGES.map((img, i) => {
               const isFeatured = i === featured
               return (
@@ -658,7 +658,7 @@ export function DescriptionPanel() {
                       src={img.src}
                       alt={img.alt}
                       loading={i === 0 ? 'eager' : 'lazy'}
-                      className={`w-full h-full object-cover ${img.objectClassName} contrast-125 ${
+                      className={`absolute inset-0 w-full h-full object-cover ${img.objectClassName} contrast-125 ${
                         isFeatured ? 'saturate-100 brightness-100' : 'saturate-[0.35] brightness-[0.65]'
                       }`}
                       style={{

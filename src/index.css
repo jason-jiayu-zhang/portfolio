@@ -89,6 +89,32 @@
   ::-webkit-scrollbar-thumb:hover { background: #a39d7b; }
 }
 
+/* Short landscape (small laptops, split-screen, landscape tablets): the hero
+   instrument panel wants to fill one screen, so instead of letting the About
+   content overflow into an inner scroll, reclaim vertical room — pull the radar
+   dome in, tighten the panel's rhythm, and shed the two most discretionary
+   blocks (the long bio, then the skill chips) so the essential hero — name,
+   pitch, availability, stats, portraits — clears the fold.
+   Left unlayered on purpose: these overrides must win over the Tailwind
+   utilities layer (flex / gap / mb / min-h) they replace. */
+@media (min-width: 768px) and (max-height: 900px) {
+  :root { --wheel-size: min(50vh, 82vw); }
+  .hero-name-block { margin-bottom: 0.75rem; }
+  .hero-narrative { gap: 0.75rem; }
+  .hero-filmstrip { min-height: 0; }
+}
+
+@media (min-width: 768px) and (max-height: 800px) {
+  :root { --wheel-size: min(46vh, 88vw); }
+  .hero-bio { display: none; }
+}
+
+@media (min-width: 768px) and (max-height: 680px) {
+  :root { --wheel-size: min(38vh, 84vw); }
+  .hero-narrative { gap: 0.5rem; }
+  .hero-chips { display: none; }
+}
+
 /* ─── COMPONENT UTILITIES ────────────────────────────────────────────────── */
 
 @layer components {
