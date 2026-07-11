@@ -123,7 +123,7 @@ export const PROJECTS: Project[] = [
     slug: 'Fimanu',
     title: 'Fimanu',
     subtitle: 'GitHub-style activity tracker for Figma files',
-    role: 'Full-Stack Engineer',
+    role: 'Design Engineer',
     tools: [
       'React',
       'TypeScript',
@@ -139,7 +139,7 @@ export const PROJECTS: Project[] = [
     accentColor: '#feb34f',
     tagline: 'Visualizing Figma design activity with GitHub-style heatmaps and adaptive syncing.',
     metrics: [
-      { label: 'Role', value: 'Solo Creator' },
+      { label: 'Role', value: 'Design Engineer' },
       { label: 'Focus', value: 'Full-Stack Development' }
     ],
     narrative: [
@@ -148,7 +148,7 @@ export const PROJECTS: Project[] = [
     url: 'https://figma-tracker.onrender.com/',
     status: 'offline',
     caseStudy: {
-      executiveSummary: 'Fimanu is a GitHub-style activity tracker designed to bring engineering-grade visibility to Figma design workflows. As the sole creator and developer, I architected this application from the ground up to continuously monitor Figma version history, intelligently sync file edits to a scalable Supabase database, and provide a premium, interactive visual dashboard of daily design activity. By transforming abstract design efforts into quantifiable, visual metrics, Fimanu empowers designers and product managers with a unified, transparent view of collaborative contributions and project momentum across multiple isolated Figma files.',
+      executiveSummary: 'Fimanu is a GitHub-style activity tracker designed to bring engineering-grade visibility to Figma design workflows. As the sole creator, I architected this application from the ground up to continuously monitor Figma version history, intelligently sync file edits to a scalable Supabase database, and provide a premium, interactive visual dashboard of daily design activity. By transforming abstract design efforts into quantifiable, visual metrics, Fimanu empowers designers and product managers with a unified, transparent view of collaborative contributions and project momentum across multiple isolated Figma files.',
       problemSpace: [
         'Design teams currently lack a unified, cross-file mechanism to visualize their design activity, momentum, and individual contributions over time, leading to fragmented project tracking.',
         'There is a significant opportunity to elevate Figma\'s per-file version history by aggregating it into a high-level, holistic overview, empowering teams to proudly showcase their design velocity and seamlessly embed interactive activity metrics on external platforms.',
