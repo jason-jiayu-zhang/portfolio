@@ -18,6 +18,10 @@ dist-ssr
 .idea
 .claude/
 .DS_Store
+
+# Tool artifacts
+.playwright-mcp/
+graphify-out/
 *.suo
 *.ntvs*
 *.njsproj
