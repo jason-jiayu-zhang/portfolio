@@ -5,8 +5,8 @@ type CursorState = 'default' | 'pointer' | 'text' | 'not-allowed'
 function getCursorState(el: Element | null): CursorState {
   if (!el) return 'default'
   if (el.closest('[disabled], [aria-disabled="true"]')) return 'not-allowed'
-  if (el.closest('input, textarea, [contenteditable="true"]')) return 'text'
-  if (el.closest('a, button, [role="button"], summary, select, label, .wheel-cursor')) return 'pointer'
+  if (el.closest('input, textarea, [contenteditable="true"], [data-cursor-text]')) return 'text'
+  if (el.closest('a, button, [role="button"], summary, select, label, .wheel-cursor, [data-window-handle]')) return 'pointer'
   return 'default'
 }
 
@@ -121,7 +121,9 @@ export default function CustomCursor() {
         fill="none"
         style={{ transform: `scale(${scale})`, transition: 'transform 0.18s var(--ease-out)' }}
       >
-        <Glyph />
+        <g key={state} className="custom-cursor-glyph">
+          <Glyph />
+        </g>
       </svg>
     </div>
   )

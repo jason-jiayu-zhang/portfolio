@@ -146,7 +146,7 @@ export const PROJECTS: Project[] = [
       'A GitHub-style activity tracker that monitors your Figma version history, intelligently syncs edits to a Supabase database, and provides a beautiful visual dashboard of your design activity over time.'
     ],
     url: 'https://figma-tracker.onrender.com/',
-    status: 'offline',
+    status: 'live',
     caseStudy: {
       executiveSummary: 'Fimanu is a GitHub-style activity tracker designed to bring engineering-grade visibility to Figma design workflows. As the sole creator, I architected this application from the ground up to continuously monitor Figma version history, intelligently sync file edits to a scalable Supabase database, and provide a premium, interactive visual dashboard of daily design activity. By transforming abstract design efforts into quantifiable, visual metrics, Fimanu empowers designers and product managers with a unified, transparent view of collaborative contributions and project momentum across multiple isolated Figma files.',
       problemSpace: [

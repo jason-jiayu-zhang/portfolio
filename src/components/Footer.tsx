@@ -116,6 +116,7 @@ export default function Footer() {
 
   return (
     <footer
+      id="signoff"
       className="relative mt-auto shrink-0 min-h-[100svh] flex flex-col bg-primary"
       style={{ borderTop: '1px solid rgba(56,64,106,0.4)' }}
       aria-labelledby="footer-cta"
@@ -237,14 +238,14 @@ export default function Footer() {
               <SocialLink key={social.platform} href={social.url} label={social.platform} handle={social.handle} />
             ))}
           <a
-            href={BIO.resumeUrl}
+            href="https://www.figma.com/@jasonjiayuzhang"
             target="_blank"
             rel="noopener noreferrer"
             className="group flex flex-col items-start gap-1"
           >
-            <span className="font-mono text-[10px] tracking-label text-gold/70 uppercase">Résumé</span>
+            <span className="font-mono text-[10px] tracking-label text-gold/70 uppercase">Figma</span>
             <span className="relative font-mono text-xs text-parchment/70 group-hover:text-parchment transition-colors duration-200">
-              Download PDF ↗
+              Community ↗
               <span
                 className="absolute -bottom-px left-0 right-0 h-px bg-parchment/40"
                 style={{

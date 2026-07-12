@@ -356,13 +356,6 @@ function MetadataSidebar({
         {/* Status + CTA */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <div
-              className="w-1.5 h-1.5 rounded-full"
-              style={{
-                backgroundColor: project.status === 'live' ? '#4ade80' : '#a39d7b',
-                boxShadow: project.status === 'live' ? '0 0 6px #4ade8088' : 'none',
-              }}
-            />
             <span className="font-mono text-xs tracking-label text-parchment/70 uppercase">
               {project.status === 'live' ? 'Live' : project.status === 'offline' ? 'Offline' : 'Archived'}
             </span>
@@ -834,7 +827,6 @@ export default function ProjectCaseStudyPage() {
             <>
               <div className="w-px h-3 bg-accent/40" />
               <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 6px #34d399' }} />
                 <span className="font-mono text-xs tracking-label text-parchment/65">Live</span>
               </div>
             </>

@@ -174,6 +174,34 @@
   display: block;
 }
 
+/* Each state change remounts this group (keyed by state), replaying the swap. */
+.custom-cursor-glyph {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cursorGlyphSwap 0.24s var(--ease-out) both;
+}
+
+@keyframes cursorGlyphSwap {
+  0% {
+    opacity: 0;
+    transform: scale(0.35) rotate(-40deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12) rotate(6deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor-glyph {
+    animation: none;
+  }
+}
+
 /* ─── WHEEL INTERACTION ──────────────────────────────────────────────────── */
 
 @layer utilities {
@@ -239,19 +267,6 @@
 .scanlines-off.scanline-overlay::after {
   display: none;
   background: none;
-}
-
-/* Seam detune flash — a denser scanline grid that spikes for a beat as the
-   Case Studies → Studio boundary crosses, then releases. Opacity is driven
-   inline from scroll progress; this only supplies the CRT texture. */
-.seam-scanline-flash {
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 2px,
-    rgba(163, 157, 123, 0.14) 2px,
-    rgba(163, 157, 123, 0.14) 3px
-  );
 }
 
 /* ─── CINEMATIC INTRO SEQUENCE ────────────────────────────────────────────── */
@@ -563,4 +578,5 @@ a:active:not([aria-disabled='true']) {
 @media (max-height: 820px) {
   .short-hide { display: none !important; }
 }
+
 

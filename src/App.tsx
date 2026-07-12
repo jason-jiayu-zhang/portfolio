@@ -2,6 +2,7 @@
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
 import CustomCursor from './components/CustomCursor'
+import SectionCurtain from './components/SectionCurtain'
 import { useIntro, IntroProvider } from './components/IntroContext'
 import { useScanline } from './components/ScanlineContext'
 import './index.css'
@@ -48,6 +49,9 @@ function AppContent() {
           <Footer />
         </Suspense>
       )}
+
+      {/* Gold title-card wipes between the major scroll sections */}
+      {isPhase3 && <SectionCurtain />}
     </div>
   )
 }

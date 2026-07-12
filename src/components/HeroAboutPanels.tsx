@@ -350,8 +350,18 @@ function InteractiveTerminalPrompt({
   }
 
   return (
-    <div className={`flex flex-col border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-lg shadow-sm ${className}`}>
-      <div data-window-handle className="shrink-0 flex items-center px-3 py-1.5 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
+    <div
+      className={`flex flex-col border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-lg shadow-sm cursor-text ${className}`}
+      onClick={(e) => {
+        // Focus the shell on any click that isn't a text selection, so the
+        // whole window behaves like one big input. Don't steal focus mid-drag
+        // or when the user is selecting output text.
+        if (window.getSelection()?.toString()) return
+        if ((e.target as HTMLElement).closest('a, button')) return
+        inputRef.current?.focus()
+      }}
+    >
+      <div data-window-handle className="shrink-0 h-[29px] flex items-center px-3 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
         <div className="flex gap-1.5 w-[36px] shrink-0">
           <div className="w-2 h-2 rounded-full bg-red-500/60" />
           <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
@@ -361,7 +371,7 @@ function InteractiveTerminalPrompt({
         <div className="w-[36px] shrink-0" />
       </div>
 
-      <div className="flex-1 min-h-0 p-3 flex flex-col gap-2">
+      <div data-cursor-text className="flex-1 min-h-0 p-3 flex flex-col gap-2">
         {history.length > 0 && (
           <div className="thin-scrollbar space-y-2 overflow-y-auto pr-2 flex-1 min-h-0 max-h-[clamp(100px,19vh,280px)] lg:max-h-none">
             {history.map((h, i) => (
@@ -439,7 +449,7 @@ const CREDIBILITY_STATS: Array<{ value: string; label: string }> = [
   { value: 'Design, Computer Engineering', label: 'UC Davis Degrees' },
 ]
 const SKILL_KEYWORDS = ['Design Systems', 'Front-End', 'Figma-to-Code', 'Prototyping']
-const AVAILABILITY = 'Open to Full-Time & Internship Roles'
+const AVAILABILITY = 'Open to Winter 2026 Roles'
 
 function AvailabilityPill({ accent }: { accent: string }) {
   return (
@@ -643,9 +653,8 @@ export function DescriptionPanel() {
                   onMouseLeave={() => setHoveredImageIdx(null)}
                   onFocus={() => setHoveredImageIdx(i)}
                   onBlur={() => setHoveredImageIdx(null)}
-                  className={`group relative min-w-0 h-full overflow-hidden rounded-sm border p-1 bg-[#0b0c10]/80 ${
-                    isFeatured ? 'border-gold/60' : 'border-accent/30'
-                  }`}
+                  className={`group relative min-w-0 h-full overflow-hidden rounded-sm border p-1 bg-[#0b0c10]/80 ${isFeatured ? 'border-gold/60' : 'border-accent/30'
+                    }`}
                   style={{
                     flexGrow: isFeatured ? 2.4 : 1,
                     flexBasis: 0,
@@ -658,9 +667,8 @@ export function DescriptionPanel() {
                       src={img.src}
                       alt={img.alt}
                       loading={i === 0 ? 'eager' : 'lazy'}
-                      className={`absolute inset-0 w-full h-full object-cover ${img.objectClassName} contrast-125 ${
-                        isFeatured ? 'saturate-100 brightness-100' : 'saturate-[0.35] brightness-[0.65]'
-                      }`}
+                      className={`absolute inset-0 w-full h-full object-cover ${img.objectClassName} contrast-125 ${isFeatured ? 'saturate-100 brightness-100' : 'saturate-[0.35] brightness-[0.65]'
+                        }`}
                       style={{
                         transition: 'filter 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
                         transform: img.zoom ? `scale(${img.zoom}) translate(${img.pan ?? '0, 0'})` : undefined,
@@ -668,9 +676,8 @@ export function DescriptionPanel() {
                       }}
                     />
                     <div
-                      className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
-                        isFeatured ? 'opacity-0' : scanlineActive ? 'opacity-100' : 'opacity-40'
-                      }`}
+                      className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${isFeatured ? 'opacity-0' : scanlineActive ? 'opacity-100' : 'opacity-40'
+                        }`}
                       style={{
                         background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
                         backgroundSize: '100% 4px, 3px 100%',
@@ -678,9 +685,8 @@ export function DescriptionPanel() {
                     />
                     {/* vertical caption on slim frames */}
                     <span
-                      className={`absolute bottom-2 left-2 font-mono text-[9px] tracking-label uppercase transition-opacity duration-300 ${
-                        isFeatured ? 'opacity-0' : 'opacity-60'
-                      }`}
+                      className={`absolute bottom-2 left-2 font-mono text-[9px] tracking-label uppercase transition-opacity duration-300 ${isFeatured ? 'opacity-0' : 'opacity-60'
+                        }`}
                       style={{ writingMode: 'vertical-rl', color: '#cfccbb' }}
                     >
                       {String(i + 1).padStart(2, '0')}
@@ -952,7 +958,7 @@ const CATALOG_TABS: Array<{ id: CatalogTab; icon: string; label: string }> = [
 // Bookshelf grouped by category, categories sorted alphabetically.
 const BOOKS_BY_CATEGORY: Array<[string, BookEntry[]]> = Object.entries(
   BOOKSHELF.reduce<Record<string, BookEntry[]>>((acc, b) => {
-    ;(acc[b.category] ??= []).push(b)
+    ; (acc[b.category] ??= []).push(b)
     return acc
   }, {})
 ).sort(([a], [b]) => a.localeCompare(b))
@@ -1144,7 +1150,7 @@ function MiniPaint({ className = '' }: { className?: string }) {
   return (
     <div className={`flex flex-col min-h-0 border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-lg shadow-sm ${className}`}>
       {/* Title bar (drag handle) */}
-      <div data-window-handle className="shrink-0 flex items-center px-3 py-1.5 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
+      <div data-window-handle className="shrink-0 h-[29px] flex items-center px-3 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
         <div className="flex gap-1.5 w-[36px] shrink-0">
           <div className="w-2 h-2 rounded-full bg-red-500/60" />
           <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
@@ -1221,8 +1227,8 @@ function CatalogBrowser({
   return (
     <div className="flex flex-col h-full min-h-0 border border-accent/20 rounded-md overflow-hidden bg-[#0b0c10]/40 backdrop-blur-lg shadow-sm">
       {/* Title bar — traffic lights + browser tabs (drag handle) */}
-      <div data-window-handle className="shrink-0 flex items-end gap-2.5 pl-3 pr-2 pt-1.5 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
-        <div className="flex items-center gap-1.5 shrink-0 pb-2">
+      <div data-window-handle className="shrink-0 h-[29px] flex items-end gap-2.5 pl-3 pr-2 border-b border-accent/20 bg-accent/5 cursor-grab active:cursor-grabbing select-none">
+        <div className="flex items-center gap-1.5 shrink-0 self-center">
           <div className="w-2 h-2 rounded-full bg-red-500/60" />
           <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
           <div className="w-2 h-2 rounded-full bg-green-400/60" />
@@ -1236,9 +1242,8 @@ function CatalogBrowser({
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
                 aria-pressed={isActive}
-                className={`group relative flex items-center gap-1 shrink-0 px-2 py-1.5 rounded-t-md whitespace-nowrap font-mono text-[10px] tracking-label uppercase transition-colors ${
-                  isActive ? 'text-parchment' : 'text-parchment/45 hover:text-parchment/75'
-                }`}
+                className={`group relative flex items-center gap-1 shrink-0 px-2 py-1 rounded-t-md whitespace-nowrap font-mono text-[10px] tracking-label uppercase transition-colors ${isActive ? 'text-parchment' : 'text-parchment/45 hover:text-parchment/75'
+                  }`}
                 style={
                   isActive
                     ? { background: `${accent}1f`, borderTop: `1px solid ${accent}`, boxShadow: `inset 0 -1px 0 0 rgba(11,12,16,0.55)` }
@@ -1505,97 +1510,97 @@ export function CatalogPanel() {
         <div className="relative h-full min-h-0 grid grid-cols-1 lg:grid-rows-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,1fr)] gap-5 lg:gap-6">
           {/* Registers as a browser window — one tab at a time, synced to the shell */}
           <DraggableWindow z={zOrder.browser} onFocus={() => focusWindow('browser')}>
-          <CatalogBrowser
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            accent={accent}
-            counts={{ books: BOOKSHELF.length, music: ROTATIONS.length, play: PLAYGROUND.length }}
-          >
-            {activeTab === 'books' && (
-              <div className="space-y-3">
-                {BOOKS_BY_CATEGORY.map(([category, books]) => (
-                  <div key={category}>
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="font-mono text-[9px] tracking-label uppercase shrink-0" style={{ color: accent }}>{category}</span>
-                      <span className="h-px flex-1 bg-accent/15" />
-                      <span className="font-mono text-[9px] text-parchment/30 shrink-0">{String(books.length).padStart(2, '0')}</span>
-                    </div>
-                    <div className="space-y-1.5">
-                      {books.map((book) => (
-                        <div key={book.title} className="flex items-start gap-2 group cursor-default">
-                          <span
-                            className="font-mono text-xs shrink-0 mt-0.5 transition-transform duration-200 group-hover:scale-125"
-                            style={{ color: STATUS_COLORS[book.status] }}
-                          >
-                            {STATUS_ICONS[book.status]}
-                          </span>
-                          <div className="min-w-0">
-                            <p className="font-mono text-xs text-parchment/75 leading-tight">{book.title}</p>
-                            <p className="font-mono text-[10px] text-parchment/45 mt-0.5">{book.author}</p>
+            <CatalogBrowser
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              accent={accent}
+              counts={{ books: BOOKSHELF.length, music: ROTATIONS.length, play: PLAYGROUND.length }}
+            >
+              {activeTab === 'books' && (
+                <div className="space-y-3">
+                  {BOOKS_BY_CATEGORY.map(([category, books]) => (
+                    <div key={category}>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="font-mono text-[9px] tracking-label uppercase shrink-0" style={{ color: accent }}>{category}</span>
+                        <span className="h-px flex-1 bg-accent/15" />
+                        <span className="font-mono text-[9px] text-parchment/30 shrink-0">{String(books.length).padStart(2, '0')}</span>
+                      </div>
+                      <div className="space-y-1.5">
+                        {books.map((book) => (
+                          <div key={book.title} className="flex items-start gap-2 group cursor-default">
+                            <span
+                              className="font-mono text-xs shrink-0 mt-0.5 transition-transform duration-200 group-hover:scale-125"
+                              style={{ color: STATUS_COLORS[book.status] }}
+                            >
+                              {STATUS_ICONS[book.status]}
+                            </span>
+                            <div className="min-w-0">
+                              <p className="font-mono text-xs text-parchment/75 leading-tight">{book.title}</p>
+                              <p className="font-mono text-[10px] text-parchment/45 mt-0.5">{book.author}</p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
 
-            {activeTab === 'music' && (
-              <div className="space-y-0">
-                {ROTATIONS.map((track, i) => (
-                  <div
-                    key={`${track.artist}-${track.note}`}
-                    className="flex items-center gap-2 py-1.5 border-b border-accent/10 last:border-b-0 group cursor-default"
-                  >
-                    <span className="font-mono text-[10px] text-parchment/40 w-4 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                    <div className="flex items-end gap-0.5 h-3 shrink-0">
-                      {[3, 5, 2, 4, 6].map((h, j) => (
-                        <div
-                          key={j}
-                          className={`w-0.5 bg-gold/30 group-hover:bg-gold/60 rounded-full ${i === 0 ? 'waveform-bar' : ''}`}
-                          style={{
-                            height: `${h * 2}px`,
-                            transition: 'background-color 0.25s ease',
-                            animationDuration: i === 0 ? `${0.7 + (j % 4) * 0.22}s` : undefined,
-                            animationDelay: i === 0 ? `${j * 0.09}s` : undefined,
-                          }}
-                        />
-                      ))}
+              {activeTab === 'music' && (
+                <div className="space-y-0">
+                  {ROTATIONS.map((track, i) => (
+                    <div
+                      key={`${track.artist}-${track.note}`}
+                      className="flex items-center gap-2 py-1.5 border-b border-accent/10 last:border-b-0 group cursor-default"
+                    >
+                      <span className="font-mono text-[10px] text-parchment/40 w-4 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                      <div className="flex items-end gap-0.5 h-3 shrink-0">
+                        {[3, 5, 2, 4, 6].map((h, j) => (
+                          <div
+                            key={j}
+                            className={`w-0.5 bg-gold/30 group-hover:bg-gold/60 rounded-full ${i === 0 ? 'waveform-bar' : ''}`}
+                            style={{
+                              height: `${h * 2}px`,
+                              transition: 'background-color 0.25s ease',
+                              animationDuration: i === 0 ? `${0.7 + (j % 4) * 0.22}s` : undefined,
+                              animationDelay: i === 0 ? `${j * 0.09}s` : undefined,
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-sans font-medium text-xs text-parchment/75 leading-tight truncate">{track.note}</p>
+                        <p className="font-mono text-[10px] text-parchment/45">{track.artist}</p>
+                      </div>
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-sans font-medium text-xs text-parchment/75 leading-tight truncate">{track.note}</p>
-                      <p className="font-mono text-[10px] text-parchment/45">{track.artist}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
 
-            {activeTab === 'play' && (
-              <div className="space-y-3.5">
-                {PLAYGROUND.map((game) => (
-                  <div key={game.id} className="cursor-default">
-                    <div className="flex items-baseline gap-1.5 mb-1.5 pb-1 border-b border-accent/10">
-                      <span className="font-mono text-[10px]" style={{ color: accent }}>{game.id}</span>
-                      <p className="font-sans font-semibold text-xs leading-tight" style={{ color: accent }}>{game.title}</p>
+              {activeTab === 'play' && (
+                <div className="space-y-3.5">
+                  {PLAYGROUND.map((game) => (
+                    <div key={game.id} className="cursor-default">
+                      <div className="flex items-baseline gap-1.5 mb-1.5 pb-1 border-b border-accent/10">
+                        <span className="font-mono text-[10px]" style={{ color: accent }}>{game.id}</span>
+                        <p className="font-sans font-semibold text-xs leading-tight" style={{ color: accent }}>{game.title}</p>
+                      </div>
+                      <dl className="grid grid-cols-[minmax(0,6.5rem)_1fr] gap-x-2 gap-y-1 pl-5">
+                        {game.specs.map((s) => (
+                          <React.Fragment key={s.label}>
+                            <dt className="font-mono text-[9px] tracking-label uppercase text-parchment/40 leading-snug">{s.label}</dt>
+                            <dd className="min-w-0 font-mono text-[10px] text-parchment/70 leading-snug">
+                              {s.value}
+                              {s.sublabel && <span className="text-parchment/35"> · {s.sublabel}</span>}
+                            </dd>
+                          </React.Fragment>
+                        ))}
+                      </dl>
                     </div>
-                    <dl className="grid grid-cols-[minmax(0,6.5rem)_1fr] gap-x-2 gap-y-1 pl-5">
-                      {game.specs.map((s) => (
-                        <React.Fragment key={s.label}>
-                          <dt className="font-mono text-[9px] tracking-label uppercase text-parchment/40 leading-snug">{s.label}</dt>
-                          <dd className="min-w-0 font-mono text-[10px] text-parchment/70 leading-snug">
-                            {s.value}
-                            {s.sublabel && <span className="text-parchment/35"> · {s.sublabel}</span>}
-                          </dd>
-                        </React.Fragment>
-                      ))}
-                    </dl>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CatalogBrowser>
+                  ))}
+                </div>
+              )}
+            </CatalogBrowser>
           </DraggableWindow>
 
           {/* Live terminal */}
