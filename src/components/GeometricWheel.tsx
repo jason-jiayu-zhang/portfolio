@@ -48,8 +48,6 @@ const GOLD = '#a39d7b'
 const LABEL_RADIUS = 222
 
 const StaticBackground = memo(() => {
-  const { hasLoaded } = useIntro()
-  
   return (
   <g>
     <defs>
@@ -136,7 +134,7 @@ const StaticBackground = memo(() => {
       }
     `}</style>
 
-    <g className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '1.3s', animationDelay: !hasLoaded ? '450ms' : '0ms' }}>
+    <g>
       <circle className="breathe-glow" cx={CX} cy={CY} r={280} fill="url(#wheelGlow)" />
     </g>
 
@@ -189,19 +187,17 @@ const StaticBackground = memo(() => {
       const ambientClass = animated ? (i % 2 === 0 ? "ambient-ring-cw" : "ambient-ring-ccw") : ""
       const duration = 190 + i * 24
       return (
-        <g key={`ring-static-${i}`} className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '1.3s', animationDelay: !hasLoaded ? `${(RINGS.length - 1 - i) * 30}ms` : '0ms' }}>
-          <g className={ambientClass} style={animated ? { animationDuration: `${duration}s` } : undefined}>
-            <circle
-              cx={CX}
-              cy={CY}
-              r={ring.radius}
-              fill="none"
-              stroke={PARCHMENT}
-              strokeWidth={ring.strokeWidth}
-              opacity={ring.opacity}
-              strokeDasharray={ring.dashed ? ring.dashArray : undefined}
-            />
-          </g>
+        <g key={`ring-static-${i}`} className={ambientClass} style={animated ? { animationDuration: `${duration}s` } : undefined}>
+          <circle
+            cx={CX}
+            cy={CY}
+            r={ring.radius}
+            fill="none"
+            stroke={PARCHMENT}
+            strokeWidth={ring.strokeWidth}
+            opacity={ring.opacity}
+            strokeDasharray={ring.dashed ? ring.dashArray : undefined}
+          />
         </g>
       )
     })}
@@ -250,10 +246,8 @@ const StaticRotatingMandalas = memo(() => {
     spiralPath += `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y} `
   }
 
-  const { hasLoaded } = useIntro()
-
   return (
-    <g className={!hasLoaded ? "animate-vector-draw" : ""} style={{ animationDuration: '1.3s' }}>
+    <g>
       {RINGS.map((ring, ri) =>
         ring.ticks ? (
           <path
@@ -451,11 +445,6 @@ const GeometricWheel = memo(forwardRef<WheelHandle, GeometricWheelProps>(({ rota
 
       {/* Center glow on active snap */}
       <circle className="breathe-core" cx={CX} cy={CY} r={18} fill="url(#centerGlow)" opacity={0.6} />
-
-      {/* Phase 01: Singular Vector Dot at center */}
-      {!hasLoaded && (
-        <circle cx={CX} cy={CY} r={2} fill={GOLD} className="animate-scale-dot" style={{ transformOrigin: `${CX}px ${CY}px` }} />
-      )}
 
       {/* Center crosshair — static (rendered on top); flashes gold on press, echoing the cursor's lock-on state */}
       <line

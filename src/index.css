@@ -241,6 +241,19 @@
   background: none;
 }
 
+/* Seam detune flash — a denser scanline grid that spikes for a beat as the
+   Case Studies → Studio boundary crosses, then releases. Opacity is driven
+   inline from scroll progress; this only supplies the CRT texture. */
+.seam-scanline-flash {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(163, 157, 123, 0.14) 2px,
+    rgba(163, 157, 123, 0.14) 3px
+  );
+}
+
 /* ─── CINEMATIC INTRO SEQUENCE ────────────────────────────────────────────── */
 
 @layer utilities {
@@ -335,6 +348,39 @@
   @keyframes signal-bar {
     0%, 100% { transform: scaleY(0.3); }
     50% { transform: scaleY(1); }
+  }
+
+  /* Page-start wheel entrance: the full disc fades in high and centered, then
+     sinks down and decelerates into its resting dome position — like a setting
+     sun dropping below the horizon. translateX(-50%) is baked into every step
+     because the animation replaces the element's base transform outright. */
+  .animate-wheel-set {
+    animation: wheel-set 1.5s forwards;
+  }
+  @keyframes wheel-set {
+    0% {
+      transform: translateX(-50%) translateY(0%) scale(0.94);
+      opacity: 0;
+      animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    20% {
+      transform: translateX(-50%) translateY(0%) scale(1);
+      opacity: 1;
+      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    100% {
+      transform: translateX(-50%) translateY(66.667%) scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Content band rises up off-screen to meet the space the wheel just vacated. */
+  .animate-content-rise {
+    animation: content-rise 0.7s var(--ease-expo-out) forwards;
+  }
+  @keyframes content-rise {
+    from { transform: translateY(48px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 }
 

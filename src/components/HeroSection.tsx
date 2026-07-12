@@ -234,6 +234,12 @@ export default function HeroSection() {
   const { hasLoaded, phase } = useIntro()
   const showPhase2 = hasLoaded || phase === 'phase02' || phase === 'phase03'
 
+  // First-visit entrance: the dome sinks in from a raised full-disc position
+  // (wheelSetClass), held hidden until phase01 kicks the animation off.
+  const introPlaying = !hasLoaded
+  const wheelSetClass = introPlaying && phase !== 'initial' ? 'animate-wheel-set' : ''
+  const wheelPreStart = introPlaying && phase === 'initial'
+
   useEffect(() => {
     if (phase === 'phase03' && !hasLoaded) {
       window.scrollTo({ top: 0, behavior: 'instant' })
@@ -320,7 +326,7 @@ export default function HeroSection() {
         onTouchEnd={onTouchEnd}
       >
         {showPhase2 && (
-          <div className="w-full px-4 sm:px-6 lg:px-12 flex-1 flex flex-col min-h-0">
+          <div className={`w-full px-4 sm:px-6 lg:px-12 flex-1 flex flex-col min-h-0 ${!hasLoaded ? 'animate-content-rise' : ''}`}>
             {/* Pager — centered so it clears the corner HUD readouts */}
             <div className="shrink-0 z-20 py-1.5 flex justify-center pointer-events-none">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md bg-primary/55 border border-accent/25 pointer-events-auto">
@@ -420,12 +426,13 @@ export default function HeroSection() {
       >
         {/* Accent glow behind the dome */}
         <div
-          className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-[66.667%] pointer-events-none"
+          className={`absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-[66.667%] pointer-events-none ${wheelSetClass}`}
           style={{
             width: 'calc(var(--wheel-size) * 1.5)',
             height: 'calc(var(--wheel-size) * 1.5)',
             background: `radial-gradient(circle at center, ${activeSection.accentColor}0f 0%, transparent 60%)`,
             transition: 'background 0.25s ease',
+            opacity: wheelPreStart ? 0 : undefined,
           }}
         />
 
@@ -433,8 +440,12 @@ export default function HeroSection() {
             top third shows; the container height (--wheel-size / 2) is unchanged,
             so the dome's top edge stays at the same height. */}
         <div
-          className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-[66.667%]"
-          style={{ width: 'calc(var(--wheel-size) * 1.5)', height: 'calc(var(--wheel-size) * 1.5)' }}
+          className={`absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-[66.667%] ${wheelSetClass}`}
+          style={{
+            width: 'calc(var(--wheel-size) * 1.5)',
+            height: 'calc(var(--wheel-size) * 1.5)',
+            opacity: wheelPreStart ? 0 : undefined,
+          }}
         >
           <WheelSelector
             onProjectChange={handleSectionChange}

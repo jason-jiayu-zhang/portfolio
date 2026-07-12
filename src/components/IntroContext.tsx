@@ -29,23 +29,36 @@ export function IntroProvider({ children }: { children: React.ReactNode }) {
       return
     }
 
+    // Respect reduced-motion: skip the entrance entirely and land on the live state.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setHasLoaded(true)
+      setPhase('phase03')
+      sessionStorage.setItem('introPlayed', 'true')
+      return
+    }
+
     setHasLoaded(false)
-    
-    // Initial buffer: 500ms (allows browser to paint dark screen first)
+
+    // Phase 01: fires at 400ms (after the browser paints the dark stage) — the
+    // wheel fades in as a full disc high in the viewport, then sinks down and
+    // settles into its resting dome over the 1.5s wheel-set animation.
     const timer0 = setTimeout(() => {
       setPhase('phase01')
-    }, 500)
-    
-    // Phase 02: fires at 600ms, while the glow/rings' 1.3s vector-draw (finishes ~1750ms after mount) is still mid-flight — the cardinal points and labels start fading in over the tail of the draw instead of waiting for it to fully settle.
+    }, 400)
+
+    // Phase 02: fires at 1150ms, while the wheel is mid-descent — the frame,
+    // HUD, pager, and content band rise up to meet the space it's vacating, and
+    // the cardinal points/labels begin their staggered fade-in.
     const timer1 = setTimeout(() => {
       setPhase('phase02')
-    }, 600)
+    }, 1150)
 
-    // Phase 03: fires at 1500ms — 900ms after phase02, enough for the staggered cardinal-point/label fade-ins (last one starts at phase02+490ms, 250ms transition) to finish before hasLoaded flips.
+    // Phase 03: fires at 2000ms — the wheel-set (starts 400ms, 1.5s) and the
+    // content rise/cardinal fade-ins have all settled; interactivity unlocks.
     const timer2 = setTimeout(() => {
       setPhase('phase03')
       sessionStorage.setItem('introPlayed', 'true')
-    }, 1500)
+    }, 2000)
 
     return () => {
       clearTimeout(timer0)
