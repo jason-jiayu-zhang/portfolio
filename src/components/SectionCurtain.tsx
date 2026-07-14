@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { usePrefersReducedMotion } from './HeroAboutPanels'
+import { useLenis } from './SmoothScroll'
 
 // ── Section curtains ─────────────────────────────────────────────────────────
 // Choreographed transition between the page's major chapters. When the visitor
@@ -35,6 +36,9 @@ type Phase = 'cover' | 'hold' | 'reveal'
 
 export default function SectionCurtain() {
   const reduced = usePrefersReducedMotion()
+  const lenis = useLenis()
+  const lenisRef = useRef(lenis)
+  useEffect(() => { lenisRef.current = lenis }, [lenis])
   const [active, setActive] = useState<CurtainTarget | null>(null)
   const [phase, setPhase] = useState<Phase>('cover')
   const [raised, setRaised] = useState(false)
@@ -44,7 +48,10 @@ export default function SectionCurtain() {
   const armedFromYRef = useRef(0) // scroll pos where the last beat handed control back
   const timers = useRef<number[]>([])
 
-  // ── Scroll lock — swallow every user-driven scroll input during the beat ────
+  // ── Scroll lock — freeze all scrolling for the duration of the beat ─────────
+  // With Lenis present, lenis.stop() halts its inertia loop and sets the
+  // html overflow hidden; without it (the brief pre-init window) we fall back to
+  // eating the raw scroll events ourselves. Keys are eaten in both cases.
   const eat = useCallback((e: Event) => e.preventDefault(), [])
   const eatKeys = useCallback((e: KeyboardEvent) => {
     const scrollKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' ', 'Spacebar']
@@ -52,16 +59,35 @@ export default function SectionCurtain() {
   }, [])
 
   const lockScroll = useCallback(() => {
-    window.addEventListener('wheel', eat, { passive: false })
-    window.addEventListener('touchmove', eat, { passive: false })
+    if (lenisRef.current) {
+      lenisRef.current.stop()
+    } else {
+      window.addEventListener('wheel', eat, { passive: false })
+      window.addEventListener('touchmove', eat, { passive: false })
+    }
     window.addEventListener('keydown', eatKeys, { passive: false })
   }, [eat, eatKeys])
 
   const unlockScroll = useCallback(() => {
-    window.removeEventListener('wheel', eat)
-    window.removeEventListener('touchmove', eat)
+    if (lenisRef.current) {
+      lenisRef.current.start()
+    } else {
+      window.removeEventListener('wheel', eat)
+      window.removeEventListener('touchmove', eat)
+    }
     window.removeEventListener('keydown', eatKeys)
   }, [eat, eatKeys])
+
+  // Jump/scroll through Lenis when it owns the scroll, else native. force:true
+  // lets a programmatic scroll run even while Lenis is stopped for the beat.
+  const scrollToY = useCallback((top: number, smooth = false) => {
+    const l = lenisRef.current
+    if (l) {
+      l.scrollTo(top, smooth ? { duration: REVEAL_MS / 1000, force: true } : { immediate: true, force: true })
+    } else {
+      window.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' })
+    }
+  }, [])
 
   const engage = useCallback((target: CurtainTarget) => {
     busyRef.current = true
@@ -86,7 +112,7 @@ export default function SectionCurtain() {
       const el = document.getElementById(target.id)
       if (el) {
         const top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET
-        window.scrollTo(0, top)
+        scrollToY(top)
       }
       setActive(null)
       setRaised(false)
@@ -105,7 +131,7 @@ export default function SectionCurtain() {
       const el = document.getElementById(target.id)
       if (el) {
         const top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET
-        window.scrollTo(0, top + RISE_PX)
+        scrollToY(top + RISE_PX)
       }
       setPhase('hold')
     }, COVER_MS)
@@ -115,14 +141,14 @@ export default function SectionCurtain() {
       const el = document.getElementById(target.id)
       if (el) {
         const top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET
-        window.scrollTo({ top, behavior: 'smooth' })
+        scrollToY(top, true)
       }
       setPhase('reveal')
     }, COVER_MS + HOLD_MS)
 
     // Reveal done → hand scrolling back to the visitor.
     t(finish, COVER_MS + HOLD_MS + REVEAL_MS)
-  }, [lockScroll, unlockScroll])
+  }, [lockScroll, unlockScroll, scrollToY])
 
   // ── Boundary detection — engage on a downward pass into a section ───────────
   useEffect(() => {
