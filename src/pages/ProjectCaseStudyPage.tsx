@@ -7,6 +7,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { PROJECTS } from '../data/portfolio'
+import NotFoundPage from './NotFoundPage'
 
 
 // ── Thin hairline separator with section label + deep link ───────────────────
@@ -755,16 +756,7 @@ export default function ProjectCaseStudyPage() {
   }, [slug])
 
   if (!project) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <p className="font-mono text-xs tracking-label text-parchment/65">404 — PROJECT NOT FOUND</p>
-          <Link to="/" className="font-mono text-xs text-gold/88 hover:text-gold transition-colors">
-            ← Return Home
-          </Link>
-        </div>
-      </div>
-    )
+    return <NotFoundPage />
   }
 
   const cs = project.caseStudy
