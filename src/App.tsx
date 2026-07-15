@@ -11,11 +11,16 @@ import { lazy, Suspense } from 'react'
 const FeaturedGrid = lazy(() => import('./components/FeaturedGrid'))
 const StudioSection = lazy(() => import('./components/StudioSection'))
 const Footer = lazy(() => import('./components/Footer'))
+// ?scrub swaps the timed gold cut for the GSAP scroll-driven prototype.
+const SectionCurtainScrub = lazy(() => import('./components/SectionCurtainScrub'))
+const useScrubCurtain = () =>
+  typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('scrub')
 
 function AppContent() {
   const { phase } = useIntro()
   const isPhase3 = phase === 'phase03'
   const { scanlineActive } = useScanline()
+  const scrub = useScrubCurtain()
 
   return (
     <div className={`min-h-screen flex flex-col bg-primary${scanlineActive ? ' scanline-overlay' : ''}`}>
@@ -51,7 +56,14 @@ function AppContent() {
       )}
 
       {/* Gold title-card wipes between the major scroll sections */}
-      {isPhase3 && <SectionCurtain />}
+      {isPhase3 &&
+        (scrub ? (
+          <Suspense fallback={null}>
+            <SectionCurtainScrub />
+          </Suspense>
+        ) : (
+          <SectionCurtain />
+        ))}
     </div>
   )
 }

@@ -8,6 +8,7 @@ import App from './App'
 import Header from './components/Header'
 import { lazy, Suspense } from 'react'
 import { ScanlineProvider, useScanline } from './components/ScanlineContext'
+import { SmoothScroll } from './components/SmoothScroll'
 
 const ProjectCaseStudyPage = lazy(() => import('./pages/ProjectCaseStudyPage'))
 const ExperimentLogPage = lazy(() => import('./pages/ExperimentLogPage'))
@@ -30,10 +31,10 @@ function PageShell({ children }: { children: React.ReactNode }) {
 
 function RootLayout() {
   return (
-    <>
+    <SmoothScroll>
       <ScrollRestoration />
       <Outlet />
-    </>
+    </SmoothScroll>
   )
 }
 
