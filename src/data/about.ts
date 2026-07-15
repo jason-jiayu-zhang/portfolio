@@ -191,7 +191,7 @@ export const PLAYGROUND: GameEntry[] = [
     specs: [
       { label: 'Mode', value: 'Open-World RPG' },
       { label: 'Characters', value: 'Zhuang Fangyi / Arclight / Arcane' },
-      { label: 'Progression', value: 'NA Server // Lv. 56' },
+      { label: 'Progression', value: 'NA Server // Lv. 57' },
       { label: 'PLATFORM / DEVICE', value: 'Desktop / Mobile', sublabel: 'Cross-Play Sync' },
       { label: 'Peripherals', value: 'Razer Basilisk v3 / MelGeek MADE68 Pro', sublabel: 'Keyboard & Mouse' },
     ],
