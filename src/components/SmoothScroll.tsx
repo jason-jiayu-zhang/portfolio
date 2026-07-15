@@ -8,8 +8,8 @@ import { usePrefersReducedMotion } from './HeroAboutPanels'
 // Lenis drives the real window scrollbar with weighted inertia. It's disabled
 // under prefers-reduced-motion, so the instance is null in that case and every
 // consumer must fall back to native scrolling. The instance is shared via
-// context so scroll-hijacking beats (SectionCurtain) can stop/start and jump
-// through Lenis instead of fighting it with preventDefault + window.scrollTo.
+// context so SectionCurtain can feed Lenis's scroll position to its GSAP
+// ScrollTrigger, keeping the scrubbed wipe in step with the inertial scroll.
 
 const LenisContext = createContext<Lenis | null>(null)
 
