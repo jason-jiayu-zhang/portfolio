@@ -8,11 +8,13 @@ import { useLenis } from './SmoothScroll'
 gsap.registerPlugin(ScrollTrigger)
 
 // ── Section curtains, scrub variant (GSAP prototype) ─────────────────────────
-// Same gold plate + title as SectionCurtain, but the wipe is *driven by scroll
-// position* instead of a locked timer. As a section rises from the fold toward
-// the top, the gold plate sweeps up across the viewport — fully covering at the
-// midpoint (title peaks there) then clearing off the top. Scroll back up and it
-// un-wipes. No scroll-lock, no forced jumps: the visitor is the playhead.
+// Same gold + title as SectionCurtain, but scroll-driven — no lock, no jumps.
+// Instead of one solid plate the curtain is a rank of vertical gold slats. As a
+// section rises from the fold the slats surge up from below in a staggered,
+// random order to blanket the screen; at the seam they all rest flush (full
+// cover) and the section title settles on top; scrolling on, they peel off the
+// top in a fresh random order to reveal the new section. Scroll back up and the
+// whole thing runs in reverse. The visitor is the playhead.
 // Enabled via ?scrub — the timed cut in SectionCurtain stays the default.
 
 interface CurtainTarget {
@@ -26,6 +28,8 @@ const TARGETS: CurtainTarget[] = [
   { id: 'studio', eyebrow: '§ 03 — Off-a-whim', title: 'Studio' },
   { id: 'signoff', eyebrow: '§ 05 — Sign-off', title: "Let's Talk" },
 ]
+
+const COLS = 9 // number of vertical slats making up each curtain
 
 export default function SectionCurtainScrub() {
   const reduced = usePrefersReducedMotion()
@@ -43,18 +47,36 @@ export default function SectionCurtainScrub() {
     const ctx = gsap.context(() => {
       TARGETS.forEach((target) => {
         const el = document.getElementById(target.id)
-        const plate = root.querySelector<HTMLElement>(`[data-plate="${target.id}"]`)
+        const slats = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(`[data-slat="${target.id}"]`))
         const title = root.querySelector<HTMLElement>(`[data-title="${target.id}"]`)
-        if (!el || !plate || !title) return
+        if (!el || !slats.length || !title) return
 
         const tl = gsap.timeline({
           scrollTrigger: { trigger: el, start: 'top 90%', end: 'top 10%', scrub: true },
         })
-        // Plate travels below → full cover (mid) → off the top, as one sweep.
-        tl.fromTo(plate, { yPercent: 102 }, { yPercent: -102, ease: 'none', duration: 1 }, 0)
-        // Title rises in for the covered beat, then lifts away with the plate.
-        tl.fromTo(title, { opacity: 0, yPercent: 10 }, { opacity: 1, yPercent: 0, ease: 'power1.out', duration: 0.22 }, 0.30)
-        tl.to(title, { opacity: 0, yPercent: -10, ease: 'power1.in', duration: 0.22 }, 0.56)
+
+        // Rise — slats surge up from below into full cover, random stagger.
+        tl.fromTo(
+          slats,
+          { yPercent: 105 },
+          { yPercent: 0, ease: 'power3.out', duration: 0.5, stagger: { amount: 0.3, from: 'random' } },
+          0
+        )
+        // Title fades in over the covered wall, holds through the seam…
+        tl.fromTo(
+          title,
+          { opacity: 0, yPercent: 14 },
+          { opacity: 1, yPercent: 0, ease: 'power2.out', duration: 0.2 },
+          0.62
+        )
+        // …then lifts away just as the slats begin to peel off the top.
+        tl.to(title, { opacity: 0, yPercent: -14, ease: 'power2.in', duration: 0.2 }, 1.0)
+        // Exit — slats clear off the top in a fresh random order.
+        tl.to(
+          slats,
+          { yPercent: -105, ease: 'power3.in', duration: 0.5, stagger: { amount: 0.3, from: 'random' } },
+          1.0
+        )
       })
     }, root)
 
@@ -73,21 +95,32 @@ export default function SectionCurtainScrub() {
   return createPortal(
     <div ref={rootRef} className="pointer-events-none fixed inset-0 z-[9000] overflow-hidden" aria-hidden>
       {TARGETS.map((target) => (
-        <div
-          key={target.id}
-          data-plate={target.id}
-          className="absolute inset-0 flex flex-col items-center justify-center"
-          style={{
-            willChange: 'transform',
-            background:
-              'radial-gradient(ellipse 90% 70% at 50% 45%, #b6b08a 0%, #a39d7b 42%, #8f8a6a 100%)',
-          }}
-        >
-          <div className="absolute inset-0 bg-grid-fine bg-grid-md opacity-[0.14] mix-blend-multiply" />
-          <div className="absolute inset-x-0 top-0 h-px bg-primary/25" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-primary/25" />
+        <div key={target.id} className="absolute inset-0">
+          {/* Slat wall — each column rises/exits independently. */}
+          <div className="absolute inset-0 flex">
+            {Array.from({ length: COLS }).map((_, i) => (
+              <div
+                key={i}
+                data-slat={target.id}
+                className="relative h-full shadow-[inset_-1px_0_0_rgba(20,22,32,0.12)]"
+                style={{
+                  width: `${100 / COLS}%`,
+                  willChange: 'transform',
+                  background:
+                    'radial-gradient(ellipse 140% 70% at 50% 45%, #b6b08a 0%, #a39d7b 42%, #8f8a6a 100%)',
+                }}
+              >
+                <div className="absolute inset-0 bg-grid-fine bg-grid-md opacity-[0.14] mix-blend-multiply" />
+              </div>
+            ))}
+          </div>
 
-          <div data-title={target.id} className="relative px-6 text-center" style={{ opacity: 0 }}>
+          {/* Title — layered above the slats, centered. */}
+          <div
+            data-title={target.id}
+            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
+            style={{ opacity: 0, willChange: 'transform, opacity' }}
+          >
             <div className="font-mono text-xs sm:text-sm tracking-label uppercase text-primary/70 mb-4">
               {target.eyebrow}
             </div>
