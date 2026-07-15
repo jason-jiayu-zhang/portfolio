@@ -7,6 +7,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { EXPERIMENTS } from '../data/portfolio'
+import NotFoundPage from './NotFoundPage'
 
 // ── Type-safe props ────────────────────────────────────────────────────────────
 interface ExperimentProps {
@@ -210,16 +211,7 @@ export default function ExperimentLogPage() {
   }, [id])
 
   if (!exp) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <p className="font-mono text-xs tracking-label text-parchment/65">404 — EXPERIMENT NOT FOUND</p>
-          <Link to="/" className="font-mono text-xs text-gold/88 hover:text-gold transition-colors">
-            ← Return Home
-          </Link>
-        </div>
-      </div>
-    )
+    return <NotFoundPage />
   }
 
   const log = exp.log

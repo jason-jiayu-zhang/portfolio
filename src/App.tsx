@@ -2,7 +2,6 @@
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
 import CustomCursor from './components/CustomCursor'
-import SectionCurtain from './components/SectionCurtain'
 import { useIntro, IntroProvider } from './components/IntroContext'
 import { useScanline } from './components/ScanlineContext'
 import './index.css'
@@ -11,6 +10,8 @@ import { lazy, Suspense } from 'react'
 const FeaturedGrid = lazy(() => import('./components/FeaturedGrid'))
 const StudioSection = lazy(() => import('./components/StudioSection'))
 const Footer = lazy(() => import('./components/Footer'))
+// Lazy so GSAP stays out of the main bundle.
+const SectionCurtain = lazy(() => import('./components/SectionCurtain'))
 
 function AppContent() {
   const { phase } = useIntro()
@@ -51,7 +52,11 @@ function AppContent() {
       )}
 
       {/* Gold title-card wipes between the major scroll sections */}
-      {isPhase3 && <SectionCurtain />}
+      {isPhase3 && (
+        <Suspense fallback={null}>
+          <SectionCurtain />
+        </Suspense>
+      )}
     </div>
   )
 }

@@ -191,9 +191,9 @@ export const PLAYGROUND: GameEntry[] = [
     specs: [
       { label: 'Mode', value: 'Open-World RPG' },
       { label: 'Characters', value: 'Zhuang Fangyi / Arclight / Arcane' },
-      { label: 'Progression', value: 'NA Server // Lv. 56' },
+      { label: 'Progression', value: 'NA Server // Lv. 57' },
       { label: 'PLATFORM / DEVICE', value: 'Desktop / Mobile', sublabel: 'Cross-Play Sync' },
-      { label: 'Peripherals', value: 'Razer Basilisk v3 / MelGeek MADE68 Pro', sublabel: 'Keyboard & Mouse' },
+      { label: 'Peripherals', value: 'Razer Basilisk v3 / Rainy 75', sublabel: 'Keyboard & Mouse' },
     ],
   },
   {
@@ -204,7 +204,7 @@ export const PLAYGROUND: GameEntry[] = [
       { label: 'Classes', value: 'Archer / Mage / Kunai' },
       { label: 'Ranking', value: 'Top 1%', sublabel: 'Leaderboard Tier' },
       { label: 'Access', value: 'Alpha Play-Tester', sublabel: 'Pre-Release Sandbox' },
-      { label: 'Peripherals', value: 'Razer Basilisk v3 / MelGeek MADE68 Pro', sublabel: 'Keyboard & Mouse' },
+      { label: 'Peripherals', value: 'Razer Basilisk v3 / RK68 + Moon Linear v2', sublabel: 'Keyboard & Mouse' },
     ],
   },
 ]
