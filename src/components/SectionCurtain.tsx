@@ -43,6 +43,28 @@ export default function SectionCurtain() {
     // Keep ScrollTrigger's scroll position in step with Lenis's inertial scroll.
     if (lenis) lenis.on('scroll', ScrollTrigger.update)
 
+    // iOS Safari sizes `position: fixed` to the layout viewport, which drifts
+    // from the actually-visible area as the URL bar and bottom toolbar collapse
+    // and during Lenis momentum scroll — exposing bands of the navy page body at
+    // the top and bottom of the curtain. Pin the curtain to the real visible
+    // rectangle reported by the VisualViewport API, with an extra 80px of bleed
+    // on each edge (clipped by overflow-hidden) so iOS's late fixed-layer
+    // repaint can never open a seam. Falls back to the CSS vh overshoot when the
+    // API is unavailable (older browsers, desktop).
+    const vv = window.visualViewport
+    const OVERSHOOT = 80
+    const syncViewport = () => {
+      if (!vv) return
+      root.style.top = `${vv.offsetTop - OVERSHOOT}px`
+      root.style.height = `${vv.height + OVERSHOOT * 2}px`
+    }
+    if (vv) {
+      syncViewport()
+      vv.addEventListener('resize', syncViewport)
+      vv.addEventListener('scroll', syncViewport)
+      if (lenis) lenis.on('scroll', syncViewport)
+    }
+
     const ctx = gsap.context(() => {
       TARGETS.forEach((target) => {
         const el = document.getElementById(target.id)
@@ -85,6 +107,11 @@ export default function SectionCurtain() {
     return () => {
       clearTimeout(refresh)
       if (lenis) lenis.off('scroll', ScrollTrigger.update)
+      if (vv) {
+        vv.removeEventListener('resize', syncViewport)
+        vv.removeEventListener('scroll', syncViewport)
+        if (lenis) lenis.off('scroll', syncViewport)
+      }
       ctx.revert()
     }
   }, [reduced, lenis])
@@ -101,7 +128,7 @@ export default function SectionCurtain() {
       // of the page at the top and bottom. Bleeding it 12vh past each edge (clipped
       // by overflow-hidden) absorbs that drift and the safe-area zones so the wall
       // always reaches under the status bar and home indicator.
-      style={{ top: '-12vh', height: '124vh' }}
+      style={{ top: '-15vh', height: '130vh' }}
       aria-hidden
     >
       {TARGETS.map((target) => (
