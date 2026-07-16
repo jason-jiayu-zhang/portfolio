@@ -549,6 +549,46 @@ a:active:not([aria-disabled='true']) {
   to { transform: scaleX(1); }
 }
 
+/* ─── WORK CONSOLE (case-file terminal) ───────────────────────────────────── */
+
+/* Dossier swaps in when a new channel is tuned: rises + de-blurs into place. */
+@keyframes stage-load {
+  0% { opacity: 0; transform: translateY(20px); filter: blur(7px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.animate-stage-load { animation: stage-load 0.62s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* One-shot bright rule that rakes down the stage the instant a channel changes —
+   the "signal acquiring" beat. `top` is animated (percent = relative to stage). */
+@keyframes scan-sweep {
+  0% { top: -4%; opacity: 0; }
+  12% { opacity: 0.9; }
+  88% { opacity: 0.9; }
+  100% { top: 104%; opacity: 0; }
+}
+.animate-scan-sweep { animation: scan-sweep 0.7s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+/* Continuous scan bar drifting down the specimen viewport — CRT read-head feel. */
+@keyframes specimen-scan {
+  0% { top: -8%; }
+  100% { top: 108%; }
+}
+.animate-specimen-scan { animation: specimen-scan 4.5s linear infinite; }
+
+/* Staggered fade-in for the dossier's stat/meta rows once the stage has loaded. */
+@keyframes dossier-line {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-dossier-line { animation: dossier-line 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-stage-load,
+  .animate-scan-sweep,
+  .animate-specimen-scan,
+  .animate-dossier-line { animation: none !important; }
+}
+
 /* ─── LIGHTBOX CAPTION ANIMATION ──────────────────────────────────────────── */
 
 @keyframes slideUpCaption {

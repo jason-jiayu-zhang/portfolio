@@ -59,7 +59,7 @@ export const STATUS_CYCLE: StatusCycle[] = [
 export const PROJECTS: Project[] = [
   {
     id: 'cattlelog',
-    year: 'Present',
+    year: 2026,
     slug: 'Cattlelog',
     title: 'Cattlelog',
     subtitle: 'Streamlining Course & Professor Discovery for UC Davis',
@@ -119,7 +119,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'fimanu',
-    year: 'Present',
+    year: 2026,
     slug: 'Fimanu',
     title: 'Fimanu',
     subtitle: 'GitHub-style activity tracker for Figma files',
@@ -200,7 +200,7 @@ export const PROJECTS: Project[] = [
       { label: 'Reach', value: '100+ Fellows' },
       { label: 'Focus', value: 'Mentorship' },
     ],
-    awards: ['1st Place', 'Honorable Mention'],
+    awards: ['VP of Design'],
     narrative: [
       'A community driven by mentorship, marketing, and product management.',
       'Designing for the next generation of product leaders, creating environments that empower students to think user-first.',
