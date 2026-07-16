@@ -92,7 +92,18 @@ export default function SectionCurtain() {
   if (reduced) return null
 
   return createPortal(
-    <div ref={rootRef} className="pointer-events-none fixed inset-0 z-[9000] overflow-hidden" aria-hidden>
+    <div
+      ref={rootRef}
+      className="pointer-events-none fixed left-0 right-0 z-[9000] overflow-hidden"
+      // iOS Safari anchors `position: fixed` to the layout viewport, which drifts
+      // from the visible area as the URL bar / toolbar collapse and during Lenis
+      // momentum scroll. Sizing the curtain to exactly one viewport exposed slivers
+      // of the page at the top and bottom. Bleeding it 12vh past each edge (clipped
+      // by overflow-hidden) absorbs that drift and the safe-area zones so the wall
+      // always reaches under the status bar and home indicator.
+      style={{ top: '-12vh', height: '124vh' }}
+      aria-hidden
+    >
       {TARGETS.map((target) => (
         <div key={target.id} className="absolute inset-0">
           {/* Slat wall — each column rises/exits independently. */}
@@ -118,7 +129,14 @@ export default function SectionCurtain() {
           <div
             data-title={target.id}
             className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-            style={{ opacity: 0, willChange: 'transform, opacity' }}
+            style={{
+              opacity: 0,
+              willChange: 'transform, opacity',
+              // Container is offset -12vh; keep the title optically centred in the
+              // visible viewport and clear of the notch / home indicator.
+              paddingTop: 'calc(12vh + env(safe-area-inset-top))',
+              paddingBottom: 'calc(12vh + env(safe-area-inset-bottom))',
+            }}
           >
             <div className="font-mono text-xs sm:text-sm tracking-label uppercase text-primary/70 mb-4">
               {target.eyebrow}
