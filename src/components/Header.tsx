@@ -107,10 +107,18 @@ export default function Header() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 h-12 flex items-center"
-      style={{ borderBottom: '1px solid rgba(56, 64, 106, 0.5)' }}
+      className="fixed top-0 left-0 right-0 z-50 flex items-center"
+      style={{
+        // With viewport-fit=cover the page paints under the Dynamic Island /
+        // notch, so extend the header up through the top safe-area inset: the
+        // 3rem content row stays below the island while the blurred backdrop
+        // fills the inset, covering content that scrolls past underneath.
+        height: 'calc(3rem + env(safe-area-inset-top))',
+        paddingTop: 'env(safe-area-inset-top)',
+        borderBottom: '1px solid rgba(56, 64, 106, 0.5)',
+      }}
     >
-      {/* Subtle blur backdrop */}
+      {/* Subtle blur backdrop — fills the safe-area inset too. */}
       <div className="absolute inset-0 bg-primary/80 backdrop-blur-md" />
 
       {/* Content */}

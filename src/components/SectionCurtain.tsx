@@ -52,7 +52,12 @@ export default function SectionCurtain() {
     // repaint can never open a seam. Falls back to the CSS vh overshoot when the
     // API is unavailable (older browsers, desktop).
     const vv = window.visualViewport
-    const OVERSHOOT = 80
+    // Generous bleed: iOS keeps `position: fixed` layers roughly pinned during
+    // momentum scroll but repaints them a frame or two late, so a tight fit
+    // briefly exposes a seam. 300px of overshoot on each edge is far larger than
+    // any real repaint lag or toolbar transition, so the wall always runs past
+    // the physical screen edges (status bar / Dynamic Island and home indicator).
+    const OVERSHOOT = 300
     const syncViewport = () => {
       if (!vv) return
       root.style.top = `${vv.offsetTop - OVERSHOOT}px`
@@ -128,7 +133,7 @@ export default function SectionCurtain() {
       // of the page at the top and bottom. Bleeding it 12vh past each edge (clipped
       // by overflow-hidden) absorbs that drift and the safe-area zones so the wall
       // always reaches under the status bar and home indicator.
-      style={{ top: '-15vh', height: '130vh' }}
+      style={{ top: '-30vh', height: '160vh' }}
       aria-hidden
     >
       {TARGETS.map((target) => (
@@ -156,14 +161,10 @@ export default function SectionCurtain() {
           <div
             data-title={target.id}
             className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-            style={{
-              opacity: 0,
-              willChange: 'transform, opacity',
-              // Container is offset -12vh; keep the title optically centred in the
-              // visible viewport and clear of the notch / home indicator.
-              paddingTop: 'calc(12vh + env(safe-area-inset-top))',
-              paddingBottom: 'calc(12vh + env(safe-area-inset-bottom))',
-            }}
+            // The wall's overshoot keeps the container symmetric around the
+            // visible viewport, so the centred title lands in the middle of the
+            // screen (clear of the notch / home indicator) with no extra padding.
+            style={{ opacity: 0, willChange: 'transform, opacity' }}
           >
             <div className="font-mono text-xs sm:text-sm tracking-label uppercase text-primary/70 mb-4">
               {target.eyebrow}
