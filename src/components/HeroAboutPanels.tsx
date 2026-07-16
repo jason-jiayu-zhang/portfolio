@@ -449,7 +449,7 @@ const CREDIBILITY_STATS: Array<{ value: string; label: string }> = [
   { value: 'Design, Computer Engineering', label: 'UC Davis Degrees' },
 ]
 const SKILL_KEYWORDS = ['Design Systems', 'Front-End', 'Figma-to-Code', 'Prototyping']
-const AVAILABILITY = 'Open to Winter 2026 Roles'
+const AVAILABILITY = 'Open to Summer 2027 Roles'
 
 function AvailabilityPill({ accent }: { accent: string }) {
   return (

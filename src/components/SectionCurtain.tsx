@@ -23,7 +23,7 @@ interface CurtainTarget {
 }
 
 const TARGETS: CurtainTarget[] = [
-  { id: 'featured-grid', eyebrow: '§ 02 — Selected', title: 'Featured Work' },
+  { id: 'featured-grid', eyebrow: '§ 02 — Selected', title: 'Work Console' },
   { id: 'studio', eyebrow: '§ 03 — Off-a-whim', title: 'Studio' },
   { id: 'signoff', eyebrow: '§ 05 — Sign-off', title: "Let's Talk" },
 ]
