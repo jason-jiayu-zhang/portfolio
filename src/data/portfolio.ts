@@ -114,7 +114,7 @@ export const PROJECTS: Project[] = [
           description: 'Academic planning resources, tips, and student announcements.'
         }
       ],
-      figmaActivityEmbedUrl: 'https://figma-tracker.onrender.com/embed-widget?slug=jason&files=OmcL296OeqZ4xsHzNcap65&style=fimanu'
+      figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?slug=jason&style=fimanu'
     },
   },
   {
@@ -258,7 +258,7 @@ export const PROJECTS: Project[] = [
     tagline: 'Finding the exact desk, courtyard bench, or quiet corner that Google Maps never tells you about.',
     metrics: [
       { label: 'Award', value: '1st Place' },
-      { label: 'Event', value: 'ProdCon 2025' }
+      { label: 'Research', value: '70+ Surveys' }
     ],
     awards: ['1st Place'],
     narrative: [

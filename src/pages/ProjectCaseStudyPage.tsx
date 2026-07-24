@@ -533,201 +533,201 @@ function VisualShowcase({
 
   return (
     <>
-    <div
-      style={{
-        opacity: mounted ? 1 : 0,
-        transform: mounted ? 'translateY(0)' : 'translateY(10px)',
-        transition: `opacity 0.2s ease ${mountDelay}ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) ${mountDelay}ms`,
-      }}
-      className="space-y-6"
-    >
-      {/* Device frame (simulated browser mockup) */}
       <div
-        className="relative rounded-[3px] border shadow-2xl overflow-hidden transition-all duration-200"
         style={{
-          borderColor: 'rgba(56,64,106,0.35)',
-          backgroundColor: 'rgba(28,32,53,0.7)',
+          opacity: mounted ? 1 : 0,
+          transform: mounted ? 'translateY(0)' : 'translateY(10px)',
+          transition: `opacity 0.2s ease ${mountDelay}ms, transform 0.26s cubic-bezier(0.22,1,0.36,1) ${mountDelay}ms`,
         }}
+        className="space-y-6"
       >
-        {/* Browser Top Bar */}
+        {/* Device frame (simulated browser mockup) */}
         <div
-          className="flex items-center justify-between px-4 py-3 border-b"
+          className="relative rounded-[3px] border shadow-2xl overflow-hidden transition-all duration-200"
           style={{
-            borderColor: 'rgba(56,64,106,0.2)',
-            backgroundColor: 'rgba(20,24,40,0.5)',
+            borderColor: 'rgba(56,64,106,0.35)',
+            backgroundColor: 'rgba(28,32,53,0.7)',
           }}
         >
-          {/* Window control dots */}
-          <div className="flex gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-          </div>
-
-          {/* Browser Address Bar */}
+          {/* Browser Top Bar */}
           <div
-            className="flex-1 max-w-md mx-4 py-1 px-3 text-xs font-mono text-center rounded truncate"
+            className="flex items-center justify-between px-4 py-3 border-b"
             style={{
-              backgroundColor: 'rgba(10,12,22,0.6)',
-              color: 'rgba(207,204,187,0.65)',
-              border: '1px solid rgba(56,64,106,0.15)',
+              borderColor: 'rgba(56,64,106,0.2)',
+              backgroundColor: 'rgba(20,24,40,0.5)',
             }}
           >
-            {images && images.length > 0 ? `visuals://showcase/${items[activeTab].label.toLowerCase().replace(/\s+/g, '-')}` : 'visuals://design-template/geometric-spec'}
+            {/* Window control dots */}
+            <div className="flex gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+            </div>
+
+            {/* Browser Address Bar */}
+            <div
+              className="flex-1 max-w-md mx-4 py-1 px-3 text-xs font-mono text-center rounded truncate"
+              style={{
+                backgroundColor: 'rgba(10,12,22,0.6)',
+                color: 'rgba(207,204,187,0.65)',
+                border: '1px solid rgba(56,64,106,0.15)',
+              }}
+            >
+              {images && images.length > 0 ? `visuals://showcase/${items[activeTab].label.toLowerCase().replace(/\s+/g, '-')}` : 'visuals://design-template/geometric-spec'}
+            </div>
+
+            <div className="w-10" /> {/* Spacer to balance dots */}
           </div>
 
-          <div className="w-10" /> {/* Spacer to balance dots */}
-        </div>
-
-        {/* Viewport Canvas */}
-        <div className="relative aspect-[4/3] w-full overflow-hidden flex items-center justify-center bg-[#0a0c16]">
-          {/* Scanlines / Grid lines overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-            backgroundImage: `linear-gradient(rgba(207,204,187,0.1) 1px, transparent 1px),
+          {/* Viewport Canvas */}
+          <div className="relative aspect-[4/3] w-full overflow-hidden flex items-center justify-center bg-[#0a0c16]">
+            {/* Scanlines / Grid lines overlay */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
+              backgroundImage: `linear-gradient(rgba(207,204,187,0.1) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(207,204,187,0.1) 1px, transparent 1px)`,
-            backgroundSize: '24px 24px'
-          }} />
+              backgroundSize: '24px 24px'
+            }} />
 
-          {/* Glowing background radial gradient matching project accent color */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-40 transition-all duration-200"
-            style={{
-              background: `radial-gradient(circle at center, ${accentColor}15 0%, transparent 70%)`
-            }}
-          />
-
-          {/* Show image or placeholder */}
-          {images && images.length > 0 ? (
+            {/* Glowing background radial gradient matching project accent color */}
             <div
-              className="w-full h-full relative"
-              style={{ cursor: 'zoom-in' }}
-              onClick={() => { setLightboxIndex(activeTab); setLightboxOpen(true) }}
-              role="button"
-              aria-label="Expand image"
-              tabIndex={0}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setLightboxIndex(activeTab); setLightboxOpen(true) } }}
-            >
-              {images.map((img, i) => (
-                <img
-                  key={i}
-                  src={img.src}
-                  alt={img.label}
-                  className="absolute inset-0 w-full h-full object-cover transition-all duration-200 ease-in-out"
-                  style={{
-                    opacity: i === activeTab ? 1 : 0,
-                    transform: i === activeTab ? 'scale(1)' : 'scale(1.025)',
-                    visibility: i === activeTab ? 'visible' : 'hidden',
-                  }}
-                />
-              ))}
-              {/* Zoom-in hint overlay */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <div className="bg-black/40 backdrop-blur-sm rounded px-3 py-1.5 font-mono text-xs text-parchment/70 border border-white/10">
-                  ⊕ Click to expand
+              className="absolute inset-0 pointer-events-none opacity-40 transition-all duration-200"
+              style={{
+                background: `radial-gradient(circle at center, ${accentColor}15 0%, transparent 70%)`
+              }}
+            />
+
+            {/* Show image or placeholder */}
+            {images && images.length > 0 ? (
+              <div
+                className="w-full h-full relative"
+                style={{ cursor: 'zoom-in' }}
+                onClick={() => { setLightboxIndex(activeTab); setLightboxOpen(true) }}
+                role="button"
+                aria-label="Expand image"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setLightboxIndex(activeTab); setLightboxOpen(true) } }}
+              >
+                {images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={img.src}
+                    alt={img.label}
+                    className="absolute inset-0 w-full h-full object-cover transition-all duration-200 ease-in-out"
+                    style={{
+                      opacity: i === activeTab ? 1 : 0,
+                      transform: i === activeTab ? 'scale(1)' : 'scale(1.025)',
+                      visibility: i === activeTab ? 'visible' : 'hidden',
+                    }}
+                  />
+                ))}
+                {/* Zoom-in hint overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="bg-black/40 backdrop-blur-sm rounded px-3 py-1.5 font-mono text-xs text-parchment/70 border border-white/10">
+                    ⊕ Click to expand
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            // Geometric template fallback
-            <div className="flex flex-col items-center justify-center p-8 text-center h-full w-full relative">
-              {/* Spinning or pulsing backdrop ring */}
-              <div 
-                className="absolute w-64 h-64 border rounded-full border-dashed animate-[spin_120s_linear_infinite]"
-                style={{ borderColor: `${accentColor}12` }}
-              />
-              <div 
-                className="absolute w-48 h-48 border rounded-full border-dashed animate-[spin_80s_linear_infinite_reverse]"
-                style={{ borderColor: `${accentColor}08` }}
-              />
-              
-              {/* Central pulsing symbol */}
-              <div 
-                className="relative z-10 font-mono text-7xl select-none transition-all duration-200 transform hover:scale-110"
-                style={{ 
-                  color: accentColor,
-                  textShadow: `0 0 40px ${accentColor}50`
-                }}
-              >
-                {(items[activeTab] as any).symbol}
+            ) : (
+              // Geometric template fallback
+              <div className="flex flex-col items-center justify-center p-8 text-center h-full w-full relative">
+                {/* Spinning or pulsing backdrop ring */}
+                <div
+                  className="absolute w-64 h-64 border rounded-full border-dashed animate-[spin_120s_linear_infinite]"
+                  style={{ borderColor: `${accentColor}12` }}
+                />
+                <div
+                  className="absolute w-48 h-48 border rounded-full border-dashed animate-[spin_80s_linear_infinite_reverse]"
+                  style={{ borderColor: `${accentColor}08` }}
+                />
+
+                {/* Central pulsing symbol */}
+                <div
+                  className="relative z-10 font-mono text-7xl select-none transition-all duration-200 transform hover:scale-110"
+                  style={{
+                    color: accentColor,
+                    textShadow: `0 0 40px ${accentColor}50`
+                  }}
+                >
+                  {(items[activeTab] as { symbol?: React.ReactNode }).symbol}
+                </div>
+
+                {/* Title & Description of current screen within canvas */}
+                <div className="relative z-10 mt-6 space-y-2 max-w-sm">
+                  <span className="font-mono text-xs uppercase tracking-widest" style={{ color: `${accentColor}e6` }}>
+                    [Mockup Template Unit_{String(activeTab + 1).padStart(2, '0')}]
+                  </span>
+                  <h4 className="font-sans font-black text-parchment text-lg tracking-tight">
+                    {items[activeTab].label}
+                  </h4>
+                  <p className="font-mono text-xs text-parchment/70 px-4">
+                    {items[activeTab].description}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Tabs and Controls */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          {items.map((item, idx) => (
+            <button
+              key={idx}
+              onClick={() => setActiveTab(idx)}
+              className="flex flex-col text-left p-3.5 border transition-all duration-200 relative group rounded-sm"
+              style={{
+                borderColor: idx === activeTab ? `${accentColor}40` : 'rgba(56,64,106,0.18)',
+                backgroundColor: idx === activeTab ? `${accentColor}06` : 'rgba(28,32,53,0.3)',
+              }}
+            >
+              {/* Top row */}
+              <div className="flex items-center justify-between w-full mb-1">
+                <span className="font-mono text-xs text-parchment/65 group-hover:text-parchment/70">
+                  0{idx + 1}
+                </span>
+                {!images && (
+                  <span className="font-mono text-xs" style={{ color: idx === activeTab ? accentColor : 'rgba(207,204,187,0.65)' }}>
+                    {(item as { symbol?: React.ReactNode }).symbol}
+                  </span>
+                )}
               </div>
 
-              {/* Title & Description of current screen within canvas */}
-              <div className="relative z-10 mt-6 space-y-2 max-w-sm">
-                <span className="font-mono text-xs uppercase tracking-widest" style={{ color: `${accentColor}e6` }}>
-                  [Mockup Template Unit_{String(activeTab + 1).padStart(2, '0')}]
-                </span>
-                <h4 className="font-sans font-black text-parchment text-lg tracking-tight">
-                  {items[activeTab].label}
-                </h4>
-                <p className="font-mono text-xs text-parchment/70 px-4">
-                  {items[activeTab].description}
-                </p>
-              </div>
-            </div>
-          )}
+              {/* Label */}
+              <h5
+                className="font-sans font-bold text-xs tracking-tight transition-colors duration-200"
+                style={{ color: idx === activeTab ? accentColor : 'rgba(207,204,187,0.65)' }}
+              >
+                {item.label}
+              </h5>
+
+              {/* Description */}
+              <p className="font-mono text-xs text-parchment/65 mt-1.5 leading-[1.6] group-hover:text-parchment/70 transition-colors w-full">
+                {item.description}
+              </p>
+
+              {/* Selected bottom glow bar */}
+              {idx === activeTab && (
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-0.5"
+                  style={{ backgroundColor: accentColor }}
+                />
+              )}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Tabs and Controls */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        {items.map((item, idx) => (
-          <button
-            key={idx}
-            onClick={() => setActiveTab(idx)}
-            className="flex flex-col text-left p-3.5 border transition-all duration-200 relative group rounded-sm"
-            style={{
-              borderColor: idx === activeTab ? `${accentColor}40` : 'rgba(56,64,106,0.18)',
-              backgroundColor: idx === activeTab ? `${accentColor}06` : 'rgba(28,32,53,0.3)',
-            }}
-          >
-            {/* Top row */}
-            <div className="flex items-center justify-between w-full mb-1">
-              <span className="font-mono text-xs text-parchment/65 group-hover:text-parchment/70">
-                0{idx + 1}
-              </span>
-              {!images && (
-                <span className="font-mono text-xs" style={{ color: idx === activeTab ? accentColor : 'rgba(207,204,187,0.65)' }}>
-                  {(item as any).symbol}
-                </span>
-              )}
-            </div>
-
-            {/* Label */}
-            <h5 
-              className="font-sans font-bold text-xs tracking-tight transition-colors duration-200"
-              style={{ color: idx === activeTab ? accentColor : 'rgba(207,204,187,0.65)' }}
-            >
-              {item.label}
-            </h5>
-
-            {/* Description */}
-            <p className="font-mono text-xs text-parchment/65 mt-1.5 leading-[1.6] group-hover:text-parchment/70 transition-colors w-full">
-              {item.description}
-            </p>
-
-            {/* Selected bottom glow bar */}
-            {idx === activeTab && (
-              <div 
-                className="absolute bottom-0 left-0 right-0 h-0.5" 
-                style={{ backgroundColor: accentColor }}
-              />
-            )}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* Lightbox portal */}
-    {lightboxOpen && images && images.length > 0 && (
-      <Lightbox
-        images={images}
-        activeIndex={lightboxIndex}
-        onClose={() => setLightboxOpen(false)}
-        onNext={() => setLightboxIndex((prev) => (prev + 1) % images.length)}
-        onPrev={() => setLightboxIndex((prev) => (prev - 1 + images.length) % images.length)}
-      />
-    )}
-  </>
+      {/* Lightbox portal */}
+      {lightboxOpen && images && images.length > 0 && (
+        <Lightbox
+          images={images}
+          activeIndex={lightboxIndex}
+          onClose={() => setLightboxOpen(false)}
+          onNext={() => setLightboxIndex((prev) => (prev + 1) % images.length)}
+          onPrev={() => setLightboxIndex((prev) => (prev - 1 + images.length) % images.length)}
+        />
+      )}
+    </>
   )
 }
 
@@ -975,6 +975,7 @@ export default function ProjectCaseStudyPage() {
               <div
                 className="rounded-[3px] border overflow-hidden"
                 style={{
+                  maxWidth: '916px',
                   borderColor: 'rgba(56,64,106,0.35)',
                   backgroundColor: 'rgba(28,32,53,0.6)',
                   opacity: mounted ? 1 : 0,

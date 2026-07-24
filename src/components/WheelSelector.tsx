@@ -251,6 +251,7 @@ export default function WheelSelector({ onProjectChange, activeIndex, autoAdvanc
     >
       <GeometricWheel
         ref={wheelHandleRef}
+        // eslint-disable-next-line react-hooks/refs
         rotationAngle={wheelRef.current.angle}
         activeIndex={activeIndex}
         sections={WHEEL_SECTIONS}

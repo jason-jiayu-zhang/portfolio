@@ -3,6 +3,7 @@ import { WHEEL_SECTIONS } from '../data/about'
 import WheelSelector from './WheelSelector'
 import { SNAP_INTERVAL } from '../utils/wheelMath'
 import { useIntro } from './IntroContext'
+import { useLenis } from './SmoothScroll'
 import { DescriptionPanel, TrajectoryPanel, PhilosophyPanel, CatalogPanel, usePrefersReducedMotion } from './HeroAboutPanels'
 
 const SECTION_PANELS = [DescriptionPanel, TrajectoryPanel, PhilosophyPanel, CatalogPanel]
@@ -62,7 +63,9 @@ export default function HeroSection() {
   const keyRef = useRef(0)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prefersReducedMotion = usePrefersReducedMotion()
+  const lenis = useLenis()
 
+  const heroRef = useRef<HTMLElement>(null)
   const wheelContainerRef = useRef<HTMLDivElement>(null)
   const contentBandRef = useRef<HTMLDivElement>(null)
 
@@ -250,8 +253,44 @@ export default function HeroSection() {
     document.getElementById('featured-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
+  // ── DOME SUNSET ─────────────────────────────────────────────────────────────
+  // As the hero scrolls away, the bottom dome sets like a sun: it sinks past the
+  // hero's bottom edge (the horizon that overflow-hidden clips to), dims, and
+  // warms toward amber — completing well before the gold section curtain wipes
+  // in. Driven off Lenis's animated scroll (window.scrollY lags its inertia), so
+  // it only runs when smooth scroll is live; under reduced motion Lenis is null
+  // and the dome stays at rest.
+  useEffect(() => {
+    const hero = heroRef.current
+    const dome = wheelContainerRef.current
+    if (!hero || !dome || !lenis) return
+    const apply = (scroll: number) => {
+      const vh = window.innerHeight || 1
+      // Sink so the dome fully dips past the hero's bottom edge (its visible cap
+      // height) right as p hits 1 — paced to finish just before the curtain wipes.
+      const cap = dome.clientHeight || vh * 0.31
+      const p = Math.min(1, Math.max(0, scroll / (vh * 0.36)))
+      // Set on the section so both the dome and the sibling horizon glow inherit.
+      hero.style.setProperty('--sun-sink', `${p * cap}px`)
+      hero.style.setProperty('--sun-opacity', `${1 - p}`)
+      // Warmth peaks early — the sky glows amber while the disc is still visible,
+      // then holds as it dips below, rather than only lighting up once it's gone.
+      hero.style.setProperty('--sun-warm', `${Math.min(1, p * 1.9)}`)
+    }
+    apply(lenis.scroll)
+    const onScroll = (l: typeof lenis) => apply(l.scroll)
+    const onResize = () => apply(lenis.scroll)
+    lenis.on('scroll', onScroll)
+    window.addEventListener('resize', onResize, { passive: true })
+    return () => {
+      lenis.off('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [lenis])
+
   return (
     <section
+      ref={heroRef}
       id="featured"
       className="relative w-full overflow-hidden h-[100dvh] flex flex-col"
       style={{ marginTop: 0, paddingTop: '48px' }}
@@ -273,14 +312,25 @@ export default function HeroSection() {
         }}
       />
 
+      {/* Sunset sky — the horizon warms to amber as the dome sets (opacity driven
+          by --sun-warm, 0 at rest). Kept outside the fading dome so the glow holds
+          as the disc dips below the fold. */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[1]"
+        style={{
+          background: 'radial-gradient(ellipse 85% 60% at 50% 100%, rgba(230,150,58,0.34) 0%, rgba(214,110,44,0.14) 42%, transparent 74%)',
+          opacity: 'var(--sun-warm, 0)',
+        }}
+      />
+
       {showPhase2 && (
         <>
           {/* Corner coordinate labels — pinned to the section's viewport corners */}
           <div className={`hidden lg:block absolute top-[60px] left-6 lg:left-12 label-caps opacity-40 z-20 ${!hasLoaded ? 'animate-fade-down' : ''}`}>
-            <span ref={coordXRef}>X:{String(mouseXRef.current).padStart(4, '0')}</span>
+            <span ref={coordXRef}>X:0000</span>
           </div>
           <div className={`hidden lg:block absolute top-[60px] right-6 lg:right-12 label-caps opacity-40 text-right z-20 ${!hasLoaded ? 'animate-fade-down' : ''}`}>
-            <span ref={coordYRef}>Y:{String(mouseYRef.current).padStart(4, '0')}</span>
+            <span ref={coordYRef}>Y:0000</span>
           </div>
           <div className={`hidden lg:block absolute bottom-5 left-6 lg:left-12 label-caps opacity-40 z-20 ${!hasLoaded ? 'animate-fade-down' : ''}`}>
             θ:{(Math.round(activeIndex * SNAP_INTERVAL)).toString().padStart(3, '0')}°
@@ -326,7 +376,7 @@ export default function HeroSection() {
         onTouchEnd={onTouchEnd}
       >
         {showPhase2 && (
-          <div className={`w-full px-4 sm:px-6 lg:px-12 flex-1 flex flex-col min-h-0 ${!hasLoaded ? 'animate-content-rise' : ''}`}>
+          <div className={`section-shell flex-1 flex flex-col min-h-0 ${!hasLoaded ? 'animate-content-rise' : ''}`}>
             {/* Pager — centered so it clears the corner HUD readouts */}
             <div className="shrink-0 z-20 py-1.5 flex justify-center pointer-events-none">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md bg-primary/55 border border-accent/25 pointer-events-auto">
@@ -419,10 +469,16 @@ export default function HeroSection() {
       </div>
 
       {/* ── DOME — wheel pinned to the bottom edge, only its top half visible ── */}
+      {/* --sun-* vars are driven by the scroll-linked sunset; they default to the
+          resting dome when unset (no smooth scroll / not yet scrolled). */}
       <div
         ref={wheelContainerRef}
         className="relative z-10 shrink-0"
-        style={{ height: 'calc(var(--wheel-size) / 2)' }}
+        style={{
+          height: 'calc(var(--wheel-size) / 2)',
+          transform: 'translate3d(0, var(--sun-sink, 0px), 0)',
+          opacity: 'var(--sun-opacity, 1)',
+        }}
       >
         {/* Accent glow behind the dome */}
         <div
@@ -453,6 +509,19 @@ export default function HeroSection() {
             autoAdvanceRef={isAutoAdvanceRef}
           />
         </div>
+
+        {/* Sunset wash — warms the dome toward amber as it sets (opacity driven by
+            --sun-warm, 0 at rest). Screen-blended so it glows rather than covers. */}
+        <div
+          className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-[66.667%] pointer-events-none"
+          style={{
+            width: 'calc(var(--wheel-size) * 1.5)',
+            height: 'calc(var(--wheel-size) * 1.5)',
+            background: 'radial-gradient(circle at center, rgba(224,150,60,0.5) 0%, rgba(214,120,48,0.22) 34%, transparent 62%)',
+            mixBlendMode: 'screen',
+            opacity: 'var(--sun-warm, 0)',
+          }}
+        />
       </div>
     </section>
   )
