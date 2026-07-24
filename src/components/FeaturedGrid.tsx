@@ -393,7 +393,7 @@ export default function FeaturedGrid() {
     <section
       id="featured-grid"
       ref={ref}
-      className="relative pt-16 md:pt-20 pb-20 md:pb-28 px-4 sm:px-6 lg:px-12"
+      className="relative pt-24 md:pt-36 pb-28 md:pb-40 section-shell"
     >
       {/* Accent wash that shifts with the tuned channel — echoes the hero dome */}
       <div

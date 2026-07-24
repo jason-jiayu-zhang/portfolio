@@ -426,6 +426,7 @@ interface DescriptionImage {
   src: string
   alt: string
   objectClassName: string
+  collapsedObjectClassName?: string
   /** Extra cover-zoom so the subject reads at a consistent scale across frames. */
   zoom?: number
   /** Post-zoom pan (translate args, e.g. '-14%, -14%') to re-center the subject. */
@@ -433,9 +434,27 @@ interface DescriptionImage {
 }
 
 const DESCRIPTION_IMAGES: DescriptionImage[] = [
-  { src: '/images/jason-headshot-1.webp', alt: 'Jason Portrait', objectClassName: 'object-top' },
-  { src: '/images/jason-headshot-2.webp', alt: 'Jason at work', objectClassName: 'object-[center_30%]', zoom: 1.15, pan: '-5.4%, 0' },
-  { src: '/images/jason-thinking.webp', alt: 'Jason thinking', objectClassName: 'object-[center_35%]', zoom: 1.4, pan: '-9.5%, -7%' },
+  {
+    src: '/images/jason-headshot-1.webp',
+    alt: 'Jason Portrait',
+    objectClassName: 'object-[62%_20%]',
+    collapsedObjectClassName: 'object-[64%_20%]',
+    zoom: 1.04,
+  },
+  {
+    src: '/images/jason-headshot-2.webp',
+    alt: 'Jason at work',
+    objectClassName: 'object-[50%_18%]',
+    collapsedObjectClassName: 'object-[50%_18%]',
+    zoom: 1.04,
+  },
+  {
+    src: '/images/jason-thinking.webp',
+    alt: 'Jason thinking',
+    objectClassName: 'object-[60%_20%]',
+    collapsedObjectClassName: 'object-[60%_20%]',
+    zoom: 1.04,
+  },
 ]
 
 const IMAGE_CYCLE_MS = 15000 / DESCRIPTION_IMAGES.length
@@ -547,19 +566,19 @@ function NameMarquee() {
   )
 
   return (
-    <div className="group/marquee relative">
+    <div className="group/marquee relative w-screen left-1/2 -translate-x-1/2">
       <h1 className="sr-only">Jason Jiayu Zhang — Design Engineer</h1>
       <div
         aria-hidden
-        className="overflow-hidden -mx-4 sm:-mx-6 lg:-mx-12 py-2 -my-2"
+        className="overflow-hidden py-2 -my-2"
         style={{
-          WebkitMaskImage: 'linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)',
-          maskImage: 'linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent, #000 2%, #000 98%, transparent)',
+          maskImage: 'linear-gradient(to right, transparent, #000 2%, #000 98%, transparent)',
         }}
       >
         <div
           className="name-marquee-track flex w-max whitespace-nowrap font-sans font-black tracking-ultra-tight"
-          style={{ fontSize: 'min(clamp(2.6rem, 6.4vw, 5.25rem), 10vh)', lineHeight: 0.86, willChange: 'transform' }}
+          style={{ fontSize: 'min(clamp(3rem, 7.5vw, 6.25rem), 11vh)', lineHeight: 0.86, willChange: 'transform' }}
         >
           <Half />
           <Half />
@@ -642,9 +661,10 @@ export function DescriptionPanel() {
 
         {/* Portrait filmstrip — active frame expands; the rest stay slim and desaturated */}
         <AnimatedElement delay={420} fill className="min-h-0">
-          <div className="hero-filmstrip relative h-full min-h-[190px] flex items-stretch gap-1.5 sm:gap-2">
+          <div className="hero-filmstrip relative h-full min-h-[220px] sm:min-h-[260px] lg:min-h-[280px] flex items-stretch gap-1.5 sm:gap-2">
             {DESCRIPTION_IMAGES.map((img, i) => {
               const isFeatured = i === featured
+              const activeObjClass = isFeatured ? img.objectClassName : (img.collapsedObjectClassName ?? img.objectClassName)
               return (
                 <button
                   key={img.src}
@@ -653,10 +673,11 @@ export function DescriptionPanel() {
                   onMouseLeave={() => setHoveredImageIdx(null)}
                   onFocus={() => setHoveredImageIdx(i)}
                   onBlur={() => setHoveredImageIdx(null)}
-                  className={`group relative min-w-0 h-full overflow-hidden rounded-sm border p-1 bg-[#0b0c10]/80 ${isFeatured ? 'border-gold/60' : 'border-accent/30'
-                    }`}
+                  className={`group relative min-w-[50px] sm:min-w-[60px] h-full overflow-hidden rounded-sm border p-1 bg-[#0b0c10]/80 ${
+                    isFeatured ? 'border-gold/60' : 'border-accent/30'
+                  }`}
                   style={{
-                    flexGrow: isFeatured ? 2.4 : 1,
+                    flexGrow: isFeatured ? 2.5 : 1,
                     flexBasis: 0,
                     transition: 'flex-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease',
                   }}
@@ -667,12 +688,13 @@ export function DescriptionPanel() {
                       src={img.src}
                       alt={img.alt}
                       loading={i === 0 ? 'eager' : 'lazy'}
-                      className={`absolute inset-0 w-full h-full object-cover ${img.objectClassName} contrast-125 ${isFeatured ? 'saturate-100 brightness-100' : 'saturate-[0.35] brightness-[0.65]'
-                        }`}
+                      className={`absolute inset-0 w-full h-full object-cover ${activeObjClass} contrast-125 ${
+                        isFeatured ? 'saturate-100 brightness-100' : 'saturate-[0.35] brightness-[0.65]'
+                      }`}
                       style={{
-                        transition: 'filter 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                        transition: 'filter 0.5s cubic-bezier(0.16, 1, 0.3, 1), object-position 0.4s ease, transform 0.4s ease',
                         transform: img.zoom ? `scale(${img.zoom}) translate(${img.pan ?? '0, 0'})` : undefined,
-                        transformOrigin: 'center 35%',
+                        transformOrigin: 'center 20%',
                       }}
                     />
                     <div

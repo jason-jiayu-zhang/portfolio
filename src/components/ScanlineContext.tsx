@@ -2,6 +2,7 @@
 // SCANLINE CONTEXT — global toggle for scanline overlay (retro vs. clean mode)
 // ─────────────────────────────────────────────────────────────────────────────
 
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState } from 'react'
 
 interface ScanlineContextValue {

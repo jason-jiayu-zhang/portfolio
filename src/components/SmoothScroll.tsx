@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import Lenis from 'lenis'
@@ -26,6 +27,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     if (reduced) return
 
     const instance = new Lenis({ lerp: 0.1 })
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLenis(instance)
 
     const raf = (time: number) => {

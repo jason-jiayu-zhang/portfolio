@@ -98,7 +98,7 @@ function TiltCard({ to, children, style, className }: TiltCardProps) {
 // ─── Studio Section ───────────────────────────────────────────────────────────
 export default function StudioSection() {
   return (
-    <section id="studio" className="relative py-10 md:py-14 px-4 sm:px-6 lg:px-12">
+    <section id="studio" className="relative py-20 md:py-32 section-shell">
       {/* Section header — mirrors the Featured Work masthead */}
       <Reveal className="flex items-end justify-between gap-6 mb-12 md:mb-16 pb-5 border-b border-accent/30">
         <div>
@@ -116,7 +116,7 @@ export default function StudioSection() {
       </Reveal>
 
       {/* Experiment grid — denser columns keep each card small relative to Featured Work */}
-      <Reveal delay={80} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 bg-primary pl-px pt-px border-b border-r border-accent/20">
+      <Reveal delay={80} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 bg-primary pl-px pt-px border-b border-r border-accent/20">
         {[...EXPERIMENTS].sort((a, b) => {
           const yearA = a.year === 'Present' ? 9999 : Number(a.year);
           const yearB = b.year === 'Present' ? 9999 : Number(b.year);

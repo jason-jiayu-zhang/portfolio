@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 export type IntroPhase = 'initial' | 'phase01' | 'phase02' | 'phase03'
@@ -31,6 +32,7 @@ export function IntroProvider({ children }: { children: React.ReactNode }) {
 
     // Respect reduced-motion: skip the entrance entirely and land on the live state.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHasLoaded(true)
       setPhase('phase03')
       sessionStorage.setItem('introPlayed', 'true')

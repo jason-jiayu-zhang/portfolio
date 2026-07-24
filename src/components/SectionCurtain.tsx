@@ -20,12 +20,14 @@ interface CurtainTarget {
   id: string
   eyebrow: string
   title: string
+  start?: string
+  end?: string
 }
 
 const TARGETS: CurtainTarget[] = [
   { id: 'featured-grid', eyebrow: '§ 02 — Selected', title: 'Work Console' },
   { id: 'studio', eyebrow: '§ 03 — Off-a-whim', title: 'Studio' },
-  { id: 'signoff', eyebrow: '§ 05 — Sign-off', title: "Let's Talk" },
+  { id: 'signoff', eyebrow: '§ 05 — Sign-off', title: "Let's Talk", start: 'top 65%' },
 ]
 
 const COLS = 9 // number of vertical slats making up each curtain
@@ -51,7 +53,7 @@ export default function SectionCurtain() {
         if (!el || !slats.length || !title) return
 
         const tl = gsap.timeline({
-          scrollTrigger: { trigger: el, start: 'top 90%', end: 'top 10%', scrub: true },
+          scrollTrigger: { trigger: el, start: target.start ?? 'top 90%', end: target.end ?? 'top 10%', scrub: true },
         })
 
         // Rise — slats surge up from below into full cover, random stagger.

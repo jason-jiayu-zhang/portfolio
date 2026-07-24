@@ -10,6 +10,7 @@ import { lazy, Suspense } from 'react'
 const FeaturedGrid = lazy(() => import('./components/FeaturedGrid'))
 const StudioSection = lazy(() => import('./components/StudioSection'))
 const Footer = lazy(() => import('./components/Footer'))
+const HudFrame = lazy(() => import('./components/HudFrame'))
 // Lazy so GSAP stays out of the main bundle.
 const SectionCurtain = lazy(() => import('./components/SectionCurtain'))
 
@@ -48,6 +49,13 @@ function AppContent() {
       {isPhase3 && (
         <Suspense fallback={null}>
           <Footer />
+        </Suspense>
+      )}
+
+      {/* Cockpit bezel — fills the side gutters on wide monitors */}
+      {isPhase3 && (
+        <Suspense fallback={null}>
+          <HudFrame />
         </Suspense>
       )}
 

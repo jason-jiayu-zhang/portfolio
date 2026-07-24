@@ -167,7 +167,7 @@ export default function Footer() {
       </div>
 
       {/* ── Center: the call to action ── */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 lg:px-12 py-8">
+      <div className="relative z-10 flex-1 flex flex-col justify-center section-shell py-8">
         <Reveal className="flex items-center gap-2.5 mb-6">
           <span className="relative flex h-2 w-2">
             <span
