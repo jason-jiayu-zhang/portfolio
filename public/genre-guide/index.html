@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Write a UX Case Study</title>
+<meta name="description" content="A how-to genre guide for design students writing their first UX portfolio case study, taught through annotated real examples.">
+<meta name="theme-color" content="#00613f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sign: #00613f;
+    --sign-deep: #004a30;
+    --on-sign: #ffffff;
+    --on-sign-2: #cfe6da;
+    --on-sign-3: #b9d8c7;
+    --ground: #f2f3f0;
+    --ground-2: #e7e9e4;
+    --panel: #ffffff;
+    --ink: #111412;
+    --ink-2: #3a413d;
+    --ink-3: #565e59;
+    --rule: #d3d8d1;
+    --route: #c4cbc3;
+    --warn: #ffc20e;
+    --warn-soft: #fff3c4;
+    --go-soft: #e1eee6;
+    --stop: #b3121f;
+    --stop-soft: #fbeaeb;
+    --sans: Barlow, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --sign-face: "Barlow Semi Condensed", Barlow, system-ui, sans-serif;
+    --measure: 66ch;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 84px; scrollbar-color: var(--sign) var(--ground-2); }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 18px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    caret-color: var(--sign);
+  }
+  ::selection { background: var(--warn); color: var(--ink); }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--sign); text-decoration-thickness: 1.5px; text-underline-offset: .18em; }
+  a:hover { color: var(--sign-deep); text-decoration-thickness: 2.5px; }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 560px) { .wrap { padding: 0 16px; } body { font-size: 17px; } }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ico { width: 1em; height: 1em; flex: none; }
+  .nb { white-space: nowrap; }
+
+  h1, h2, h3, h4 { font-family: var(--sign-face); line-height: 1.08; margin: 0; text-wrap: balance; }
+  h2 { font-size: clamp(30px, 4.2vw, 44px); font-weight: 700; letter-spacing: -0.01em; }
+  h3 { font-size: 24px; font-weight: 700; }
+  p { margin: 0 0 1em; }
+  .cite { font-size: .85em; color: var(--ink-3); white-space: nowrap; }
+
+  /* masthead + station strip */
+  .mast { position: sticky; top: 0; z-index: 30; background: var(--sign); color: var(--on-sign); }
+  .mast .wrap { display: flex; align-items: center; gap: 28px; min-height: 64px; }
+  .brand { display: grid; line-height: 1.15; flex: none; }
+  .brand b { font: 700 17px var(--sign-face); }
+  .brand span { font-size: 13px; color: var(--on-sign-2); }
+  .stops { list-style: none; display: flex; margin: 0 0 0 auto; padding: 0; position: relative; overflow-x: auto; scrollbar-width: none; }
+  .stops::-webkit-scrollbar { display: none; }
+  .stops::before { content: ""; position: absolute; left: 24px; right: 24px; top: 15px; height: 2px; background: rgba(255,255,255,.4); }
+  .stops a { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 9px 12px 8px; color: var(--on-sign-2); text-decoration: none; font: 600 14px/1 var(--sign-face); white-space: nowrap; }
+  .stops a::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--sign); border: 2px solid #fff; transition: transform .25s cubic-bezier(.2,.8,.2,1), background-color .25s; }
+  .stops a:hover { color: #fff; }
+  .stops a.active { color: #fff; }
+  .stops a.active::before { background: var(--warn); border-color: var(--warn); transform: scale(1.35); }
+  .stops a:focus-visible { outline-color: var(--warn); }
+  .tally { position: absolute; top: 1px; right: -2px; font: 700 11px/1 var(--sign-face); background: var(--warn); color: var(--ink); padding: 2px 4px; border-radius: 3px; }
+  .tally:empty { display: none; }
+  @media (max-width: 820px) {
+    .brand { display: none; }
+    .stops { margin: 0; width: 100%; justify-content: space-between; }
+    .stops::before { left: 16px; right: 16px; }
+  }
+  @media (max-width: 480px) {
+    .stops a { padding: 9px 3px 8px; font-size: 13px; }
+    .stops .long { display: none; }
+    .tally { right: -6px; }
+  }
+
+  /* the guide-sign panel: the page's signature, used for the title sign and the checklist only */
+  .sign {
+    background: var(--sign); color: var(--on-sign); border-radius: 16px;
+    box-shadow: inset 0 0 0 7px var(--sign), inset 0 0 0 10px #fff;
+  }
+  .shield {
+    flex: none; width: 52px; height: 52px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--sign); color: #fff; font: 700 26px/1 var(--sign-face);
+    box-shadow: inset 0 0 0 3px var(--sign), inset 0 0 0 5px #fff;
+  }
+  .bullet {
+    flex: none; width: 34px; height: 34px; border-radius: 50%; display: inline-grid; place-items: center;
+    background: var(--ink); color: #fff; font: 700 16px/1 var(--sign-face);
+  }
+
+  /* hero */
+  .hero { padding: 40px 0 72px; }
+  .title-sign { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; padding: 52px 56px 48px; align-items: end; }
+  .title-sign h1 { font-size: clamp(42px, 6.4vw, 78px); font-weight: 700; line-height: .98; letter-spacing: -0.015em; }
+  .title-sign h1 .arrow { display: block; width: .7em; height: .7em; margin-bottom: 18px; }
+  .dist { width: 100%; border-collapse: collapse; font-family: var(--sign-face); font-variant-numeric: tabular-nums; }
+  .dist caption { text-align: left; font: 600 15px var(--sign-face); color: var(--on-sign-2); padding-bottom: 8px; }
+  .dist th, .dist td { padding: 12px 0; border-top: 2px solid rgba(255,255,255,.85); vertical-align: baseline; }
+  .dist th { text-align: left; font-weight: 600; font-size: 19px; line-height: 1.2; }
+  .dist th .cite { color: var(--on-sign-2); display: block; font: 400 13px var(--sans); }
+  .dist td { text-align: right; font-weight: 700; font-size: 36px; line-height: 1; white-space: nowrap; padding-left: 16px; }
+  .dist td small { font-size: 18px; font-weight: 600; margin-left: 4px; }
+  .dist tr.exit th, .dist tr.exit td { background: var(--warn); color: var(--ink); border-top-color: var(--warn); }
+  .dist tr.exit th { padding-left: 14px; border-radius: 6px 0 0 6px; }
+  .dist tr.exit td { padding-right: 14px; border-radius: 0 6px 6px 0; }
+  .dist tr.exit + tr th, .dist tr.exit + tr td { border-top-color: transparent; }
+  .sign-note { margin: 14px 0 0; font-size: 15px; color: var(--on-sign-2); line-height: 1.5; }
+  .intro { display: grid; grid-template-columns: minmax(0, var(--measure)) 1fr; gap: 48px; margin-top: 40px; align-items: start; }
+  .lede { font-size: 21px; line-height: 1.55; color: var(--ink); margin: 0; }
+  .for { margin: 6px 0 0; padding: 0 0 0 20px; border-left: 1px solid var(--rule); font-size: 16px; color: var(--ink-2); }
+  .for b { display: block; font: 700 15px var(--sign-face); color: var(--ink); margin-bottom: 4px; }
+  .hero figure { margin: 48px 0 0; }
+  .hero-shot img { border-radius: 10px; border: 1px solid var(--rule); background: #fff; }
+  .caption { font-size: 15px; color: var(--ink-3); margin-top: 12px; max-width: var(--measure); }
+  @media (max-width: 860px) {
+    .title-sign { grid-template-columns: 1fr; gap: 36px; padding: 40px 32px 36px; }
+    .intro { grid-template-columns: 1fr; gap: 20px; }
+    .for { border-left: 0; padding: 0; }
+  }
+  @media (max-width: 560px) {
+    .hero { padding-top: 20px; }
+    .title-sign { padding: 32px 24px 28px; border-radius: 12px; }
+    .dist td { font-size: 30px; }
+    .lede { font-size: 19px; }
+  }
+
+  /* sections */
+  section { padding: 104px 0; border-top: 1px solid var(--rule); }
+  .head { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 44px; }
+  .head > div { max-width: 760px; }
+  .head h2 { padding-top: 4px; }
+  .head p { color: var(--ink-2); margin: 16px 0 0; max-width: var(--measure); }
+  @media (max-width: 560px) {
+    section { padding: 72px 0; }
+    .head { flex-direction: column; gap: 14px; }
+    .shield { width: 44px; height: 44px; font-size: 22px; }
+  }
+
+  /* transit line */
+  .route { list-style: none; padding: 0; margin: 12px 0 64px; display: grid; grid-template-columns: repeat(4, 1fr); position: relative; }
+  .route::before { content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 17px; height: 6px; border-radius: 3px; background: var(--sign); }
+  .route li { position: relative; text-align: center; padding: 0 14px; }
+  .route .stop { display: block; width: 40px; height: 40px; margin: 0 auto 16px; border-radius: 50%; background: var(--panel); border: 6px solid var(--sign); position: relative; }
+  .route b { display: block; font: 700 20px/1.15 var(--sign-face); margin-bottom: 6px; }
+  .route small { display: block; font-size: 15.5px; line-height: 1.45; color: var(--ink-2); }
+  .route .hot .stop { width: 52px; height: 52px; margin-top: -6px; margin-bottom: 10px; background: var(--warn); border-color: var(--ink); }
+  .route .hot b::after { content: "Judged here"; display: block; width: max-content; margin: 8px auto 0; font: 700 13px/1 var(--sign-face); background: var(--ink); color: var(--warn); padding: 5px 8px; border-radius: 4px; }
+  @media (max-width: 760px) {
+    .route { grid-template-columns: 1fr; gap: 28px; }
+    .route::before { left: 17px; right: auto; top: 20px; bottom: 20px; width: 6px; height: auto; }
+    .route li { display: grid; grid-template-columns: 40px 1fr; gap: 18px; text-align: left; padding: 0; }
+    .route .stop { margin: 0; }
+    .route .hot .stop { margin: -6px 0 0 -6px; }
+    .route .hot b::after { margin-left: 0; }
+  }
+
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .trio > div { padding: 0 32px; border-left: 1px solid var(--rule); }
+  .trio > div:first-child { padding-left: 0; border-left: 0; }
+  .trio > div:last-child { padding-right: 0; }
+  .trio h3 { font-size: 21px; margin-bottom: 12px; }
+  .trio p, .trio li { color: var(--ink-2); font-size: 16.5px; }
+  .trio ul { margin: 0; padding-left: 18px; }
+  .trio li + li { margin-top: 8px; }
+  .trio p:last-child { margin-bottom: 0; }
+  @media (max-width: 860px) {
+    .trio { grid-template-columns: 1fr; gap: 28px; }
+    .trio > div { padding: 28px 0 0; border-left: 0; border-top: 1px solid var(--rule); }
+    .trio > div:first-child { padding-top: 0; border-top: 0; }
+  }
+
+  .notice { margin-top: 48px; display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; background: var(--warn); color: var(--ink); border-radius: 10px; padding: 22px 26px; }
+  .notice .ico { width: 30px; height: 30px; }
+  .notice p { margin: 0; font-size: 17.5px; max-width: 70ch; }
+  .notice.info { background: var(--go-soft); }
+  .notice.info .ico { color: var(--sign); }
+
+  /* anatomy: route index */
+  .index { list-style: none; padding: 0; margin: 0 0 64px; display: grid; grid-template-columns: repeat(7, 1fr); position: relative; }
+  .index::before { content: ""; position: absolute; left: calc(100% / 14); right: calc(100% / 14); top: 15px; height: 4px; background: var(--ink); border-radius: 2px; }
+  .index a { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; text-decoration: none; color: var(--ink); font: 600 15px/1.2 var(--sign-face); padding: 0 6px; }
+  .index a .bullet { box-shadow: 0 0 0 4px var(--ground); transition: background-color .2s, color .2s; }
+  .index a:hover .bullet { background: var(--warn); color: var(--ink); }
+  .index a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: .2em; }
+  @media (max-width: 860px) {
+    .index { grid-template-columns: 1fr; gap: 10px; }
+    .index::before { left: 15px; right: auto; top: 17px; bottom: 17px; width: 4px; height: auto; }
+    .index a { flex-direction: row; text-align: left; gap: 14px; font-size: 17px; }
+  }
+
+  .parts { position: relative; }
+  .parts::before { content: ""; position: absolute; left: 15px; top: 20px; bottom: 20px; width: 4px; background: var(--route); border-radius: 2px; }
+  .feature { position: relative; display: grid; grid-template-columns: 300px 1fr; gap: 44px; padding: 52px 0 52px 66px; }
+  .feature:first-child { padding-top: 0; }
+  .feature > .bullet { position: absolute; left: 0; top: 52px; box-shadow: 0 0 0 6px var(--ground); }
+  .feature:first-child > .bullet { top: 0; }
+  .feature h3 { margin: 2px 0 14px; font-size: 26px; }
+  .feature-text p { font-size: 17px; color: var(--ink-2); }
+  .label { font: 700 14px var(--sign-face); color: var(--ink); margin: 22px 0 6px; }
+  .tip { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; font-size: 16px; line-height: 1.5; border-top: 3px solid var(--sign); padding-top: 12px; color: var(--ink); margin-top: 22px; }
+  .tip .ico { width: 20px; height: 20px; margin-top: 2px; color: var(--sign); }
+  .tip.warn { border-top-color: var(--warn); }
+  .tip.warn .ico { color: var(--ink); }
+  .formula { font: 600 17px/1.45 var(--sign-face); background: var(--panel); border: 1.5px solid var(--ink); padding: 14px 16px; }
+  @media (max-width: 900px) { .feature { grid-template-columns: 1fr; gap: 22px; } }
+  @media (max-width: 560px) {
+    .parts::before { left: 13px; }
+    .feature { padding-left: 50px; }
+    .feature > .bullet { width: 30px; height: 30px; font-size: 15px; }
+  }
+
+  .shot { position: relative; }
+  .shot img { border-radius: 8px; border: 1px solid var(--rule); background: #fff; }
+  .pin {
+    position: absolute; transform: translate(-50%, -50%);
+    width: 32px; height: 32px; border-radius: 50%; padding: 0; cursor: pointer;
+    background: var(--warn); color: var(--ink); border: 2px solid var(--ink);
+    box-shadow: 0 0 0 2px #fff;
+    font: 700 15px/1 var(--sign-face);
+    transition: transform .2s cubic-bezier(.2,.8,.2,1), background-color .2s;
+  }
+  .pin::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--ink); opacity: 0; animation: ping 1.8s cubic-bezier(.2,.8,.2,1) 3; }
+  .pin:hover, .pin[aria-expanded="true"] { transform: translate(-50%, -50%) scale(1.12); }
+  .pin[aria-expanded="true"] { background: var(--ink); color: var(--warn); border-color: #fff; }
+  .pin[aria-expanded="true"]::after, .pin.seen::after { animation: none; }
+  .pin:focus-visible { outline: 3px solid var(--sign); outline-offset: 3px; border-radius: 50%; }
+  @keyframes ping { 0% { transform: scale(.75); opacity: .6; } 100% { transform: scale(1.35); opacity: 0; } }
+  @media (max-width: 560px) { .pin { width: 26px; height: 26px; font-size: 13px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .pin::after, .note.open { animation: none; }
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: .01ms !important; }
+  }
+
+  .notes { margin-top: 10px; display: grid; }
+  .note { display: none; gap: 12px; align-items: flex-start; color: var(--ink); padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 16px; line-height: 1.5; }
+  .note.open { display: flex; animation: rise .25s cubic-bezier(.2,.8,.2,1); }
+  .note .key { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--warn); color: var(--ink); border: 2px solid var(--ink); font: 700 14px/1 var(--sign-face); }
+  @keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .hint { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 8px 0 0 66px; font-size: 16px; color: var(--ink-2); }
+  .btn { font: 600 15px var(--sign-face); color: var(--ink); background: var(--panel); border: 1.5px solid var(--ink); border-radius: 4px; padding: 7px 16px; cursor: pointer; }
+  .btn:hover { background: var(--ink); color: #fff; }
+  @media (max-width: 560px) { .hint { margin-left: 0; } }
+
+  /* other samples */
+  .strip { margin-top: 88px; padding-top: 56px; border-top: 1px solid var(--rule); }
+  .strip > h3 { font-size: 30px; margin-bottom: 10px; }
+  .strip > p { color: var(--ink-2); margin-bottom: 40px; max-width: var(--measure); }
+  .samples { display: grid; gap: 56px; }
+  .sample { display: grid; grid-template-columns: 1fr 1.45fr; gap: 40px; align-items: start; }
+  .sample h4 { font-size: 23px; font-weight: 700; }
+  .sample .by { font: 600 15px var(--sign-face); color: var(--ink-3); margin: 6px 0 12px; }
+  .sample p { font-size: 16.5px; color: var(--ink-2); }
+  .src { font: 600 15px var(--sign-face); display: inline-flex; align-items: center; gap: 6px; }
+  .src .ico { width: 14px; height: 14px; }
+  @media (max-width: 900px) { .sample { grid-template-columns: 1fr; gap: 18px; } }
+
+  /* strategies */
+  .strategy { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 48px; padding: 52px 0; border-top: 1px solid var(--rule); }
+  .head + .strategy { border-top: 0; padding-top: 0; }
+  .strategy h3 { font-size: 28px; position: sticky; top: 96px; align-self: start; }
+  .strategy > div > p { color: var(--ink-2); max-width: var(--measure); }
+  @media (max-width: 860px) {
+    .strategy { grid-template-columns: 1fr; gap: 14px; padding: 44px 0; }
+    .strategy h3 { position: static; }
+  }
+
+  .pair { display: grid; margin-top: 22px; max-width: 760px; border-top: 1px solid var(--rule); }
+  .pair > div { display: grid; grid-template-columns: 92px 1fr; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+  .pair .t { display: flex; align-items: center; gap: 8px; font: 700 16px var(--sign-face); }
+  .pair .t .ico { width: 22px; height: 22px; align-self: center; }
+  .pair .do .t { color: var(--sign); }
+  .pair .dont .t { color: var(--stop); }
+  .pair p { margin: 0; font-size: 16.5px; }
+  @media (max-width: 480px) { .pair > div { grid-template-columns: 1fr; gap: 4px; } }
+
+  .proof { width: 100%; max-width: 860px; border-collapse: collapse; margin-top: 22px; font-size: 16px; border-bottom: 2px solid var(--ink); }
+  .proof th, .proof td { text-align: left; padding: 13px 18px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .proof tr:last-child td { border-bottom: 0; }
+  .proof th { font: 700 14px var(--sign-face); color: var(--on-sign); background: var(--sign); }
+  .proof td:first-child { font-weight: 600; white-space: nowrap; }
+  .proof .kind { font: 700 16px var(--sign-face); color: var(--sign-deep); white-space: nowrap; }
+  @media (max-width: 600px) {
+    .proof thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .proof, .proof tbody { display: block; }
+    .proof tr { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--rule); }
+    .proof td { display: block; padding: 0; border: 0; }
+    .proof td:nth-child(3) { grid-column: 1 / -1; color: var(--ink-2); }
+  }
+
+  .vocab { display: flex; flex-wrap: wrap; gap: 6px 26px; margin: 20px 0 0; padding: 14px 0 0; border-top: 1px solid var(--rule); max-width: 760px; list-style: none; font: 600 19px/1.3 var(--sign-face); color: var(--sign-deep); }
+
+  .strategy .shot { margin-top: 26px; max-width: 660px; }
+
+  .quotes { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 64px; }
+  .quote { margin: 0; border-top: 4px solid var(--ink); padding-top: 18px; }
+  .quote p { font: 600 22px/1.3 var(--sign-face); margin-bottom: 12px; }
+  .quote cite { font-style: normal; font-size: 15px; color: var(--ink-3); }
+  @media (max-width: 680px) { .quotes { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* sidebar */
+  .aside { display: grid; grid-template-columns: 1fr 1fr; border-top: 4px solid var(--ink); }
+  .aside > div { padding: 28px 40px 0 0; }
+  .aside > div + div { border-left: 1px solid var(--rule); padding: 28px 0 0 40px; }
+  .aside h3 { font-size: 23px; }
+  .aside .sub { font: 600 17px var(--sign-face); color: var(--sign); margin: 6px 0 14px; }
+  .aside p { color: var(--ink-2); font-size: 16.5px; margin: 0; }
+  .aside dl { margin: 22px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; font-size: 16px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .aside dt { font: 700 15px var(--sign-face); }
+  .aside dd { margin: 0; color: var(--ink-2); }
+  .aside-foot { margin-top: 40px; font-size: 17px; color: var(--ink-2); max-width: var(--measure); }
+  @media (max-width: 760px) { .aside { grid-template-columns: 1fr; } .aside > div + div { border-left: 0; border-top: 1px solid var(--rule); margin-top: 28px; } .aside > div, .aside > div + div { padding: 24px 0 0; } }
+
+  /* checklist sign */
+  #checklist { border-top: 0; padding-top: 24px; }
+  .check { padding: 52px 56px; }
+  .check-head { display: flex; justify-content: space-between; align-items: end; gap: 28px; flex-wrap: wrap; margin-bottom: 28px; }
+  .check-head h2 { color: #fff; }
+  .check-head p { color: var(--on-sign-2); margin: 12px 0 0; max-width: 56ch; }
+  .check-head .shield { background: #fff; color: var(--sign); box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px var(--sign); }
+  .check-title { display: flex; gap: 18px; align-items: flex-start; }
+  .meter { min-width: 200px; font-family: var(--sign-face); font-variant-numeric: tabular-nums; }
+  .meter .count { font-size: 40px; font-weight: 700; line-height: 1; }
+  .meter .of { font-size: 15px; color: var(--on-sign-2); margin-left: 6px; font-weight: 600; }
+  .meter .track { height: 10px; background: rgba(0,0,0,.25); border-radius: 5px; overflow: hidden; margin-top: 10px; }
+  .meter .fill { height: 100%; width: 0; background: var(--warn); transition: width .35s cubic-bezier(.2,.8,.2,1); }
+  .check ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 32px; }
+  .check label { display: flex; gap: 14px; align-items: flex-start; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 16.5px; line-height: 1.45; }
+  .check label:hover { background: rgba(0,0,0,.16); }
+  .check input { appearance: none; -webkit-appearance: none; flex: none; width: 24px; height: 24px; border: 2px solid #fff; border-radius: 5px; margin: 0; display: grid; place-items: center; cursor: pointer; background: transparent; }
+  .check input:checked { background: var(--warn); border-color: var(--warn); }
+  .check input:checked::after { content: ""; width: 6px; height: 12px; border: solid var(--ink); border-width: 0 3px 3px 0; transform: rotate(45deg) translate(-1px, -1px); }
+  .check input:focus-visible { outline: 3px solid var(--warn); outline-offset: 2px; }
+  .check input:checked + span { color: var(--on-sign-3); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .check .grp { grid-column: 1 / -1; font: 700 15px var(--sign-face); color: var(--on-sign-2); margin-top: 18px; padding: 0 12px 6px; border-bottom: 1px solid rgba(255,255,255,.3); }
+  .check .grp:first-child { margin-top: 0; }
+  .reset { margin-top: 24px; font: 600 15px var(--sign-face); background: none; border: 1.5px solid rgba(255,255,255,.7); color: #fff; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+  .reset:hover { background: #fff; color: var(--sign); }
+  .reset:focus-visible { outline-color: var(--warn); }
+  @media (max-width: 760px) { .check { padding: 36px 20px 32px; border-radius: 12px; } .check ul { grid-template-columns: 1fr; } }
+
+  /* sources */
+  .sources { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; }
+  .sources h3 { font-size: 19px; margin-bottom: 16px; }
+  .refs { padding: 0; margin: 0; list-style: none; display: grid; gap: 14px; }
+  .refs li { font-size: 15.5px; color: var(--ink-2); padding-left: 2em; text-indent: -2em; overflow-wrap: anywhere; }
+  .samples-list { padding: 0; margin: 0; list-style: none; border-top: 1px solid var(--rule); }
+  .samples-list li { padding: 14px 0; border-bottom: 1px solid var(--rule); font-size: 16px; }
+  .samples-list span { display: block; color: var(--ink-3); font-size: 14.5px; }
+  @media (max-width: 760px) { .sources { grid-template-columns: 1fr; } }
+
+  footer { background: var(--sign); color: var(--on-sign-2); font-size: 14.5px; padding: 28px 0 32px; }
+  footer b { color: #fff; font: 700 16px var(--sign-face); margin-right: 8px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-no" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M5.8 18.2L18.2 5.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 1.8L22.2 12 12 22.2 1.8 12z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 7.2v6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 10.8v6.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.2" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M8 5h11v11M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 21V4M5 10.5L12 3.5l7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<nav class="mast" aria-label="Guide sections">
+  <div class="wrap">
+    <div class="brand"><b>UX Case Study Guide</b><span>A genre guide for design students</span></div>
+    <ul class="stops">
+      <li><a href="#scene">Scene</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#strategies">Strategies</a></li>
+      <li><a href="#design-cases">Design<span class="long"> cases</span></a></li>
+      <li><a href="#checklist">Checklist<span class="tally" id="nav-tally"></span></a></li>
+      <li><a href="#sources">Sources</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="sign title-sign">
+      <h1><svg class="ico arrow" aria-hidden="true"><use href="#i-arrow"/></svg>How to Write a UX Portfolio Case Study</h1>
+      <div>
+        <table class="dist">
+          <caption>How long a recruiter looks</caption>
+          <tbody>
+            <tr><th scope="row">Your main points in view</th><td>10<small>sec</small></td></tr>
+            <tr class="exit"><th scope="row">One case study</th><td>~1<small>min</small></td></tr>
+            <tr><th scope="row">A whole portfolio<span class="cite">(Balázs, 2026)</span></th><td>3–5<small>min</small></td></tr>
+          </tbody>
+        </table>
+        <p class="sign-note">Roughly what a recruiter hiring design interns gives a single case study. In that window, your layout gets read before your sentences do.</p>
+      </div>
+    </div>
+
+    <div class="intro">
+      <p class="lede">You get about a minute. That's how long a recruiter usually spends on a case study before deciding whether to keep going, so this guide pulls apart four real student case studies to show what those readers look for and how to put it right where they'll see it.</p>
+      <p class="for"><b>Written for</b>Design students applying to internships and writing their first case study.</p>
+    </div>
+
+    <figure>
+      <div class="hero-shot"><img src="/genre-guide/img/01-header.webp" alt="The opening screen of the Cattlelog case study: a large title, a one-line subtitle, a role, timeline and team list, and a laptop and phone mockup of the product." width="1600" height="1035"></div>
+      <figcaption class="caption">Most examples here come from the <a href="https://jjz.figma.site/cattlelog" target="_blank" rel="noopener">Cattlelog case study</a>, about a course and professor catalog for UC Davis students. Mellow, FindMyLab and ThreadIt fill in wherever Cattlelog does something differently (or skips it).</figcaption>
+    </figure>
+  </div>
+</header>
+
+<main>
+
+<section id="scene">
+  <div class="wrap">
+    <div class="head">
+      <span class="shield" aria-hidden="true">1</span>
+      <div>
+        <h2><span class="sr">Step 1: </span>Where case studies live, and who reads them</h2>
+        <p>A portfolio case study is part product design writeup, part personal branding, part job application. It has one job. Prove you can take a project from a fuzzy problem to a result someone can measure. Polished screens can't do that on their own, so the case study has to show <b>how and why</b> you made your decisions along the way.</p>
+      </div>
+    </div>
+
+    <ol class="route" aria-label="The path a case study travels">
+      <li><span class="stop" aria-hidden="true"></span><div><b>Resume or application</b><small>Your portfolio link goes on a resume, LinkedIn, a social post, or an application form.</small></div></li>
+      <li><span class="stop" aria-hidden="true"></span><div><b>Portfolio site</b><small>Usually Framer, Webflow, Figma Sites, or hand-coded. The reader clicks one project on your work page.</small></div></li>
+      <li class="hot"><span class="stop" aria-hidden="true"></span><div><b>Recruiter skim</b><small>About a minute of scanning headings, images and numbers. You win or lose them right here.</small></div></li>
+      <li><span class="stop" aria-hidden="true"></span><div><b>Interview</b><small>You'll talk through this same case study out loud, so write it knowing you'll have to say it.</small></div></li>
+    </ol>
+
+    <div class="trio">
+      <div>
+        <h3>Who reads it</h3>
+        <ul>
+          <li><b>Recruiters</b>, screening a pile of candidates for quick signals.</li>
+          <li><b>Hiring managers</b>, who want to see your process and how you made calls.</li>
+          <li><b>Design peers</b>. They read slower, mostly to see how you presented the work.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>How they read it</h3>
+        <ul>
+          <li>Fast, on a screen, comparing you against lots of other candidates.</li>
+          <li>In a top-to-bottom skim. They slow down only when something catches their eye.</li>
+          <li>With no way to ask you what you meant.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Who writes it, and when</h3>
+        <p>Mostly university students and early-career designers, writing after a project wraps up (or, let's be real, while it's still going). Most student projects are team efforts. That's the tricky part: you have to pull <b>your</b> contribution out of the group's work and make it obvious.</p>
+      </div>
+    </div>
+
+    <div class="notice">
+      <svg class="ico" aria-hidden="true"><use href="#i-warn"/></svg>
+      <p><b>The page has to make the whole argument.</b> Someone opens your link on their own time, and you aren't there. Any reason or result you leave off the page simply doesn't exist for them.</p>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="head">
+      <span class="shield" aria-hidden="true">2</span>
+      <div>
+        <h2><span class="sr">Step 2: </span>Anatomy of a case study</h2>
+        <p>Read enough case studies and you'll see they're built from the same parts, in close to the same order. All four samples here follow it. Each part below is shown in the Cattlelog case study. <b>Tap the yellow pins</b> on a screenshot to see why that part works.</p>
+      </div>
+    </div>
+
+    <ol class="index" aria-label="The seven parts">
+      <li><a href="#f1"><span class="bullet">1</span>Header block</a></li>
+      <li><a href="#f2"><span class="bullet">2</span>Problem statement</a></li>
+      <li><a href="#f3"><span class="bullet">3</span>Research &amp; pain points</a></li>
+      <li><a href="#f4"><span class="bullet">4</span>Solution &amp; features</a></li>
+      <li><a href="#f5"><span class="bullet">5</span>Numerical evidence</a></li>
+      <li><a href="#f6"><span class="bullet">6</span>Challenges &amp; reflection</a></li>
+      <li><a href="#f7"><span class="bullet">7</span>Call to action</a></li>
+    </ol>
+
+    <div class="parts">
+      <article class="feature" id="f1">
+        <span class="bullet" aria-hidden="true">1</span>
+        <div class="feature-text">
+          <h3>Header block</h3>
+          <p>The first screen answers what a recruiter wants to know before scrolling at all. What is this? What did you do? How long did it take, and who else was on it?</p>
+          <div class="label">Include</div>
+          <p>Project name, a one-line summary, your role, timeline, tools, and team.</p>
+          <div class="tip warn"><svg class="ico" aria-hidden="true"><use href="#i-warn"/></svg><span>Cattlelog skips a <b>Tools</b> line. Mellow has one (Figma, Notion). If the job post names specific tools, add yours.</span></div>
+        </div>
+        <div>
+          <div class="shot">
+            <img src="/genre-guide/img/01-header.webp" alt="Cattlelog case study header with title, subtitle, role, timeline, team and product mockup." loading="lazy" width="1600" height="1035">
+            <button class="pin" style="left:53%;top:20%" aria-controls="n1a" aria-expanded="false">A</button>
+            <button class="pin" style="left:75%;top:11%" aria-controls="n1b" aria-expanded="false">B</button>
+            <button class="pin" style="left:42%;top:66%" aria-controls="n1c" aria-expanded="false">C</button>
+          </div>
+          <div class="notes">
+            <div class="note" id="n1a"><span class="key">A</span><span>One line of subtitle explains the product: "Streamlining Course &amp; Professor Discovery." For some skimmers, that's the only sentence they'll read.</span></div>
+            <div class="note" id="n1b"><span class="key">B</span><span>Role, timeline and team are stacked in a tidy little column. "2 PM, 1 PD, 5 SWE, 1 PMM" quietly tells the reader the author was the team's only product designer.</span></div>
+            <div class="note" id="n1c"><span class="key">C</span><span>The finished product is on screen immediately. Lead with the result, then tell the story of how you got there.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feature" id="f2">
+        <span class="bullet" aria-hidden="true">2</span>
+        <div class="feature-text">
+          <h3>Problem statement</h3>
+          <p>One or two sentences: who's struggling, what's missing, and why it matters. Everything else on the page should trace back to this.</p>
+          <div class="label">Formula</div>
+          <div class="formula">[Users] don't have [what they need] to [reach a goal], so they [current workaround].</div>
+        </div>
+        <div>
+          <div class="shot">
+            <img src="/genre-guide/img/02-problem.webp" alt="Cattlelog's problem section with a highlighted problem statement box and a section menu on the left." loading="lazy" width="1600" height="497">
+            <button class="pin" style="left:24%;top:60%" aria-controls="n2a" aria-expanded="false">A</button>
+            <button class="pin" style="left:14%;top:52%" aria-controls="n2b" aria-expanded="false">B</button>
+          </div>
+          <div class="notes">
+            <div class="note" id="n2a"><span class="key">A</span><span>The statement gets its own shaded box, with the key gap picked out in blue. Your eye lands on it first, which is the whole point.</span></div>
+            <div class="note" id="n2b"><span class="key">B</span><span>A sticky section menu rides along as you scroll. A recruiter who only cares about "The Solution" or "Reflection" can go straight there.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feature" id="f3">
+        <span class="bullet" aria-hidden="true">3</span>
+        <div class="feature-text">
+          <h3>Research &amp; pain points</h3>
+          <p>How do you know the problem is real? Say which methods you used (interviews, surveys, competitive analysis, affinity mapping), then what they turned up.</p>
+          <div class="label">Keep it short</div>
+          <p>Nobody wants your raw notes. Boil the findings down to 3 to 5 named pain points.</p>
+        </div>
+        <div>
+          <div class="shot">
+            <img src="/genre-guide/img/03-research.webp" alt="Three numbered pain point cards: platform switching friction, lack of professor information, and word-of-mouth required." loading="lazy" width="1600" height="699">
+            <button class="pin" style="left:21%;top:27%" aria-controls="n3a" aria-expanded="false">A</button>
+            <button class="pin" style="left:59%;top:27%" aria-controls="n3b" aria-expanded="false">B</button>
+          </div>
+          <div class="notes">
+            <div class="note" id="n3a"><span class="key">A</span><span>01, 02, 03. Numbering turns the research into chunks you can count at a glance.</span></div>
+            <div class="note" id="n3b"><span class="key">B</span><span>Every pain point is a bold headline plus one sentence. Skimmers read the headlines; careful readers get the detail too.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feature" id="f4">
+        <span class="bullet" aria-hidden="true">4</span>
+        <div class="feature-text">
+          <h3>Solution &amp; features</h3>
+          <p>Now show the design, and tie every feature back to a pain point you named earlier. Iterations belong here as well: wireframes, high-fidelity screens, and the options you threw out.</p>
+          <div class="label">Pattern</div>
+          <p>Feature name → one sentence on what it does → screenshot.</p>
+        </div>
+        <div>
+          <div class="shot">
+            <img src="/genre-guide/img/04-solution.webp" alt="Cattlelog's grade distribution feature with a bar chart, GPA trend line chart, and professor average cards." loading="lazy" width="1091" height="529">
+            <button class="pin" style="left:25%;top:5%" aria-controls="n4a" aria-expanded="false">A</button>
+            <button class="pin" style="left:39%;top:46%" aria-controls="n4b" aria-expanded="false">B</button>
+          </div>
+          <div class="notes">
+            <div class="note" id="n4a"><span class="key">A</span><span>Features get a number and a plain label ("02 Grade Distributions"), the same pattern the pain points used.</span></div>
+            <div class="note" id="n4b"><span class="key">B</span><span>Several screens are layered into one image. Between them they answer the "lack of professor information" pain point, and nobody had to write a long paragraph to do it.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feature" id="f5">
+        <span class="bullet" aria-hidden="true">5</span>
+        <div class="feature-text">
+          <h3>Numerical evidence</h3>
+          <p>A number proves impact faster than any adjective can. Think users, drop-offs, time saved, sign-ups, test results.</p>
+          <div class="tip"><svg class="ico" aria-hidden="true"><use href="#i-info"/></svg><span>Didn't launch? You still have numbers. Count the surveys you ran, the interviews you held, the screens you cut, and the testers who finished the task.</span></div>
+        </div>
+        <div>
+          <div class="shot">
+            <img src="/genre-guide/img/05-results.webp" alt="Three result pills: 2,000+ daily active users, 55,000+ total users, 500,000+ courses viewed." loading="lazy" width="1253" height="302">
+            <button class="pin" style="left:37%;top:62%" aria-controls="n5a" aria-expanded="false">A</button>
+          </div>
+          <div class="notes">
+            <div class="note" id="n5a"><span class="key">A</span><span>Each metric sits in its own pill in big type, with one highlighted. Even mid-scroll, they're hard to miss.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feature" id="f6">
+        <span class="bullet" aria-hidden="true">6</span>
+        <div class="feature-text">
+          <h3>Challenges &amp; reflection</h3>
+          <p>Something went wrong. Something always does. Say what it was and what you did about it, because it shows you as someone who iterates and learns, and recruiters say that's what they look for <span class="cite">(Balázs, 2026)</span>.</p>
+          <div class="label">Write each challenge as</div>
+          <p>Problem → what you did → result.</p>
+        </div>
+        <div>
+          <div class="shot">
+            <img src="/genre-guide/img/06-reflection.webp" alt="Challenges section with three numbered challenges: visual clutter, user bounce rate, and feature creep." loading="lazy" width="1188" height="972">
+            <button class="pin" style="left:9%;top:26%" aria-controls="n6a" aria-expanded="false">A</button>
+            <button class="pin" style="left:7%;top:62%" aria-controls="n6b" aria-expanded="false">B</button>
+          </div>
+          <div class="notes">
+            <div class="note" id="n6a"><span class="key">A</span><span>A short name ("Visual Clutter"), then the explanation. It reuses the pain point card style, so the page feels like one piece.</span></div>
+            <div class="note" id="n6b"><span class="key">B</span><span>"Decreased this click-off rate by 80%." Drop a number into the story and a reflection becomes evidence.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feature" id="f7">
+        <span class="bullet" aria-hidden="true">7</span>
+        <div class="feature-text">
+          <h3>Call to action</h3>
+          <p>Don't leave the reader at a dead end. Tell them what to do next, whether that's getting in touch or looking at more of your work. All four samples close with an email, a LinkedIn link, or a "Next project" link.</p>
+          <div class="tip warn"><svg class="ico" aria-hidden="true"><use href="#i-warn"/></svg><span>Cattlelog has contact links at the bottom but no <b>"Next project →"</b>. Mellow has both, and signs off with "Let's work together," which is about as upfront about job hunting as you can get.</span></div>
+        </div>
+        <div>
+          <div class="shot">
+            <img src="/genre-guide/img/07-contact.webp" alt="Site footer with role, menu, social links and contact email." loading="lazy" width="1600" height="174">
+            <button class="pin" style="left:78%;top:50%" aria-controls="n7a" aria-expanded="false">A</button>
+            <button class="pin" style="left:58%;top:50%" aria-controls="n7b" aria-expanded="false">B</button>
+          </div>
+          <div class="notes">
+            <div class="note" id="n7a"><span class="key">A</span><span>The email address is spelled out. A recruiter can copy it straight away instead of wrestling with a contact form.</span></div>
+            <div class="note" id="n7b"><span class="key">B</span><span>LinkedIn and GitHub give recruiters somewhere else to look. The same links show up across the rest of the site.</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <p class="hint">Want to see every note at once? <button type="button" class="btn" id="toggle-all">Show all annotations</button></p>
+
+    <div class="notice info">
+      <svg class="ico" aria-hidden="true"><use href="#i-info"/></svg>
+      <p><b>Why this order?</b> Two conventions happen to line up. The sections track the design process itself (problem, research, iteration, testing, reflection). And when recruiters describe the story they want, it's nearly the same one: problem, approach, process, result <span class="cite">(Boza, 2026)</span>, or goal, journey, challenge, resolution <span class="cite">(Balázs, 2026)</span>.</p>
+    </div>
+
+    <div class="strip">
+      <h3>Seen in the other samples</h3>
+      <p>Mellow, FindMyLab and ThreadIt use the same conventions, just not always in the same form. These have pins too.</p>
+      <div class="samples">
+
+        <div class="sample">
+          <div>
+            <h4>A complete header block with a shortcut</h4>
+            <div class="by">Mellow · Ayson</div>
+            <p>A budgeting app for young adults. Its header block covers role, timeline, tools, and team. Right below sits a "Jump to solution" button for the reader who wants the outcome now.</p>
+            <a class="src" href="https://danicaayson.framer.website/projects/mellow" target="_blank" rel="noopener">View case study <svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+          </div>
+          <div>
+            <div class="shot">
+              <img src="/genre-guide/img/mellow-header.webp" alt="Mellow case study introduction with a role, timeline, tools and team block, a green Jump to solution button, and an overview paragraph." loading="lazy" width="1447" height="605">
+              <button class="pin" style="left:48%;top:32%" aria-controls="nma" aria-expanded="false">A</button>
+              <button class="pin" style="left:31%;top:53%" aria-controls="nmb" aria-expanded="false">B</button>
+              <button class="pin" style="left:22%;top:75%" aria-controls="nmc" aria-expanded="false">C</button>
+            </div>
+            <div class="notes">
+              <div class="note" id="nma"><span class="key">A</span><span>All four header fields sit in one labeled row, Tools included.</span></div>
+              <div class="note" id="nmb"><span class="key">B</span><span>"Jump to solution" is built for a reader who only has a minute.</span></div>
+              <div class="note" id="nmc"><span class="key">C</span><span>A few bolded phrases ("Design Interactive's Spring Cohort," "budgeting app") hand a skimmer the context without making them read the paragraph.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sample">
+          <div>
+            <h4>Sticky section menu</h4>
+            <div class="by">FindMyLab · Tai</div>
+            <p>A platform that helps UC Davis students find research labs. The section menu stays put while you scroll, so skipping ahead is easy. The page also links out to the live product and a video walkthrough.</p>
+            <a class="src" href="https://taijoanne.com/works/findmylab" target="_blank" rel="noopener">View case study <svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+          </div>
+          <div>
+            <div class="shot">
+              <img src="/genre-guide/img/findmylab-menu.webp" alt="FindMyLab MVP Testing section with a sticky section menu on the left and four MVP feature cards." loading="lazy" width="1253" height="821">
+              <button class="pin" style="left:16%;top:43%" aria-controls="nfa" aria-expanded="false">A</button>
+              <button class="pin" style="left:26%;top:19%" aria-controls="nfb" aria-expanded="false">B</button>
+              <button class="pin" style="left:34%;top:46%" aria-controls="nfc" aria-expanded="false">C</button>
+            </div>
+            <div class="notes">
+              <div class="note" id="nfa"><span class="key">A</span><span>The sticky menu tells you where you are and what's left (Introduction, Context &amp; Research, MVP Testing, Sanity Check, MVP Testing 2).</span></div>
+              <div class="note" id="nfb"><span class="key">B</span><span>"I worked with my product managers…" One "I" statement, and the designer's own role stands apart from the team's.</span></div>
+              <div class="note" id="nfc"><span class="key">C</span><span>Four icon cards, one per MVP feature, each led by a bolded verb.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sample">
+          <div>
+            <h4>Headline result and before-and-after</h4>
+            <div class="by">ThreadIt · Salas</div>
+            <p>A redesign of a styling app's onboarding. Here the section heading is the result itself, and a toggle flips between the old screens and the new ones.</p>
+            <a class="src" href="https://www.nnisalasdesign.com/threadit-case-study" target="_blank" rel="noopener">View case study <svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+          </div>
+          <div>
+            <div class="shot">
+              <img src="/genre-guide/img/threadit-result.webp" alt="ThreadIt Final Solution section: a headline saying time-to-value dropped from 10 minutes to under 2, a section menu, and a Before/After toggle." loading="lazy" width="1382" height="475">
+              <button class="pin" style="left:23%;top:22%" aria-controls="nta" aria-expanded="false">A</button>
+              <button class="pin" style="left:56%;top:89%" aria-controls="ntb" aria-expanded="false">B</button>
+              <button class="pin" style="left:19%;top:60%" aria-controls="ntc" aria-expanded="false">C</button>
+            </div>
+            <div class="notes">
+              <div class="note" id="nta"><span class="key">A</span><span>The heading is the result: "10 minutes to under 2 minutes." Read nothing else and you still get the outcome.</span></div>
+              <div class="note" id="ntb"><span class="key">B</span><span>Rather than describe the improvement, a before/after toggle just shows it.</span></div>
+              <div class="note" id="ntc"><span class="key">C</span><span>The section menu highlights where you are on the page.</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="strategies">
+  <div class="wrap">
+    <div class="head">
+      <span class="shield" aria-hidden="true">3</span>
+      <div>
+        <h2><span class="sr">Step 3: </span>Six strategies for writing one well</h2>
+        <p>Knowing the parts gets you halfway. The rest comes down to six decisions, pulled from the four samples and from what recruiters say they want. Get them right and people actually read your case study instead of skimming past it.</p>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <h3>Define your role and team</h3>
+      <div>
+        <p>Role, timeline, tools and team go in the header block. After that, "I" statements do the work of separating what you did from what the group did. All four samples handle this, each a bit differently. Ayson writes the whole page in the first person. Salas names teammates and mentors and gives them credit.</p>
+        <div class="pair">
+          <div class="do"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Do</div><p>"I designed the landing page, which cut click-off by 80%."</p></div>
+          <div class="dont"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-no"/></svg>Don't</div><p>"We built a great product." On a team project, that leaves the reader guessing which part was yours.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <h3>Design for a <span class="nb">10-second</span> read</h3>
+      <div>
+        <p>Your problem, your role, and your best result should be the first things a skimming recruiter sees. Menus, bold phrases, numbered lists and short chunks all make it easy to jump around <span class="cite">(Balázs, 2026; Boza, 2026)</span>.</p>
+        <div class="pair">
+          <div class="do"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Do</div><p>Lean on headings, numbers and whitespace until the headings and images could tell the story by themselves.</p></div>
+          <div class="dont"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-no"/></svg>Don't</div><p>Write walls of text. Nobody gets through a dense paragraph in a one-minute skim.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <h3>Show why, not just what</h3>
+      <div>
+        <p>For every decision, say why. Include the options you rejected, since your reasoning is the only window a reader has into how you think. ThreadIt numbers each change to its onboarding flow and puts the reason right next to it, backed by Nielsen's heuristics.</p>
+        <div class="pair">
+          <div class="do"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Do</div><p>Lead with the problem and your thinking. Show the iterations, and say why each one changed.</p></div>
+          <div class="dont"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-no"/></svg>Don't</div><p>Open with a tool list, or show only the polished final screen.</p></div>
+        </div>
+        <div class="shot">
+          <img src="/genre-guide/img/threadit-iteration.webp" alt="ThreadIt before and after comparison of a 14-step versus 8-step onboarding flow, with three numbered changes and the reason for each." loading="lazy" width="994" height="724">
+          <button class="pin" style="left:48%;top:6%" aria-controls="ns3a" aria-expanded="false">A</button>
+          <button class="pin" style="left:53%;top:19%" aria-controls="ns3b" aria-expanded="false">B</button>
+        </div>
+        <div class="notes">
+          <div class="note" id="ns3a"><span class="key">A</span><span>The toggle labels carry a number: 14 steps before, 8 after.</span></div>
+          <div class="note" id="ns3b"><span class="key">B</span><span>Each change is numbered on the flow and explained beside it (Reframed, Removed, Reframed). What changed and why, in one glance.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <h3>Prove it with evidence</h3>
+      <div>
+        <p>Claims need numbers behind them. Not every project ships, though, so pick the kind of proof yours can honestly offer. Each sample leans on a different kind:</p>
+        <table class="proof">
+          <thead><tr><th scope="col">Sample</th><th scope="col">Kind of proof</th><th scope="col">What it shows</th></tr></thead>
+          <tbody>
+            <tr><td>Cattlelog</td><td><span class="kind">Growth</span></td><td>2,000+ daily users, 55,000+ total users, and an 80% drop in click-off</td></tr>
+            <tr><td>ThreadIt</td><td><span class="kind">Reasoning</span></td><td>Changes backed by heuristics, 14 → 8 screens, time-to-value from 10 minutes to under 2</td></tr>
+            <tr><td>FindMyLab</td><td><span class="kind">Adaptability</span></td><td>A pivot after a founder's critique, and about 100 sign-ups from a spreadsheet directory</td></tr>
+            <tr><td>Mellow</td><td><span class="kind">Research volume</span></td><td>50+ surveys, 12 interviews, and two rounds of usability testing</td></tr>
+          </tbody>
+        </table>
+        <div class="pair">
+          <div class="do"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Do</div><p>Quantify wherever you can, even if it's "4 of 5 testers finished without help."</p></div>
+          <div class="dont"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-no"/></svg>Don't</div><p>Lean on adjectives like "intuitive" or "seamless." Every other candidate is saying the same thing.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <h3>Include challenges and lessons</h3>
+      <div>
+        <p>A reflection section is where you show that you learn from what happens. When Balázs (2026) surveyed recruiters, they said they look for clear thinking, self-reflection, and evidence of learning. Most of the samples have a challenges or takeaways section.</p>
+        <div class="pair">
+          <div class="do"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Do</div><p>Name a real problem, what you did about it, and what changed.</p></div>
+          <div class="dont"><div class="t"><svg class="ico" aria-hidden="true"><use href="#i-no"/></svg>Don't</div><p>Pretend everything went smoothly. That hides how you think.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <h3>Write for designers</h3>
+      <div>
+        <p>Write in the first person, and keep it confident and plain. Your readers already speak the vocabulary, so don't stop to define it. Spend those words on your reasoning.</p>
+        <ul class="vocab" aria-label="Common field vocabulary">
+          <li>MVP</li><li>HMW</li><li>affinity map</li><li>FTUX</li><li>usability testing</li><li>time-to-value</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="quotes">
+      <blockquote class="quote">
+        <p>State your role clearly, keep the layout scannable, and tell a four-part story: problem, approach, process, result.</p>
+        <cite>Paraphrasing Boza (2026), a UX recruiter writing for Toptal</cite>
+      </blockquote>
+      <blockquote class="quote">
+        <p>Show your reasoning, your iterations, and your results. That's what recruiters report looking for.</p>
+        <cite>Paraphrasing Balázs (2026), based on a survey of 74 recruiters</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<section id="design-cases">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h2>Sidebar: how it compares to scholarly design cases</h2>
+        <p>The portfolio case study has an academic cousin. Putting them side by side explains a lot about why portfolios look the way they do.</p>
+      </div>
+    </div>
+    <div class="aside">
+      <div>
+        <h3>Scholarly design case</h3>
+        <div class="sub">Written so others can learn</div>
+        <p>Boling (2010) calls the design case a specialized and critical form of design knowledge, and argues it should be a rigorous account of real design work.</p>
+        <dl>
+          <dt>Reader</dt><dd>Other designers and researchers</dd>
+          <dt>Goal</dt><dd>Help others learn from the project</dd>
+          <dt>Shows</dt><dd>Problem, decisions, outcomes, constraints</dd>
+        </dl>
+      </div>
+      <div>
+        <h3>Portfolio case study</h3>
+        <div class="sub">Written so a recruiter can judge you</div>
+        <p>Same core: a real problem, the decisions, the outcomes. It's just been reshaped for the job search.</p>
+        <dl>
+          <dt>Reader</dt><dd>Recruiters and hiring managers</dd>
+          <dt>Goal</dt><dd>Show the author's judgment and skill</dd>
+          <dt>Shows</dt><dd>Your role, headline metrics, polish</dd>
+        </dl>
+      </div>
+    </div>
+    <p class="aside-foot">That difference in purpose is why portfolio case studies put your role and metrics up front. Rejected options and constraints still show up, but in a portfolio their job is to show off the writer's judgment.</p>
+  </div>
+</section>
+
+<section id="checklist">
+  <div class="wrap">
+    <div class="sign check">
+      <div class="check-head">
+        <div class="check-title">
+          <span class="shield" aria-hidden="true">4</span>
+          <div>
+            <h2><span class="sr">Step 4: </span>Self-check list</h2>
+            <p>Run through this before you hit publish. Your checks are saved in this browser, so you can come back later.</p>
+          </div>
+        </div>
+        <div class="meter" aria-live="polite">
+          <div class="count"><span id="done">0</span><span class="of">of <span id="total">0</span> done</span></div>
+          <div class="track"><div class="fill" id="fill"></div></div>
+        </div>
+      </div>
+      <ul id="checks">
+        <li class="grp">Structure</li>
+        <li><label><input type="checkbox" data-id="c1"><span>The first screen shows the project name, a one-line summary, my role, timeline, tools, and team.</span></label></li>
+        <li><label><input type="checkbox" data-id="c2"><span>The problem statement is one or two sentences and names who has the problem.</span></label></li>
+        <li><label><input type="checkbox" data-id="c3"><span>Research is summed up as 3 to 5 clear findings or pain points.</span></label></li>
+        <li><label><input type="checkbox" data-id="c4"><span>Every feature I show ties back to a pain point.</span></label></li>
+        <li><label><input type="checkbox" data-id="c5"><span>There's a challenges or takeaways section.</span></label></li>
+        <li><label><input type="checkbox" data-id="c6"><span>It ends with contact info and a "Next project" link.</span></label></li>
+        <li class="grp">Strategy</li>
+        <li><label><input type="checkbox" data-id="c7"><span>I use "I" statements, so it's clear which work was mine.</span></label></li>
+        <li><label><input type="checkbox" data-id="c8"><span>The problem, my role, and my best result are visible within about 10 seconds.</span></label></li>
+        <li><label><input type="checkbox" data-id="c9"><span>I explain why I made key decisions and show at least one rejected option.</span></label></li>
+        <li><label><input type="checkbox" data-id="c10"><span>I picked the kind of proof my project can honestly offer, and put numbers on it.</span></label></li>
+        <li class="grp">Polish</li>
+        <li><label><input type="checkbox" data-id="c11"><span>A skimmer can follow the story from headings and images alone. No paragraph runs longer than about four lines.</span></label></li>
+        <li><label><input type="checkbox" data-id="c12"><span>I proofread it, including any text carried over from a template or an older case study.</span></label></li>
+      </ul>
+      <button class="reset" type="button" id="reset">Reset checklist</button>
+    </div>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <div class="head"><div><h2>Sources &amp; credits</h2></div></div>
+    <div class="sources">
+      <div>
+        <h3>Published sources</h3>
+        <ul class="refs">
+          <li>Arola, K. L., Sheppard, J., &amp; Ball, C. E. <i>Writer/Designer: A guide to making multimodal projects.</i> Bedford/St. Martin's.</li>
+          <li>Balázs, T. (2026, January 29). UX portfolio playbook: What recruiters actually look for in 2026. <i>UXfolio Blog.</i> <a href="https://blog.uxfol.io/ux-portfolio-playbook/" target="_blank" rel="noopener">https://blog.uxfol.io/ux-portfolio-playbook/</a></li>
+          <li>Bickmore, L. (n.d.). Genre in the wild. In <i>Open English @ SLCC.</i> Pressbooks.</li>
+          <li>Boling, E. (2010). The need for design cases: Disseminating design knowledge. <i>International Journal of Designs for Learning, 1</i>(1), 1–8. <a href="https://scholarworks.iu.edu/journals/index.php/ijdl/article/view/919" target="_blank" rel="noopener">https://scholarworks.iu.edu/journals/index.php/ijdl/article/view/919</a></li>
+          <li>Boza, I. (2026, last updated May 15). Craft an outstanding UX portfolio with these recruiter tips. <i>Toptal.</i> <a href="https://www.toptal.com/designers/ux/ux-portfolio-tips-recruiter" target="_blank" rel="noopener">https://www.toptal.com/designers/ux/ux-portfolio-tips-recruiter</a></li>
+          <li>UWP 12. (2026). <i>Guidelines for analyzing genres</i> [Course handout]. UC Davis Canvas.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Sample case studies (accessed Nov. 3, 2026)</h3>
+        <ul class="samples-list">
+          <li><a href="https://jjz.figma.site/cattlelog" target="_blank" rel="noopener">Cattlelog</a> by J. Zhang<span>Figma Sites · main annotated example</span></li>
+          <li><a href="https://danicaayson.framer.website/projects/mellow" target="_blank" rel="noopener">Mellow</a> by D. Ayson<span>Framer</span></li>
+          <li><a href="https://taijoanne.com/works/findmylab" target="_blank" rel="noopener">FindMyLab</a> by J. Tai<span>Personal portfolio</span></li>
+          <li><a href="https://www.nnisalasdesign.com/threadit-case-study" target="_blank" rel="noopener">ThreadIt</a> by N. Salas<span>Personal portfolio</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap"><b>End of guide</b>How to Genre Guide · UX Portfolio Case Studies · Screenshots are from the sample case studies listed above and are used for educational commentary.</div>
+</footer>
+
+<script>
+  (function () {
+    var pins = document.querySelectorAll('.pin');
+    function setPin(pin, open) {
+      var note = document.getElementById(pin.getAttribute('aria-controls'));
+      pin.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) pin.classList.add('seen');
+      if (note) note.classList.toggle('open', open);
+    }
+    pins.forEach(function (pin) {
+      pin.setAttribute('aria-label', 'Show annotation ' + pin.textContent.trim());
+      pin.addEventListener('click', function () {
+        setPin(pin, pin.getAttribute('aria-expanded') !== 'true');
+      });
+    });
+
+    var allOpen = false;
+    var toggle = document.getElementById('toggle-all');
+    toggle.addEventListener('click', function () {
+      allOpen = !allOpen;
+      pins.forEach(function (p) { setPin(p, allOpen); });
+      toggle.textContent = allOpen ? 'Hide all annotations' : 'Show all annotations';
+    });
+
+    var links = document.querySelectorAll('.stops a');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          links.forEach(function (a) {
+            var on = a.getAttribute('href') === '#' + e.target.id;
+            a.classList.toggle('active', on);
+            if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+          });
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      links.forEach(function (a) { var s = document.querySelector(a.getAttribute('href')); if (s) io.observe(s); });
+    }
+
+    var KEY = 'genre-guide-checklist';
+    var boxes = document.querySelectorAll('#checks input');
+    var tally = document.getElementById('nav-tally');
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+    function update() {
+      var done = 0;
+      boxes.forEach(function (b) { if (b.checked) done++; });
+      document.getElementById('done').textContent = done;
+      document.getElementById('total').textContent = boxes.length;
+      document.getElementById('fill').style.width = (done / boxes.length * 100) + '%';
+      tally.textContent = done ? done + '/' + boxes.length : '';
+    }
+    boxes.forEach(function (b) {
+      b.checked = !!saved[b.dataset.id];
+      b.addEventListener('change', function () {
+        saved[b.dataset.id] = b.checked;
+        try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+        update();
+      });
+    });
+    document.getElementById('reset').addEventListener('click', function () {
+      saved = {};
+      boxes.forEach(function (b) { b.checked = false; });
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      update();
+    });
+    update();
+  })();
+</script>
+</body>
+</html>
