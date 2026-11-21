@@ -129,15 +129,13 @@
 .water-ring { transform-box: fill-box; transform-origin: center; animation: ring 1.5s var(--ease-out) forwards; }
 @keyframes ring { to { transform: scale(11, 9); opacity: 0; } }
 
-.logo-bar { transform-box: fill-box; transform-origin: bottom; transition: transform 0.6s var(--ease-out); transition-delay: calc(var(--i) * 35ms); }
-a:hover .logo-bar, .logo:hover .logo-bar { transform: scaleY(1.14); }
 
 /* Below-the-fold sections skip rendering until they approach the viewport */
 .cv-auto { content-visibility: auto; contain-intrinsic-size: auto 1100px; }
 
 @media (prefers-reduced-motion: reduce) {
   .ls-layer { transform: none; }
-  .water-ring, .logo-bar { animation: none !important; transition: none !important; }
+  .water-ring { animation: none !important; transition: none !important; }
 }
 
 /* ─── Descent (home) ─────────────────────────────────────────────────────── */

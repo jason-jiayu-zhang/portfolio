@@ -148,12 +148,12 @@ export const PROJECTS: Project[] = [
       validation: [
         {
           figure: '15,000+',
-          body: 'Over 15,000 quarterly active users (65,000+ cumulative), averaged over Fall 2025 – Fall 2026 and peaking in Spring 2026.',
+          body: 'Quarterly active users (65,000+ cumulative), averaged over Fall 2025 – Fall 2026 and peaking in Spring 2026.',
         },
-        { figure: '109%', body: '109% growth Fall over Fall, comparing the first five weeks of instruction: 4,010 to 8,370 users.' },
+        { figure: '109%', body: 'Growth Fall over Fall, comparing the first five weeks of instruction: 4,010 to 8,370 users.' },
         {
           figure: '38.5%',
-          body: '38.5% of users in the last 90 days returned for more than one session, and 2,115 users were active in three or more quarters.',
+          body: 'Of users in the last 90 days returned for more than one session, and 2,115 users were active in three or more quarters.',
         },
       ],
       resultsNote:
@@ -181,7 +181,7 @@ export const PROJECTS: Project[] = [
         outro:
           'I get faster because of the design system, reusable components, AI tools and a memory of why past decisions were made.',
       },
-      figmaActivityEmbedUrl: 'https://figma-tracker.onrender.com/embed-widget?slug=jason&files=OmcL296OeqZ4xsHzNcap65&style=fimanu',
+      figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=OmcL296OeqZ4xsHzNcap65&style=fimanu&days=365',
       liveActivityNote:
         'My Figma activity, from a live Fimanu embed, the tool in my Fimanu case study.',
       images: [
@@ -348,7 +348,7 @@ export const PROJECTS: Project[] = [
         },
       ],
       validation: [
-        { figure: '450', body: 'About 450 landing-page views and 20 users (tracked via PostHog and Supabase).' },
+        { figure: '~450', body: 'Landing-page views and 20 users, tracked via PostHog and Supabase.' },
         'I use it every day, and it powers the live activity heatmap on my Cattlelog case study.',
       ],
       resultsNote: 'Built as a personal proof-of-practice tool and a sandbox I revisit whenever my design craft takes a step forward.',
@@ -368,7 +368,7 @@ export const PROJECTS: Project[] = [
       },
       roadmap:
         'Exploring additional API sources so the embed editor could eventually turn other activity streams into clean, embeddable widgets.',
-      figmaActivityEmbedUrl: 'https://figma-tracker.onrender.com/embed-widget?slug=jason&files=OmcL296OeqZ4xsHzNcap65&style=fimanu',
+      figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=Pb7osxFZ9Ec8ZJwa48A16S&style=fimanu&days=365',
       images: [
         {
           src: '/images/projects/fimanu/landing.webp',
@@ -475,6 +475,9 @@ export const PROJECTS: Project[] = [
           },
         ],
       },
+      figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=RwVeTKJP2kikURo3gVMtWz&style=fimanu&days=365',
+      liveActivityNote:
+        'My Figma activity for Product Space, from a live Fimanu embed, the tool in my Fimanu case study.',
       images: [
         {
           src: '/images/projects/product-space/landing.webp',
@@ -591,7 +594,7 @@ export const PROJECTS: Project[] = [
         },
       ],
       validation: [
-        { figure: '1st', body: 'First place among more than 20 teams at the second annual UC Davis Product Convention.' },
+        { figure: '1st', body: 'Place among more than 20 teams at the second annual UC Davis Product Convention.' },
         'Spot was never built, so I make no usage or retention claims.',
       ],
       lessons: {
@@ -613,6 +616,9 @@ export const PROJECTS: Project[] = [
           },
         ],
       },
+      figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=egdFjrBp34V1JtdQi9O2mu&style=fimanu&days=365',
+      liveActivityNote:
+        'My Figma activity for Spot, from a live Fimanu embed, the tool in my Fimanu case study.',
       images: [
         {
           src: '/images/projects/spot/onboarding.webp',

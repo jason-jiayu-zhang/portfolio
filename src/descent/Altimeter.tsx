@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { BIO } from '../data/portfolio'
+import Logo from '../components/Logo'
 import { landingTop, scrollToSection } from '../utils/sectionScroll'
 
 export type Stop = { id: string; label: string; alt: number; /** Rail label when `label` is too long */ short?: string }
@@ -113,18 +114,6 @@ function useAltitude(stops: readonly Stop[], top: number, fallbackId: string) {
   return { stop, readoutRef, markerRef }
 }
 
-function Mark({ className = '' }: { className?: string }) {
-  // The JJZ bar mark: seven bars whose tops trace a ridge.
-  const bars = [10, 15, 21, 27, 18, 23, 13]
-  return (
-    <svg className={className} viewBox="0 0 38 28" fill="currentColor" aria-hidden="true">
-      {bars.map((h, i) => (
-        <rect key={i} x={1 + i * 5.2} y={28 - h} width="3.2" height={h} />
-      ))}
-    </svg>
-  )
-}
-
 const href = (id: string, first: string) => (id === first ? '#top' : `#${id}`)
 
 /** Section links scroll through one path so they land where the altimeter expects. */
@@ -165,12 +154,12 @@ export default function Altimeter({ stops = HOME_STOPS, top = 4200, fallbackId =
       <nav aria-label="Sections" className="altimeter mat on-cream fixed left-4 top-1/2 z-50 hidden w-[140px] -translate-y-1/2 flex-col px-4 pb-5 pt-4 lg:flex">
         {homeLink ? (
           <Link to="/" className="-mx-1 flex min-h-11 items-center gap-2 px-1 text-action" aria-label={markLabel}>
-            <Mark className="h-5 w-auto" />
+            <Logo className="h-5 w-auto" />
             <span className="text-[0.7rem] font-bold uppercase tracking-[0.12em]">JJZ</span>
           </Link>
         ) : (
           <a href="#top" onClick={(e) => jump(e, first, first)} className="-mx-1 flex min-h-11 items-center gap-2 px-1 text-action" aria-label={markLabel}>
-            <Mark className="h-5 w-auto" />
+            <Logo className="h-5 w-auto" />
             <span className="text-[0.7rem] font-bold uppercase tracking-[0.12em]">JJZ</span>
           </a>
         )}
@@ -228,11 +217,11 @@ export default function Altimeter({ stops = HOME_STOPS, top = 4200, fallbackId =
         <div className="mat on-cream flex h-14 items-center justify-between gap-3 pl-3 pr-1">
           {homeLink ? (
             <Link to="/" className="flex min-h-11 items-center text-action" aria-label={markLabel}>
-              <Mark className="h-5 w-auto" />
+              <Logo className="h-5 w-auto" />
             </Link>
           ) : (
             <a href="#top" onClick={(e) => jump(e, first, first)} className="flex min-h-11 items-center text-action" aria-label={markLabel}>
-              <Mark className="h-5 w-auto" />
+              <Logo className="h-5 w-auto" />
             </a>
           )}
           <p className="tabnum mr-auto flex min-w-0 items-baseline gap-1.5 whitespace-nowrap text-night" aria-hidden="true">

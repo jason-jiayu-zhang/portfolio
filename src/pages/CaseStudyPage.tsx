@@ -1,11 +1,11 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import NotFoundPage from './NotFoundPage'
 import Altimeter from '../descent/Altimeter'
 import type { Stop } from '../descent/Altimeter'
 import Edge from '../descent/Edge'
-import RouteProfile from '../descent/RouteProfile'
+import RouteProfile, { RouteList } from '../descent/RouteProfile'
 import type { Waypoint } from '../descent/RouteProfile'
 import { Arrow } from '../descent/Camp'
 import { campAlt } from '../descent/terrain'
@@ -18,6 +18,7 @@ type Leg = { id: string; label: string; short?: string; band: Band; waypoint?: b
 
 const VALLEY_ALT = 300
 const round10 = (n: number) => Math.round(n / 10) * 10
+const fmt = new Intl.NumberFormat('en-US')
 
 function Prose({ paragraphs, list, after, className = 'mt-5' }: { paragraphs?: string[]; list?: CaseStudyList; after?: string[]; className?: string }) {
   if (!paragraphs?.length && !list && !after?.length) return null
@@ -93,17 +94,74 @@ function Screen({ image, eager = false, caption = true }: { image: CaseStudyImag
 
 /** One leg of the route: a stop on the altimeter and an anchor target. */
 function Section({ leg, alt, children }: { leg: Leg; alt: number; children: ReactNode }) {
+  // Waypoint legs repeat the profile: a dashed contour across the band, the
+  // diamond marker and the larger heading. Minor stops get a tick and a step down.
+  const major = Boolean(leg.waypoint)
   return (
-    <section id={leg.id} data-alt={alt} tabIndex={-1} aria-labelledby={`${leg.id}-h`} className="cs-stop outline-none lg:grid lg:grid-cols-12 lg:gap-x-10">
-      {/* At lg the heading stands in the margin and stays with its section. */}
-      <h2
-        id={`${leg.id}-h`}
-        className="max-w-[34rem] text-[1.5rem] font-bold leading-[1.2] tracking-[-0.01em] text-cream md:text-[1.875rem] lg:sticky lg:top-8 lg:col-span-4 lg:self-start lg:pr-4"
-      >
-        {leg.label}
-      </h2>
-      <div className="lg:col-span-8 lg:[&>*:first-child]:mt-0">{children}</div>
+    <section
+      id={leg.id}
+      data-alt={alt}
+      tabIndex={-1}
+      aria-labelledby={`${leg.id}-h`}
+      className={`cs-stop outline-none lg:grid lg:grid-cols-12 lg:gap-x-10 ${major ? 'border-t border-dashed border-cream/30 pt-10 md:pt-12' : ''}`}
+    >
+      {/* At lg the heading and its altitude stand in the margin and stay with the section. */}
+      <div className="lg:sticky lg:top-8 lg:col-span-4 lg:self-start lg:pr-4">
+        <h2
+          id={`${leg.id}-h`}
+          className={`max-w-[34rem] font-bold leading-[1.2] tracking-[-0.01em] text-cream ${major ? 'text-[1.5rem] md:text-[1.875rem]' : 'text-xl md:text-[1.5rem]'}`}
+        >
+          {leg.label}
+        </h2>
+        <p className="tabnum mt-2.5 flex items-center gap-2.5 text-[0.8rem] font-medium text-mist">
+          {major ? (
+            <span className="h-2 w-2 rotate-45 bg-sand" aria-hidden="true" />
+          ) : (
+            <span className="h-px w-2 bg-mist" aria-hidden="true" />
+          )}
+          {fmt.format(alt)} m
+        </p>
+      </div>
+      <div className="mt-5 lg:col-span-8 lg:mt-0 [&>*:first-child]:mt-0">{children}</div>
     </section>
+  )
+}
+
+function buildEmbedSrc(src: string) {
+  try {
+    const url = new URL(src)
+    url.searchParams.set('bg', 'transparent')
+    url.searchParams.set('text', '1c2035')
+    url.searchParams.set('empty', 'e0dcd0')
+    return url.toString()
+  } catch {
+    return src
+  }
+}
+
+/** The Fimanu embed sleeps on a free host; say so until the frame has loaded. */
+function LiveEmbed({ src }: { src: string }) {
+  const [loaded, setLoaded] = useState(false)
+  const embedSrc = useMemo(() => buildEmbedSrc(src), [src])
+  return (
+    <div
+      className="mat on-cream relative mt-6 h-[228px] w-full max-w-[52rem] overflow-hidden sm:h-[204px]"
+      style={{ colorScheme: 'only light' }}
+    >
+      {!loaded && (
+        <p className="absolute inset-0 grid place-items-center px-6 text-center text-[0.95rem] text-action" role="status">
+          Waking the widget. It runs on a free host, so this can take a few seconds.
+        </p>
+      )}
+      <iframe
+        title="Live Figma activity heatmap"
+        src={embedSrc}
+        loading="lazy"
+        onLoad={() => setLoaded(true)}
+        style={{ colorScheme: 'only light' }}
+        className={`relative block h-full w-full border-0 bg-transparent transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      />
+    </div>
   )
 }
 
@@ -163,7 +221,7 @@ export default function CaseStudyPage() {
   }, [legs, top])
 
   const stops = useMemo<Stop[]>(
-    () => [{ id: 'top', label: 'Trailhead', alt: top }, ...legs.map((l) => ({ id: l.id, label: l.label, short: l.short, alt: altOf.get(l.id)! }))],
+    () => [{ id: 'top', label: 'Camp', alt: top }, ...legs.map((l) => ({ id: l.id, label: l.label, short: l.short, alt: altOf.get(l.id)! }))],
     [legs, altOf, top],
   )
   const waypoints = useMemo<Waypoint[]>(
@@ -235,13 +293,13 @@ export default function CaseStudyPage() {
       case 'results':
         return (
           <Section key={leg.id} leg={leg} alt={alt}>
-            <ul className="mt-8 max-w-[52rem] border-t border-mist/20">
+            <ul className="mt-2 max-w-[52rem] border-t border-mist/20">
               {cs.validation.map((v) => {
                 const line = typeof v === 'string' ? { figure: '', body: v } : v
                 return (
                   <li key={line.body} className="grid gap-x-8 gap-y-2 border-b border-mist/20 py-6 md:grid-cols-[11rem_minmax(0,1fr)] md:items-baseline">
                     {line.figure ? (
-                      <span className="tabnum text-[2.6rem] font-black leading-none tracking-[-0.03em] text-sand" aria-hidden="true">
+                      <span className="tabnum text-[2.6rem] font-black leading-none tracking-[-0.03em] text-sand">
                         {line.figure}
                       </span>
                     ) : (
@@ -262,12 +320,7 @@ export default function CaseStudyPage() {
               {cs.liveActivityNote ??
                 'The public embed widget, running against real Figma files. It loads from a free host, so it can take a few seconds to wake.'}
             </p>
-            <iframe
-              title="Live Figma activity heatmap"
-              src={cs.figmaActivityEmbedUrl}
-              loading="lazy"
-              className="mat mt-6 block h-[360px] w-full max-w-[52rem] border-0"
-            />
+            <LiveEmbed key={cs.figmaActivityEmbedUrl} src={cs.figmaActivityEmbedUrl!} />
             <a
               href={cs.figmaActivityEmbedUrl}
               target="_blank"
@@ -325,14 +378,14 @@ export default function CaseStudyPage() {
       <Altimeter stops={stops} top={top} fallbackId="top" homeLink back={{ to: '/#work', label: 'Ascents' }} />
 
       <header id="top" data-alt={top} tabIndex={-1} className="relative bg-peri text-night outline-none">
-        <div className="band-inner pb-[calc(clamp(110px,20vw,300px)+48px)] pt-28 lg:pt-[13svh]">
+        <div className="band-inner pb-[calc(clamp(110px,18vw,250px)+28px)] pt-28 lg:pt-[8svh]">
           <h1
             className={`wordmark !text-night ${long ? 'text-[clamp(3rem,7vw,6.25rem)]' : 'text-[clamp(3.4rem,8.4vw,8.5rem)]'} !leading-[0.86]`}
           >
             {project.slug}
           </h1>
-          <p className="mt-5 max-w-[26ch] text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold leading-[1.15] tracking-[-0.015em]">{project.subtitle}</p>
-          <dl className="mt-9 grid max-w-[60rem] gap-x-10 gap-y-4 text-[0.95rem] sm:grid-cols-2 xl:grid-cols-[auto_auto_minmax(0,1fr)]">
+          <p className="mt-4 max-w-[26ch] text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold leading-[1.15] tracking-[-0.015em]">{project.subtitle}</p>
+          <dl className="mt-7 grid max-w-[60rem] gap-x-10 gap-y-4 text-[0.95rem] sm:grid-cols-2 xl:grid-cols-[auto_auto_minmax(0,1fr)]">
             {facts
               .filter(([, v]) => v)
               .map(([k, v]) => (
@@ -347,7 +400,7 @@ export default function CaseStudyPage() {
               href={project.url}
               target="_blank"
               rel="noreferrer"
-              className="mat on-cream mt-9 inline-flex min-h-11 items-center gap-2 px-5 text-[0.75rem] font-bold uppercase tracking-[0.14em] text-action transition-colors hover:bg-white"
+              className="mat on-cream mt-7 inline-flex min-h-11 items-center gap-2 px-5 text-[0.75rem] font-bold uppercase tracking-[0.14em] text-action transition-colors hover:bg-white"
             >
               Visit {project.title} <Arrow up className="h-4 w-4" />
             </a>
@@ -358,7 +411,10 @@ export default function CaseStudyPage() {
       <main id="main" tabIndex={-1} className="outline-none">
         <div className={`relative ${BAND_CLASS.alpine}`}>
           <RouteProfile waypoints={waypoints} seed={7 + index * 4} />
-          <div className="band-inner pb-32 pt-6 md:pb-48 md:pt-10">
+          <div className="band-inner pb-32 pt-2 md:pb-48 md:pt-6">
+            <div className="mb-8 md:hidden">
+              <RouteList waypoints={waypoints} />
+            </div>
             <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-x-10">
               <div className="lg:col-span-5">
                 <p className="text-[clamp(1.2rem,1.7vw,1.45rem)] font-medium leading-[1.45] text-cream">{lede}</p>
@@ -402,7 +458,7 @@ export default function CaseStudyPage() {
                           </Link>
                         </h2>
                         <p className="mt-5 max-w-[40ch] text-lg text-mist">
-                          Next ascent, camp at {new Intl.NumberFormat('en-US').format(campAlt((index + 1) % PROJECTS.length))} m. {next.subtitle}.
+                          Next ascent, camp at {fmt.format(campAlt((index + 1) % PROJECTS.length))} m. {next.subtitle}.
                         </p>
                         <div className="mt-7 flex flex-wrap items-center gap-x-8 gap-y-2">
                           <Link
