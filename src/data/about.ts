@@ -2,19 +2,6 @@
 // ABOUT SECTION DATA
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { WheelSection } from '../types/portfolio'
-
-// ─── HERO WHEEL SECTIONS ───────────────────────────────────────────────────────
-// The 4 slots on the hero wheel — each maps to a block of "about me" content
-// rendered in the hero's left panel. Order matches wheelIndex 0-3.
-
-export const WHEEL_SECTIONS: WheelSection[] = [
-  { id: 'description', slug: 'About', accentColor: '#9cd5f8' },
-  { id: 'trajectory', slug: 'Trajectory', accentColor: '#feb34f' },
-  { id: 'philosophy', slug: 'Philosophy', accentColor: '#a855f7' },
-  { id: 'catalog', slug: 'Catalog', accentColor: '#ebd648' },
-]
-
 export interface TimelineEntry {
   period: string
   role: string
@@ -54,19 +41,19 @@ export const TIMELINE: TimelineEntry[] = [
   },
   {
     period: 'Mar 2025 – Present',
-    role: 'Design Engineer',
+    role: 'Product Designer & Frontend Engineer',
     org: 'Cattlelog (AggieWorks)',
     tags: ['Full-Stack Engineering', 'UI/UX Design', 'Product'],
     detail:
-      'Architected the full design system and UI engineering layer for Cattlelog — a course discovery platform serving 40,000+ active UC Davis students. Drove 1:1 Figma-to-code component parity using React, TypeScript, Tailwind CSS, Vite, and Supabase.',
+      'Own the UI, the design system and the frontend build of features for Cattlelog, a UC Davis course and professor catalog reaching over 15,000 users a quarter (65,000+ cumulative). I read and write the React frontend directly, and use AI tools for Figma-to-code translation and navigating nested code.',
   },
   {
     period: 'Jan 2026 – Present',
-    role: 'Design Engineer',
+    role: 'Solo Designer & Builder',
     org: 'Fimanu',
     tags: ['Figma REST API', 'Full-Stack Engineering', 'Product Design'],
     detail:
-      'Architected and built Fimanu, a web-based design inspector and asset visualization platform that leverages the Figma REST API to streamline asset tracking and developer handoff.',
+      'Designed and built Fimanu, which turns Figma version history into a GitHub-style activity heatmap and embeddable widgets. I owned the product direction, UI and system architecture, directing AI coding tools to build the full-stack implementation.',
   },
   {
     period: 'Sep 2025 – Present',
@@ -149,14 +136,14 @@ export const BOOKSHELF: BookEntry[] = [
 // ─── CURRENT ROTATIONS ────────────────────────────────────────────────────────
 
 export const ROTATIONS: RotationEntry[] = [
-  { artist: 'The Marías', note: 'All I Really Want Is You' },
+  { artist: 'Neuro-sama', note: 'Neurotoxin' },
   { artist: 'Imagine Dragons', note: 'Amsterdam' },
   { artist: 'Ado', note: 'Aishite Aishite Aishite' },
-  { artist: 'Lewis Capaldi', note: 'Bruises' },
-  { artist: '秋野樱', note: '破旧世界 (Broken World)' },
-  { artist: 'Xomu', note: 'Amaterasu' },
+  { artist: 'K/DA', note: 'Firestarter' },
+  { artist: 'Ado', note: '0' },
+  { artist: 'Lauv feat. BTS', note: 'Who' },
   { artist: 'Eve', note: 'Underdog' },
-  { artist: 'ENHYPEN', note: 'Given-Taken' },
+  { artist: 'OneRepublic', note: 'Invincible' },
 ]
 
 export interface PlaygroundEntry {
@@ -165,11 +152,22 @@ export interface PlaygroundEntry {
   sublabel?: string
 }
 
+/** Where a standing sits on the game's own ladder, drawn as a route profile. */
+export interface Ladder {
+  spec: string // label of the spec the profile replaces in the list
+  at: number // 0..1 along the route
+  ticks: { label: string; at: number; minor?: boolean }[] // minor ticks hide on phones
+  reads: string // the position in words, for screen readers
+}
+
 export interface GameEntry {
   id: string
   title: string
   specs: PlaygroundEntry[]
+  ladder?: Ladder
 }
+
+const VALORANT_TIERS = ['Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Ascendant', 'Immortal', 'Radiant']
 
 // ─── PLAYGROUND ───────────────────────────────────────────────────────────────
 
@@ -178,33 +176,50 @@ export const PLAYGROUND: GameEntry[] = [
     id: '01',
     title: 'Valorant',
     specs: [
-      { label: 'Game', value: 'Valorant', sublabel: 'Competitive Ranked' },
+      { label: 'Genre', value: 'Tactical Shooter' },
       { label: 'Main Agents', value: 'Fade / Sova / Skye', sublabel: 'In-Game Leader' },
       { label: 'Rank', value: 'Ascendant I', sublabel: 'NA Server' },
-      { label: 'Sensitivity', value: '.2 x 800', sublabel: 'E-DPI: 160' },
-      { label: 'Peripherals', value: 'Razer Basilisk v3 / MelGeek MADE68 Pro', sublabel: 'Keyboard & Mouse' },
     ],
+    ladder: {
+      spec: 'Rank',
+      // Ascendant I: first of three divisions in tier 7 of 9.
+      at: (6 + 1 / 6) / 9,
+      ticks: VALORANT_TIERS.map((t, i) => ({ label: t, at: (i + 0.5) / 9, minor: ![0, 6, 8].includes(i) })),
+      reads: 'tier 7 of 9, between Diamond and Immortal',
+    },
   },
   {
     id: '02',
     title: 'Arknights: Endfield',
     specs: [
-      { label: 'Mode', value: 'Open-World RPG' },
+      { label: 'Genre', value: 'Open-World RPG' },
       { label: 'Characters', value: 'Zhuang Fangyi / Arclight / Arcane' },
-      { label: 'Progression', value: 'NA Server // Lv. 57' },
-      { label: 'PLATFORM / DEVICE', value: 'Desktop / Mobile', sublabel: 'Cross-Play Sync' },
-      { label: 'Peripherals', value: 'Razer Basilisk v3 / Rainy 75', sublabel: 'Keyboard & Mouse' },
+      { label: 'Progression', value: 'Authority Level // Lv. 57' },
     ],
+    ladder: {
+      spec: 'Progression',
+      at: (57 - 1) / 59, // levels 1 to the cap of 60 across the frame
+      ticks: [1, 10, 20, 30, 40, 50, 60].map((l) => ({ label: l === 1 ? 'Lv. 1' : l === 60 ? 'Lv. 60' : String(l), at: (l - 1) / 59, minor: l === 10 || l === 30 || l === 50 })),
+      reads: 'level 57 of the 60 cap',
+    },
   },
   {
     id: '03',
     title: "Soul's Remnant",
     specs: [
-      { label: 'Category', value: 'MMORPG' },
+      { label: 'Genre', value: 'MMORPG' },
       { label: 'Classes', value: 'Archer / Mage / Kunai' },
-      { label: 'Ranking', value: 'Top 1%', sublabel: 'Leaderboard Tier' },
-      { label: 'Access', value: 'Alpha Play-Tester', sublabel: 'Pre-Release Sandbox' },
-      { label: 'Peripherals', value: 'Razer Basilisk v3 / RK68 + Moon Linear v2', sublabel: 'Keyboard & Mouse' },
+      { label: 'Ranking', value: 'Top 1%', sublabel: 'Global Leaderboard' },
     ],
+    ladder: {
+      spec: 'Ranking',
+      at: 0.99,
+      ticks: [
+        { label: 'Top 75%', at: 0.25 },
+        { label: 'Top 50%', at: 0.5 },
+        { label: 'Top 25%', at: 0.75 },
+      ],
+      reads: 'top 1% of the leaderboard',
+    },
   },
 ]

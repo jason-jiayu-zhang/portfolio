@@ -1,0 +1,559 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-19T00:00:00Z",
+  "title": "Design System: Jason Jiayu Zhang Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "peri": {
+        "role": "secondary",
+        "displayName": "Sky Periwinkle",
+        "canonical": "#95a0da",
+        "tonalRamp": [
+          "#262b4d",
+          "#363d6e",
+          "#4d5584",
+          "#646d9c",
+          "#7c88c2",
+          "#95a0da",
+          "#b5bde8",
+          "#d9ddf4"
+        ]
+      },
+      "peri-deep": {
+        "role": "secondary",
+        "displayName": "Alpine Indigo",
+        "canonical": "#4d5584",
+        "tonalRamp": [
+          "#14172a",
+          "#262b4d",
+          "#363d6e",
+          "#4d5584",
+          "#646d9c",
+          "#7c88c2",
+          "#95a0da",
+          "#c9cce6"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Treeline Dusk",
+        "canonical": "#3d4268",
+        "tonalRamp": [
+          "#14172a",
+          "#1c2035",
+          "#262b49",
+          "#2f3456",
+          "#3d4268",
+          "#575d85",
+          "#7d82a5",
+          "#b4b7cd"
+        ]
+      },
+      "ground-deep": {
+        "role": "neutral",
+        "displayName": "Lake Indigo",
+        "canonical": "#2f3456",
+        "tonalRamp": [
+          "#10121f",
+          "#181b2e",
+          "#202440",
+          "#2f3456",
+          "#3d4268",
+          "#585e87",
+          "#8187a8",
+          "#b8bbd0"
+        ]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Valley Night",
+        "canonical": "#1c2035",
+        "tonalRamp": [
+          "#0a0c15",
+          "#10121f",
+          "#1c2035",
+          "#2f3456",
+          "#3d4268",
+          "#575d85",
+          "#7d82a5",
+          "#b4b7cd"
+        ]
+      },
+      "action": {
+        "role": "primary",
+        "displayName": "Action Indigo",
+        "canonical": "#38406a",
+        "tonalRamp": [
+          "#10121f",
+          "#1c2035",
+          "#282e50",
+          "#38406a",
+          "#4d5584",
+          "#646d9c",
+          "#8089b8",
+          "#b0b5d4"
+        ]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Cream",
+        "canonical": "#eeebe2",
+        "tonalRamp": [
+          "#8a8779",
+          "#a9a699",
+          "#c4c1b4",
+          "#d9d6cb",
+          "#e4e1d6",
+          "#eeebe2",
+          "#f4f2ec",
+          "#faf9f6"
+        ]
+      },
+      "sand": {
+        "role": "secondary",
+        "displayName": "Sand",
+        "canonical": "#cfccbb",
+        "tonalRamp": [
+          "#6f6c5e",
+          "#8a8775",
+          "#a39d7b",
+          "#b8b49f",
+          "#cfccbb",
+          "#dcdacc",
+          "#e8e6dc",
+          "#f3f2ec"
+        ]
+      },
+      "tan": {
+        "role": "secondary",
+        "displayName": "Tan",
+        "canonical": "#a39d7b",
+        "tonalRamp": [
+          "#3d3a2c",
+          "#55523f",
+          "#6f6b52",
+          "#878265",
+          "#a39d7b",
+          "#bab595",
+          "#d0ccb4",
+          "#e6e3d4"
+        ]
+      },
+      "mist": {
+        "role": "neutral",
+        "displayName": "Mist",
+        "canonical": "#c9cce6",
+        "tonalRamp": [
+          "#4d5584",
+          "#646d9c",
+          "#7c88c2",
+          "#95a0da",
+          "#b0b7e0",
+          "#c9cce6",
+          "#dcdef0",
+          "#eeeff8"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#e4e1d4",
+        "tonalRamp": [
+          "#5f5d55",
+          "#7f7c71",
+          "#9f9c8f",
+          "#bdbaad",
+          "#d4d1c4",
+          "#e4e1d4",
+          "#efede4",
+          "#f8f7f2"
+        ]
+      },
+      "body-text": {
+        "role": "neutral",
+        "displayName": "Body Warm White",
+        "canonical": "#e9e6d9",
+        "tonalRamp": [
+          "#62605a",
+          "#827f76",
+          "#a29f94",
+          "#c0bdb1",
+          "#d8d5c9",
+          "#e9e6d9",
+          "#f1efe6",
+          "#f9f8f3"
+        ]
+      },
+      "peri-shade": {
+        "role": "secondary",
+        "displayName": "Periwinkle Shade",
+        "canonical": "#646d9c",
+        "tonalRamp": [
+          "#1c2035",
+          "#262b4d",
+          "#363d6e",
+          "#4d5584",
+          "#646d9c",
+          "#7c88c2",
+          "#95a0da",
+          "#c9cce6"
+        ]
+      },
+      "terrain-far": {
+        "role": "tertiary",
+        "displayName": "Far Range",
+        "canonical": "#838dc8",
+        "tonalRamp": [
+          "#262b4d",
+          "#363d6e",
+          "#4d5584",
+          "#646d9c",
+          "#838dc8",
+          "#a3abd8",
+          "#c4c9e7",
+          "#e2e4f3"
+        ]
+      },
+      "terrain-shoulder-lit": {
+        "role": "tertiary",
+        "displayName": "Shoulder Lit",
+        "canonical": "#b4b9de",
+        "tonalRamp": [
+          "#363d6e",
+          "#4d5584",
+          "#646d9c",
+          "#838dc8",
+          "#a3abd8",
+          "#b4b9de",
+          "#d0d3eb",
+          "#e8e9f5"
+        ]
+      },
+      "terrain-shoulder-shade": {
+        "role": "tertiary",
+        "displayName": "Shoulder Shade",
+        "canonical": "#5d669a",
+        "tonalRamp": [
+          "#1c2035",
+          "#262b4d",
+          "#363d6e",
+          "#4d5584",
+          "#5d669a",
+          "#7c84b4",
+          "#a0a6cc",
+          "#c9cce6"
+        ]
+      },
+      "snow-shade": {
+        "role": "tertiary",
+        "displayName": "Snow Shade",
+        "canonical": "#b9bde0",
+        "tonalRamp": [
+          "#363d6e",
+          "#4d5584",
+          "#646d9c",
+          "#838dc8",
+          "#a3abd8",
+          "#b9bde0",
+          "#d3d6ec",
+          "#ebecf6"
+        ]
+      },
+      "shore-far": {
+        "role": "tertiary",
+        "displayName": "Shore Hills",
+        "canonical": "#353a60",
+        "tonalRamp": [
+          "#10121f",
+          "#1c2035",
+          "#262b49",
+          "#2f3456",
+          "#353a60",
+          "#4d5584",
+          "#7d82a5",
+          "#b4b7cd"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "wordmark-hero": {
+        "displayName": "Wordmark Hero",
+        "purpose": "The name on the summit, Night on sky."
+      },
+      "wordmark-section": {
+        "displayName": "Wordmark Section",
+        "purpose": "Band titles: Work, Studio, About."
+      },
+      "wordmark-camp": {
+        "displayName": "Wordmark Camp",
+        "purpose": "Camp names (project slugs) in sand."
+      },
+      "wordmark-camp-long": {
+        "displayName": "Wordmark Camp Long",
+        "purpose": "Camp names over nine characters."
+      },
+      "wordmark-floor": {
+        "displayName": "Wordmark Floor",
+        "purpose": "Let's talk on the valley floor."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Hero tagline."
+      },
+      "lead-large": {
+        "displayName": "Lead Large",
+        "purpose": "About opening line."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "About sub-section headings (1.5rem below md)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Belief headings, role lines, off-the-clock headings."
+      },
+      "body-large": {
+        "displayName": "Body Large",
+        "purpose": "Intros and camp subtitles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default reading text, 34-68ch."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Camp fact lists."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Periods, trail markers, footer."
+      },
+      "tile-title": {
+        "displayName": "Tile Title",
+        "purpose": "Studio piece names."
+      },
+      "readout": {
+        "displayName": "Readout",
+        "purpose": "Altimeter figure on the lg rail."
+      },
+      "readout-compact": {
+        "displayName": "Readout Compact",
+        "purpose": "Altimeter figure in the mobile bar."
+      },
+      "label-menu": {
+        "displayName": "Label Menu",
+        "purpose": "Mobile stops menu items."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons and badges, uppercase."
+      },
+      "label-stop": {
+        "displayName": "Label Stop",
+        "purpose": "Rail stops, uppercase; bold for the current stop."
+      },
+      "label-mark": {
+        "displayName": "Label Mark",
+        "purpose": "The JJZ mark text."
+      },
+      "label-unit": {
+        "displayName": "Label Unit",
+        "purpose": "Unit words beside a readout; the type floor."
+      }
+    },
+    "shadows": [
+      {
+        "name": "mat",
+        "value": "0 1px 0 rgba(255,255,255,0.5) inset, 0 18px 40px -18px rgba(18,20,40,0.55)",
+        "purpose": "Every mat, rail, bar and button-mat."
+      },
+      {
+        "name": "studio-lift",
+        "value": "0 1px 0 rgba(255,255,255,0.5) inset, 0 26px 44px -18px rgba(10,12,30,0.7)",
+        "purpose": "Studio piece on hover, with a 4px rise."
+      },
+      {
+        "name": "waterline",
+        "value": "0 -1px 0 rgba(238,235,226,0.5)",
+        "purpose": "Top edge of the lake reflection under the About portrait."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Altimeter marker (0.6s), studio piece lift (0.6s) and image scale (0.9s), incumbent-page reveals (0.9s, 28px)."
+      },
+      {
+        "name": "summit-flag",
+        "value": "3.2s ease-in-out infinite alternate; scaleX 1 -> 0.82 -> 0.95 with skewY 0 -> 4deg -> -3deg, origin left center",
+        "purpose": "The cream flag on the summit apex. Stops under prefers-reduced-motion."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media (prefers-reduced-motion: reduce)",
+        "purpose": "Flag animation off; marker, piece and image transitions off; hover transforms removed. The readout still updates, without easing."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Altimeter Rail",
+      "kind": "nav",
+      "refersTo": "altimeter-rail",
+      "description": "Fixed cream instrument at lg: mark, live metres readout, five stops on a scale with a sliding marker.",
+      "html": "<nav class=\"ds-alt\"><span class=\"ds-alt-mark\">JJZ</span><p class=\"ds-alt-read\"><span class=\"ds-alt-num\">3,600</span><span class=\"ds-alt-unit\">metres</span></p><ol class=\"ds-alt-scale\"><li style=\"top:0%\"><a href=\"#\">Summit</a></li><li style=\"top:14.3%\"><a href=\"#\" aria-current=\"location\">Work</a></li><li style=\"top:54.8%\"><a href=\"#\">Studio</a></li><li style=\"top:73.8%\"><a href=\"#\">About</a></li><li style=\"top:92.9%\"><a href=\"#\">Contact</a></li></ol></nav>",
+      "css": ".ds-alt { width: 132px; padding: 16px 16px 20px; background: #eeebe2; color: #38406a; box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 18px 40px -18px rgba(18,20,40,0.55); font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; } .ds-alt-mark { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; } .ds-alt-read { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid rgba(56,64,106,0.2); color: #1c2035; } .ds-alt-num { display: block; font-size: 1.7rem; font-weight: 900; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; } .ds-alt-unit { display: block; margin-top: 4px; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #4d5584; } .ds-alt-scale { position: relative; height: 248px; margin: 20px 0 0 5px; padding: 0; list-style: none; border-left: 1px solid rgba(56,64,106,0.35); } .ds-alt-scale li { position: absolute; left: 0; right: 0; transform: translateY(-50%); } .ds-alt-scale a { display: flex; min-height: 32px; align-items: center; padding-left: 13px; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #38406a; text-decoration: none; } .ds-alt-scale a:hover { color: #1c2035; } .ds-alt-scale a[aria-current] { font-weight: 700; color: #1c2035; } .ds-alt-scale a:focus-visible { outline: 2px solid #1c2035; outline-offset: 3px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Let's talk: the single Action fill.",
+      "html": "<a class=\"ds-btn\" href=\"#\">Let's talk</a>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; background: #38406a; color: #eeebe2; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; border-radius: 0; transition: background-color 0.15s; font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; } .ds-btn:hover { background: #1c2035; } .ds-btn:focus-visible { outline: 2px solid #1c2035; outline-offset: 3px; }"
+    },
+    {
+      "name": "Mat Button",
+      "kind": "button",
+      "refersTo": "button-mat",
+      "description": "Secondary action on a dark band: Read the case study, Open resume.",
+      "html": "<div class=\"ds-dark\"><a class=\"ds-btn-mat\" href=\"#\">Read the case study <svg viewBox=\"0 0 20 20\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"square\"><path d=\"M3.5 10h12M11 5.5l4.5 4.5-4.5 4.5\"/></svg></a></div>",
+      "css": ".ds-dark { background: #4d5584; padding: 24px; } .ds-btn-mat { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; background: #eeebe2; color: #38406a; box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 18px 40px -18px rgba(18,20,40,0.55); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: background-color 0.15s; font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; } .ds-btn-mat:hover { background: #ffffff; } .ds-btn-mat:focus-visible { outline: 2px solid #1c2035; outline-offset: 3px; }"
+    },
+    {
+      "name": "Exit Bar",
+      "kind": "nav",
+      "refersTo": "exit-bar",
+      "description": "Fixed top-right cream bar at lg holding Resume and Let's talk.",
+      "html": "<div class=\"ds-exit\"><a href=\"#\" class=\"ds-exit-link\">Resume</a><a href=\"#\" class=\"ds-exit-btn\">Let's talk</a></div>",
+      "css": ".ds-exit { display: inline-flex; align-items: center; gap: 4px; padding: 4px; background: #eeebe2; box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 18px 40px -18px rgba(18,20,40,0.55); font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; } .ds-exit-link, .ds-exit-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; } .ds-exit-link { color: #38406a; text-underline-offset: 0.5em; } .ds-exit-link:hover { text-decoration: underline; } .ds-exit-btn { background: #38406a; color: #eeebe2; transition: background-color 0.15s; } .ds-exit-btn:hover { background: #1c2035; } .ds-exit a:focus-visible { outline: 2px solid #1c2035; outline-offset: 3px; }"
+    },
+    {
+      "name": "Badge Chip",
+      "kind": "chip",
+      "refersTo": "chip-badge",
+      "description": "Status under a camp, e.g. Shipped.",
+      "html": "<span class=\"ds-badge\">Shipped</span>",
+      "css": ".ds-badge { display: inline-block; padding: 6px 12px; background: #a39d7b; color: #1c2035; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; }"
+    },
+    {
+      "name": "Camp Marker",
+      "kind": "custom",
+      "refersTo": "camp-marker",
+      "description": "Altitude tag at the turn of a switchback, on a dashed cream trail.",
+      "html": "<div class=\"ds-trail\"><span class=\"ds-camp\"><svg viewBox=\"0 0 14 10\" width=\"14\" height=\"10\"><path d=\"M0 10L7 0L14 10ZM5.2 10L7 6.6L8.8 10Z\" fill=\"#cfccbb\" fill-rule=\"evenodd\"/></svg>Camp at 3,100 m</span></div>",
+      "css": ".ds-trail { position: relative; height: 112px; background: #4d5584; font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; } .ds-trail::before { content: ''; position: absolute; left: 30px; top: 0; bottom: 0; border-left: 1.5px dashed rgba(238,235,226,0.55); } .ds-camp { position: absolute; left: 48px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: #4d5584; color: #e4e1d4; font-size: 0.875rem; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Studio Piece",
+      "kind": "card",
+      "refersTo": "studio-piece",
+      "description": "Cream mat in the treeline stand: image at its own ratio, title and tabular year; lifts on hover.",
+      "html": "<a class=\"ds-piece\" href=\"#\"><div class=\"ds-piece-img\"></div><span class=\"ds-piece-meta\"><span>Poster Series</span><span class=\"ds-piece-year\">2025</span></span></a>",
+      "css": ".ds-piece { display: block; width: 220px; padding: 8px; background: #eeebe2; text-decoration: none; box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 18px 40px -18px rgba(18,20,40,0.55); transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), box-shadow 0.6s cubic-bezier(0.16,1,0.3,1); font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; } .ds-piece:hover { transform: translateY(-4px); box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 26px 44px -18px rgba(10,12,30,0.7); } .ds-piece:focus-visible { outline: 2px solid #1c2035; outline-offset: 3px; } .ds-piece-img { aspect-ratio: 4 / 5; background: rgba(207,204,187,0.5); } .ds-piece-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 4px 4px; } .ds-piece-meta span:first-child { font-size: 0.85rem; font-weight: 700; line-height: 1.25; color: #38406a; } .ds-piece-year { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: #4d5584; } @media (prefers-reduced-motion: reduce) { .ds-piece { transition: none; } .ds-piece:hover { transform: none; } }"
+    },
+    {
+      "name": "Band Wordmark",
+      "kind": "custom",
+      "refersTo": "band-alpine",
+      "description": "The alpine band rising into the sky on its drawn ridge edge, with its sand wordmark title.",
+      "html": "<div class=\"ds-band\"><svg class=\"ds-edge\" viewBox=\"0 0 400 40\" preserveAspectRatio=\"none\"><path d=\"M0 40L0 22L40 14L70 28L110 10L150 24L190 8L230 30L270 16L310 26L350 12L400 20L400 40Z\" fill=\"#4d5584\"/></svg><p class=\"ds-wordmark\">Work</p></div>",
+      "css": ".ds-band { background: #95a0da; padding-top: 40px; font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; } .ds-edge { display: block; width: 100%; height: 40px; } .ds-wordmark { margin: 0; padding: 0 20px 32px; background: #4d5584; font-weight: 900; font-size: 4.5rem; line-height: 0.9; letter-spacing: -0.035em; text-transform: uppercase; color: #cfccbb; }"
+    },
+    {
+      "name": "Callout (incumbent case study)",
+      "kind": "custom",
+      "refersTo": "callout",
+      "description": "Case study finding block; alternates cream and sand. Incumbent pages only.",
+      "html": "<div class=\"ds-callout\"><p>Under 0.5% of sessions used the feature.</p></div>",
+      "css": ".ds-callout { background: #eeebe2; color: #1c2035; padding: 16px 20px; font-size: 0.95rem; line-height: 1.35; font-family: Satoshi, ui-sans-serif, system-ui, sans-serif; } .ds-callout p { margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Range at Dusk",
+    "overview": "The site is a mountain at dusk, and scrolling the home page is the walk down it. The page is a stack of flat altitude strata that get darker as you descend: periwinkle sky at the summit, alpine indigo for the work camps, dusk indigo at the treeline, deep indigo at the lake, near-black on the valley floor. A freshly drawn silhouette marks every boundary: a broken ridge, a conifer line, a flat shore, rolling swells. Cream square mats sit on each band like paper laid on the slope. A cream altimeter fixed to the left edge reads the height in metres and counts down to zero at the floor.\n\nThe density is airy and slow: landscape-scale Satoshi caps for the name and each band title, one product per camp, 96px steps in the Studio stand, wide band endings (128 to 192px). Detail is small and exact: tabular metres, tracked caps on the instrument, a dashed trail between camps. Motion is small too. A flag flutters on the summit, the altimeter marker slides, studio pieces lift a little on hover. Nothing moves under reduced motion except the reading itself.\n\nThe build rejects the stacked header, hero and card-row page, the earlier one-peak-per-project card stack, and the old dark-gold tech portfolio. Flat vector terrain is the only illustration language. There are no icon tiles, no mascots and no stock imagery.",
+    "keyCharacteristics": [
+      "Five flat strata darken strictly downward; each band carries its own drawn top edge.",
+      "Cream square mats with a soft fall shadow carry every image and instrument.",
+      "Satoshi 900 caps at landscape scale, Satoshi 400 for reading.",
+      "Altitude is the navigation: a live metres readout and five named stops.",
+      "Square corners everywhere."
+    ],
+    "rules": [
+      {
+        "name": "The Descent Rule",
+        "body": "Strata only darken going down: sky, alpine, treeline, lake, valley. A band never sits lighter than the one above it, and each stratum is used for one band.",
+        "section": "colors"
+      },
+      {
+        "name": "The Paper-on-Dusk Rule",
+        "body": "On the sky band, text is Night. On every darker band, text is cream, sand, mist or paper. On cream, text is Action Indigo, Night or Alpine Indigo. Never put indigo text on a dark band or cream text on cream.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Action Rule",
+        "body": "Action Indigo is the single interactive fill. The primary ask is \"Let's talk\"; a second accent would split it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Landscape-Scale Rule",
+        "body": "Wordmarks are the only oversized type, and each one names a place on the descent. Body copy never exceeds title size.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Metres, years and periods use tabular numerals. Altitudes use en-US grouping (\"4,200 m\"), the readout rounds to 5 m, and camps step down 300 m from 3,400 m.",
+        "section": "typography"
+      },
+      {
+        "name": "The Rail Clearance Rule",
+        "body": "At lg every band's content starts at 176px from the left edge. A new band uses band-inner; it never places content under the rail.",
+        "section": "layout"
+      },
+      {
+        "name": "The Soft Mat Rule",
+        "body": "Shadows are wide, blurred and negatively spread, and they fall straight down. Never a hard offset or a coloured shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Drawn Edge Rule",
+        "body": "Every band boundary is a silhouette drawn in the lower band's colour, sitting on top of that band and rising into the one above. Ridge edges are 40 to 80px tall; the others are 64 to 150px. A boundary is never a plain horizontal cut, except the shore, where the straight waterline is the point.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do give each new band its own stratum in descending order, its own drawn top edge from terrain.ts, and a data-alt mark the altimeter can read.",
+      "Do put images, instruments and secondary buttons on cream mats with the Mat shadow.",
+      "Do use band-inner so content clears the 176px rail at lg.",
+      "Do write altitudes and years in tabular numerals, with \"m\" and en-US grouping.",
+      "Do keep \"Let's talk\" and Resume reachable at every altitude.",
+      "Do give every motion a reduced-motion fallback. The flag stops, and transitions and hover transforms switch off.",
+      "Do keep every corner square."
+    ],
+    "donts": [
+      "Don't put a lighter band below a darker one, or reuse a stratum for a second band.",
+      "Don't separate bands with a straight horizontal cut (the shore's waterline excepted).",
+      "Don't use a white or paper-light page ground. The lightest field is the sky periwinkle.",
+      "Don't use gold, bright accent colours or gradients on text.",
+      "Don't use hard offset or coloured shadows.",
+      "Don't set a grid of same-size thumbnail cards for work or studio pieces.",
+      "Don't add icon tiles, mascots or stock imagery.",
+      "Don't set label type below 0.68rem."
+    ]
+  }
+}

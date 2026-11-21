@@ -1,25 +1,30 @@
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
-// Fires once when the element first scrolls into view, then disconnects.
-export function useInViewOnce<T extends HTMLElement>(threshold = 0.12) {
+// Arms an element only if it starts below the fold, then reveals it once when it
+// scrolls into view. Elements already on screen never hide, so nothing flashes.
+export function useReveal<T extends HTMLElement>() {
   const ref = useRef<T | null>(null)
-  const [inView, setInView] = useState(false)
+  const [armed, setArmed] = useState(false)
+  const [shown, setShown] = useState(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = ref.current
     if (!el) return
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setInView(true)
-          observer.disconnect()
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.92) return
+    setArmed(true)
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setShown(true)
+          io.disconnect()
         }
       },
-      { threshold }
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
     )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold])
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
-  return [ref, inView] as const
+  return [ref, armed, shown] as const
 }

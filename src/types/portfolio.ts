@@ -30,18 +30,83 @@ export interface CaseStudyImage {
 export interface CaseStudyContent {
   /** One-paragraph context, engineering role, and high-level product impact */
   executiveSummary: string
+  /** Opening paragraph that leads with the result; replaces the At a Glance trio */
+  lede?: string
+  /** Short fact rows shown beside the lede, e.g. ['What it is', '…'] */
+  facts?: [string, string][]
   /** User and technical challenges — 2–4 sentences each */
-  problemSpace: string[]
+  problemSpace?: string[]
   /** Design-to-code transition: design system, component parity, frontend stack */
-  systemArchitecture: string[]
-  /** Metrics, lessons learned, user impact */
-  validation: string[]
+  systemArchitecture?: string[]
+  /** Evidence lines; a `figure` is set large beside its sentence (the sentence still carries the number) */
+  validation: (string | { figure: string; body: string })[]
+  /** One caveat printed under the results, e.g. how "users" is counted */
+  resultsNote?: string
+  /** Closing section: what went wrong, what it cost, the rule followed now */
+  lessons?: CaseStudyLessons
+  /** Intro line for the live embed section */
+  liveActivityNote?: string
   /** Optional forward-looking roadmap note */
   roadmap?: string
   /** Optional visual screenshots or mockups of the interface */
   images?: CaseStudyImage[]
+  /** Optional live analytics chart (e.g. a PostHog shared insight) shown under the results */
+  analyticsEmbedUrl?: string
+  /** Caption under the analytics chart */
+  analyticsEmbedNote?: string
   /** Optional Fimanu Figma-activity embed URL, rendered as a live widget */
   figmaActivityEmbedUrl?: string
+  /** "At a Glance" panel; falls back to project narrative + executiveSummary */
+  glance?: { product?: string; goal?: string; impact?: string }
+  /** Callout cards under "The Problem" */
+  problemCallouts?: CaseStudyCallout[]
+  /** Extra long-form sections rendered after The Problem */
+  sections?: CaseStudySection[]
+}
+
+export interface CaseStudyCallout {
+  label?: string
+  lead?: string
+  body: string
+}
+
+export interface CaseStudyList {
+  items: string[]
+  ordered?: boolean
+}
+
+export interface CaseStudySection {
+  id: string
+  title: string
+  /** Short label for the altimeter rail (about 12 characters at most) */
+  nav?: string
+  paragraphs?: string[]
+  list?: CaseStudyList
+  /** Paragraphs rendered after the list */
+  after?: string[]
+  blocks?: {
+    heading: string
+    paragraphs?: string[]
+    list?: CaseStudyList
+    after?: string[]
+    callouts?: CaseStudyCallout[]
+    image?: CaseStudyImage
+  }[]
+}
+
+export interface CaseStudyLesson {
+  /** The mistake, named in a few words */
+  title: string
+  /** What happened and what it cost */
+  body: string
+  /** The rule followed now */
+  rule?: string
+}
+
+export interface CaseStudyLessons {
+  intro?: string
+  items: CaseStudyLesson[]
+  outro?: string
 }
 
 export interface Project {
@@ -54,11 +119,14 @@ export interface Project {
   tools: string[]
   categories: ProjectCategory[]
   metrics: ProjectMetric[]
-  /** Index position on wheel 0-3, maps to 90° snap intervals */
-  wheelIndex: 0 | 1 | 2 | 3
   /** Hex accent color per project */
   accentColor: string
   tagline: string
+  /** Short proof chip on the work card, e.g. "55,000 USERS" */
+  badge?: string
+  /** Case-study header facts */
+  timeline?: string
+  team?: string
   narrative: string[]
   url?: string
   year: string | number
@@ -121,36 +189,3 @@ export interface StatusCycle {
   emoji?: string
 }
 
-/** One of the 4 hero wheel content slots (About-section blocks) */
-export interface WheelSection {
-  id: 'description' | 'trajectory' | 'philosophy' | 'catalog'
-  /** Short codename shown on the wheel label */
-  slug: string
-  /** Hex accent color per section */
-  accentColor: string
-}
-
-/** Wheel rotation math state */
-export interface WheelState {
-  /** Current rotation in degrees */
-  angle: number
-  /** Target snap angle */
-  targetAngle: number
-  /** Currently highlighted project index 0-3 */
-  activeIndex: number
-  /** Drag velocity for inertia */
-  velocity: number
-  isDragging: boolean
-}
-
-/** Single ring layer of the geometric wheel SVG */
-export interface WheelRing {
-  radius: number
-  strokeWidth: number
-  opacity: number
-  dashed?: boolean
-  dashArray?: string
-  /** Number of tick marks evenly spaced on ring */
-  ticks?: number
-  tickLength?: number
-}
