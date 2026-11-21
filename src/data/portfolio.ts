@@ -2,7 +2,7 @@
 // PORTFOLIO DATA - Phase 2 enriched content (caseStudy + log fields populated)
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { Project, Experiment, BioProfile, SocialLink, StatusCycle } from '../types/portfolio'
+import type { Project, Experiment, BioProfile, SocialLink } from '../types/portfolio'
 
 // ─── BIO ─────────────────────────────────────────────────────────────────────
 
@@ -43,266 +43,593 @@ export const BIO: BioProfile = {
   ] satisfies SocialLink[],
 }
 
-// ─── STATUS CYCLE ─────────────────────────────────────────────────────────────
-
-export const STATUS_CYCLE: StatusCycle[] = [
-  { text: 'Designing Cattlelog' },
-  { text: 'Refining design tokens' },
-  { text: 'Building something cool...' },
-  { text: 'Playing tennis' },
-  { text: 'Building custom keyboards' },
-  { text: 'Petting my cats' },
-]
-
 // ─── FEATURED PROJECTS ────────────────────────────────────────────────────────
 
 export const PROJECTS: Project[] = [
   {
     id: 'cattlelog',
-    year: 2026,
+    year: 'Present',
     slug: 'Cattlelog',
     title: 'Cattlelog',
-    subtitle: 'Streamlining Course & Professor Discovery for UC Davis',
-    role: 'Design Engineer',
-    tools: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Supabase', 'Figma'],
+    subtitle: 'A course and professor catalog for UC Davis',
+    role: 'Product Designer & Frontend Engineer',
+    tools: ['Figma', 'React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Supabase', 'PostHog'],
     categories: ['Product', 'Full-Stack Engineering', 'UI/UX'],
-    wheelIndex: 0,
     accentColor: '#9cd5f8',
-    tagline: 'Streamlining Course & Professor Discovery for UC Davis',
+    badge: '15,000+ QAU',
+    timeline: 'Mar 2025 – Present',
+    team: '2 PMs, 1 designer (me), 5 SWEs, 1 PMM at AggieWorks',
+    tagline: 'A course and professor catalog for UC Davis',
     metrics: [
-      { label: 'Total Users', value: '40,000+' },
-      { label: 'Daily Actives', value: '1,000+' },
+      { label: 'Quarterly Active Users', value: '15,000+' },
+      { label: 'Cumulative Users', value: '65,000+' },
     ],
     narrative: [
-      'Cattlelog is a course and professor discovery platform serving 40,000+ UC Davis students, combining professor ratings, grade distributions, and comparison tools to simplify academic planning.',
+      'Cattlelog is a course and professor catalog for UC Davis that combines professor reviews, grade distributions and official course data.',
     ],
     url: 'https://daviscattlelog.com',
     status: 'live',
     caseStudy: {
       executiveSummary:
-        'As Lead Product Designer & UI Engineer, I spearheaded the design and development of Cattlelog, a comprehensive course and professor discovery platform now serving over 40,000 students at UC Davis. Bridging my double-major in Design and Computer Engineering, I owned the full arc from Figma system design through production React implementation. By combining professor ratings, grade distributions, and side-by-side comparison tools, Cattlelog dramatically simplifies academic planning for one of the largest public universities in the US.',
-      problemSpace: [
-        'UC Davis students historically navigated six separate pages, from school-affiliated to reddit, just to plan a single quarter: cross-referencing RateMyProfessor, the official Course Registrar, GE requirement sheets, and grade-distribution PDFs in parallel browser tabs.',
-        'The core challenge was consolidating this fractured information landscape, GE requirements, live course data, professor reviews, and historical grade distributions, into a single authoritative catalog without overwhelming users with information density.',
-        'From a technical standpoint, the system needed to handle real-time search and multi-axis filtering across a large course corpus while maintaining sub-200ms interaction latency on both desktop and mobile browsers.',
+        'Cattlelog reaches over 15,000 users a quarter (65,000+ cumulative) at UC Davis, and the first five weeks of Fall 2026 drew 109% more users than the same period in Fall 2025.',
+      lede: 'Cattlelog reaches over 15,000 users a quarter (65,000+ cumulative) at UC Davis, and the first five weeks of Fall 2026 drew 109% more users than the same period in Fall 2025.',
+      facts: [
+        [
+          'What it is',
+          'A course and professor catalog combining professor reviews, grade distributions and official course data into a single source of truth.',
+        ],
+        [
+          'Built at AggieWorks',
+          'A UC Davis student organization building products by students, for students, to improve the campus experience.',
+        ],
       ],
-      systemArchitecture: [
-        'The design system was architected in Figma first: a rigorously token-based component library covering typography scales, spacing primitives, color roles, and interactive states. Every component was designed with direct React parity in mind: each Figma frame mapped one-to-one to a typed React component.',
-        'The frontend stack, Vite, React, TypeScript, Tailwind CSS, was chosen for developer velocity and strict type safety. Tailwind utility classes were mapped directly from Figma\'s design token names, ensuring zero drift between design intent and shipped UI.',
-        'Supabase served as the backend layer for course and professor data, with a Postgres full-text search index powering the catalog search. The data pipeline fed directly into a React Query cache layer, keeping the UI reactive without redundant fetches.',
+      problemSpace: [
+        'Planning a quarter at UC Davis meant switching between six different web pages to learn about courses, and most students chose by word of mouth.',
+        "Rate My Professors is sorted by professor, so it can't help you discover a course. It also has no grade distributions, no course-specific information and no professor summaries. Those gaps are what Cattlelog is built on, and they are the reason a student would switch. Course, grade and professor data comes from official UC Davis sources.",
+      ],
+      sections: [
+        {
+          id: 'owned',
+          title: 'What I owned',
+          nav: 'Owned',
+          paragraphs: [
+            'I joined in March 2025. A test version existed before I did, but I have since redesigned all of it, so the design is mine end to end. I own the UI, the design system and the frontend build of features once the SWEs finish the backend. I also built the blog from scratch.',
+            'I read and write the React frontend directly, and use AI tools to speed up Figma-to-code translation and navigate nested codebases.',
+          ],
+        },
+        {
+          id: 'process',
+          title: 'How I decide',
+          paragraphs: [
+            'Behavior over opinion. I ran about 50 interviews. They are good at telling you what people dislike, so I use them to find pain points. Analytics and session replays tell me what people actually do, and when the two disagree I trust behavior.',
+            'Every feature ships behind a feature flag with event tracking in place before launch.',
+          ],
+        },
+        {
+          id: 'decisions',
+          title: 'Decisions',
+          blocks: [
+            {
+              heading: 'Put grade distributions inside the course and professor pages',
+              paragraphs: [
+                'Grade data lived in two places, each with a different UX. My read was that students wanted grades while looking at a course or a professor, not on a separate page, so I moved grade distributions directly into the course and professor pages.',
+                'The cost was density. Those pages now carried far more information, so I reworked the hierarchy and used line charts and histograms to separate the kinds of numbers. Grade distributions have been viewed about 217,000 times since launch.',
+              ],
+            },
+            {
+              heading: 'Fix a landing page people left',
+              paragraphs: [
+                "Analytics showed the landing page's buttons had almost no use compared to search, and many visitors left within the first few pages. I redesigned the landing page to put search first and surface new features up front.",
+              ],
+            },
+            {
+              heading: 'Reshape a feature that grew traffic but missed the goal',
+              paragraphs: [
+                "Cooked Course Comparison was a social feature where students shared their quarter schedule and got a difficulty rating based on professor reviews and unit count. It brought in traffic, but it didn't fit what Cattlelog is for. I refactored it into the Comparison Tool, which lets students compare courses and professors side by side on ratings, grade distributions and requirements without comparing against other people. It has been used 8,105 times by 2,780 users.",
+              ],
+              image: {
+                src: '/images/projects/cattlelog/comparison.webp',
+                label: 'Comparison Tool',
+                description: 'Side-by-side course comparison across prerequisites, GE tags, professor ratings and grade distributions.',
+              },
+            },
+          ],
+        },
+        {
+          id: 'design-system',
+          title: 'The design system',
+          nav: 'System',
+          paragraphs: [
+            'The look mixes minimalism and maximalism: blank space directs attention to the key features, while a more complex logo and landing page keep the feel of a product made by students, for students.',
+            'Reusable components, and knowing why past decisions were made, are why new features take me far less time to ship now.',
+          ],
+        },
       ],
       validation: [
-        'Cattlelog scaled to 40,000+ total users and 1,000+ daily actives within its first academic year, driven entirely by word-of-mouth among UC Davis students.',
-        'The component design system proved its value when the team shipped the Grade Distribution feature in under a week, the existing token system absorbed the new UI without regressions in visual consistency.',
+        {
+          figure: '15,000+',
+          body: 'Over 15,000 quarterly active users (65,000+ cumulative), averaged over Fall 2025 – Fall 2026 and peaking in Spring 2026.',
+        },
+        { figure: '109%', body: '109% growth Fall over Fall, comparing the first five weeks of instruction: 4,010 to 8,370 users.' },
+        {
+          figure: '38.5%',
+          body: '38.5% of users in the last 90 days returned for more than one session, and 2,115 users were active in three or more quarters.',
+        },
       ],
-      roadmap:
-        'Next: a personalized dashboard that aggregates a student\'s full course history, predicted GPA curves per major, and proactive scheduling conflict detection, moving Cattlelog from a discovery tool to an ongoing academic co-pilot.',
+      resultsNote:
+        'Users are anonymous browser IDs, so one person on two devices counts twice. The returning rate is likely conservative for the same reason. PostHog data as of Oct 26, 2026.',
+      lessons: {
+        intro:
+          'I started on Cattlelog as a newer designer, and most of what I know about hierarchy, scope and measurement I learned by getting it wrong in front of real users.',
+        items: [
+          {
+            title: 'Feature creep',
+            body: "Cooked Course Comparison grew traffic and blurred the product's focus.",
+            rule: 'A feature has to serve the core goal before it ships, however much traffic it brings.',
+          },
+          {
+            title: 'Tracking gaps',
+            body: "Review submissions can't be measured after Jan 2026, so I can't say how many reviews have come in since.",
+            rule: "A feature's flag and its events ship together, and I check the events still fire after refactors.",
+          },
+          {
+            title: 'Information overload',
+            body: 'Course registration data is dense, and showing too much at once made core pages harder to navigate. Watching session replays, checking analytics, talking to students and studying competitor products showed what people actually scan for first.',
+            rule: 'Choose deliberately what shows immediately, what drops into secondary typography and what stays hidden until asked for.',
+          },
+        ],
+        outro:
+          'I get faster because of the design system, reusable components, AI tools and a memory of why past decisions were made.',
+      },
+      figmaActivityEmbedUrl: 'https://figma-tracker.onrender.com/embed-widget?slug=jason&files=OmcL296OeqZ4xsHzNcap65&style=fimanu',
+      liveActivityNote:
+        'My Figma activity, from a live Fimanu embed, the tool in my Fimanu case study.',
       images: [
         {
           src: '/images/projects/cattlelog/landing.webp',
-          label: 'Landing Page',
-          description: 'Consolidated UC Davis course & professor catalog discovery portal.'
+          label: 'Landing page',
+          description: 'Search first, with new features up front.',
+        },
+        {
+          src: '/images/projects/cattlelog/comparison.webp',
+          label: 'Comparison Tool',
+          description: 'Side-by-side course comparison across ratings, grades and requirements.',
         },
         {
           src: '/images/projects/cattlelog/about.webp',
-          label: 'Team & Mission',
-          description: 'Meet the designers and engineers behind the platform.'
+          label: 'Team page',
+          description: 'The people behind the product.',
         },
         {
           src: '/images/projects/cattlelog/cattleblog.webp',
           label: 'Cattleblog',
-          description: 'Academic planning resources, tips, and student announcements.'
-        }
+          description: 'The blog I built from scratch.',
+        },
       ],
-      figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?slug=jason&style=fimanu'
     },
   },
   {
     id: 'fimanu',
-    year: 2026,
+    year: 'Present',
     slug: 'Fimanu',
     title: 'Fimanu',
-    subtitle: 'GitHub-style activity tracker for Figma files',
-    role: 'Design Engineer',
+    subtitle: 'Figma version history as a GitHub-style activity heatmap',
+    role: 'Solo Designer & Builder',
     tools: [
-      'React',
-      'TypeScript',
+      'React 19',
+      'Vite',
+      'Tailwind CSS v4',
       'Node.js',
       'Express',
-      'Supabase',
-      'Figma REST API',
-      'Tailwind CSS',
-      'Vite'
+      'Supabase Postgres',
+      'Figma OAuth + REST API',
+      'Render',
+      'cron-job.org',
     ],
     categories: ['Product', 'Full-Stack Engineering', 'Tooling'],
-    wheelIndex: 1,
     accentColor: '#feb34f',
-    tagline: 'Visualizing Figma design activity with GitHub-style heatmaps and adaptive syncing.',
+    badge: 'FULL-STACK',
+    timeline: 'Jan 2026 – Present',
+    team: 'Solo',
+    tagline: 'Figma version history as a GitHub-style activity heatmap and embeddable widgets.',
     metrics: [
-      { label: 'Role', value: 'Design Engineer' },
-      { label: 'Focus', value: 'Full-Stack Development' }
+      { label: 'Role', value: 'Solo designer and builder' },
+      { label: 'Built with', value: 'AI coding tools' },
     ],
     narrative: [
-      'A GitHub-style activity tracker that monitors your Figma version history, intelligently syncs edits to a Supabase database, and provides a beautiful visual dashboard of your design activity over time.'
+      'Fimanu turns Figma version history into a GitHub-style activity heatmap and embeddable widgets that show how consistently you design.',
     ],
-    url: 'https://figma-tracker.onrender.com/',
+    url: 'https://fimanu.com',
     status: 'live',
     caseStudy: {
-      executiveSummary: 'Fimanu is a GitHub-style activity tracker designed to bring engineering-grade visibility to Figma design workflows. As the sole creator, I architected this application from the ground up to continuously monitor Figma version history, intelligently sync file edits to a scalable Supabase database, and provide a premium, interactive visual dashboard of daily design activity. By transforming abstract design efforts into quantifiable, visual metrics, Fimanu empowers designers and product managers with a unified, transparent view of collaborative contributions and project momentum across multiple isolated Figma files.',
-      problemSpace: [
-        'Design teams currently lack a unified, cross-file mechanism to visualize their design activity, momentum, and individual contributions over time, leading to fragmented project tracking.',
-        'There is a significant opportunity to elevate Figma\'s per-file version history by aggregating it into a high-level, holistic overview, empowering teams to proudly showcase their design velocity and seamlessly embed interactive activity metrics on external platforms.',
-        'From a technical perspective, architecting a smart, highly optimized synchronization engine unlocks the ability to maintain real-time updates across dozens of active files. By implementing an adaptive polling strategy, we can maximize API efficiency and ensure a buttery-smooth experience while staying well within rate limits.'
+      executiveSummary:
+        'Fimanu turns Figma version history into a GitHub-style activity heatmap and embeddable widgets that show how consistently you design.',
+      lede: 'Fimanu turns Figma version history into a GitHub-style activity heatmap and embeddable widgets that show how consistently you design. I owned the product direction, UI and system architecture, directing AI coding tools to build the full-stack implementation.',
+      facts: [
+        ['Role', 'Solo designer and builder: product, UI and AI-directed full-stack'],
+        [
+          'Stack',
+          'React 19, Vite and Tailwind v4 frontend; Node and Express backend; Supabase Postgres; Figma OAuth and REST API; hosted on Render with an external cron',
+        ],
       ],
-      systemArchitecture: [
-        'Built a robust, adaptive backend synchronization service using Node.js and Express that dynamically adjusts the Figma API polling frequency based on detected user activity. The system polls aggressively at 2-second intervals during active design sessions and gracefully degrades to 10-second intervals when idle, dramatically optimizing API consumption and avoiding rate limits.',
-        'Architected a highly resilient, stateless, and Vercel-ready data pipeline where all complex synchronization states, user attributions, and aggregated version histories are reliably maintained within a scalable Supabase PostgreSQL database.',
-        'Developed a deeply interactive, modern React 19 frontend stylized with Tailwind CSS V4. The interface features a specialized, premium activity heatmap inspired by GitHub\'s contribution graph, seamless multi-file tracking capabilities, and highly customizable, public-facing embed widgets that dynamically adjust to external platform aesthetics.'
+      sections: [
+        {
+          id: 'why',
+          title: 'Why I built it',
+          nav: 'Why I built',
+          paragraphs: [
+            'I love design and spend a lot of time experimenting in Figma, and I wanted a way to show that I put in the hours I say I do. I built it in four stages:',
+          ],
+          list: {
+            ordered: true,
+            items: [
+              'Feasibility: I asked an AI whether this was possible and ran a rough test.',
+              'My own flow: It worked, so I designed the user flow I wanted for myself.',
+              'Other people: I asked peers in informal interviews what to add and what to cut, and designed around that.',
+              "Polish: After a break for Cattlelog and travel, I came back and removed the leftovers of the phase I'd designed in.",
+            ],
+          },
+          after: ['The activity heatmap on my Cattlelog case study is a live Fimanu embed.'],
+        },
+        {
+          id: 'signal',
+          title: 'What the signal means',
+          nav: 'The signal',
+          paragraphs: [
+            "Version history is the best activity data Figma's API gives me, so I treat it as a proof-of-practice signal, like GitHub's contribution graph. It shows whether you showed up, not how much you produced.",
+            "It has limits I state openly: it counts saved versions, not hours; design time spent with AI tools isn't captured; and working across more files can inflate it, although switching between projects takes real effort.",
+          ],
+        },
+        {
+          id: 'product',
+          title: 'Product decisions',
+          nav: 'Product',
+          blocks: [
+            {
+              heading: 'An embed editor, not an analytics dashboard',
+              paragraphs: [
+                "I rejected a fuller dashboard with analysis for three reasons. It would bloat the product and make it hard to position. The data Figma's API gives me probably wasn't enough for good analysis. And in my interviews and surveys, nobody cared about insights beyond the embeds, which are also the easiest thing to add to a case study.",
+                'Today the app has some insights, but it is mainly an embed editor.',
+              ],
+            },
+            {
+              heading: 'Rebuild the UI around reading order',
+              paragraphs: [
+                "My first designs leaned on trends like glassmorphism, and the dashboard was a set of floating cards that didn't suit the user flows. I rebuilt it as a clearer dashboard, still scoped to the embed editor, so people know where to look first, second and last.",
+              ],
+              image: {
+                src: '/images/projects/fimanu/studio.webp',
+                label: 'Redesigned Studio embed editor',
+                description: 'Controls grouped in reading order on the left (data, style, layout) with the live embed preview and Get code action on the right.',
+              },
+            },
+          ],
+        },
+        {
+          id: 'technical',
+          title: 'Technical decisions',
+          nav: 'Technical',
+          blocks: [
+            {
+              heading: "A sync that doesn't miss recent history",
+              paragraphs: [
+                'In development, rate limits kept restarting the sync from the beginning and I missed data. Now each check goes newest-first and stops at the first version it already has, so recent activity is never lost, even when a burst of edits spans more than one page.',
+                'Older history backfills in resumable pages with a saved cursor, so a rate limit no longer restarts it.',
+              ],
+            },
+            {
+              heading: 'Request pacing',
+              paragraphs: [
+                "I pace requests to run close to Figma's rate limit, because connecting a file can mean loading a very large number of versions in pages of up to 30.",
+              ],
+            },
+            {
+              heading: 'Hosting is a design constraint',
+              paragraphs: [
+                "The sync is a long-running, stateful process. Vercel's serverless model and cron limits held it to a daily sync. Railway ran it as a real server, but the free plan's usage, uptime and feature limits got in the way.",
+                "Render's free tier plus cron-job.org gave me a server that stays up, with a keep-warm ping so it doesn't sleep, at no cost.",
+              ],
+            },
+            {
+              heading: 'Ask Figma for as little access as possible',
+              paragraphs: [
+                'The production sync reads file metadata and version history rather than requesting access to file contents.',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'ai',
+          title: 'How I work with AI',
+          nav: 'With AI',
+          paragraphs: [
+            "I decide what the product is and what it isn't, art-direct the UI, and verify the behavior against real data. I cut the analytics dashboard, rejected the trend-driven styling, and caught the sync bug by watching activity go missing—while directing AI coding tools to write the implementation.",
+          ],
+        },
       ],
       validation: [
-        'Successfully designed and deployed a unified dashboard that accurately aggregates and tracks version labels, detailed commit descriptions, and granular designer attribution across an unlimited number of concurrent Figma files.',
-        'The implementation of the adaptive syncing logic proved highly successful in production, reliably capturing live canvas edits with near-zero latency while simultaneously reducing unnecessary API calls by over 70% during off-peak and idle periods.',
-        'Received overwhelmingly positive feedback from early adopters who utilized the dynamic embed widgets to showcase their continuous design momentum on their personal portfolios and team documentation pages.'
+        { figure: '450', body: 'About 450 landing-page views and 20 users (tracked via PostHog and Supabase).' },
+        'I use it every day, and it powers the live activity heatmap on my Cattlelog case study.',
       ],
-      roadmap: 'Next: Scaling the platform beyond a single-user tool by implementing robust user authentication, allowing any designer or team to connect their Figma accounts, generate their own activity heatmaps, and seamlessly track their collaborative contributions.',
+      resultsNote: 'Built as a personal proof-of-practice tool and a sandbox I revisit whenever my design craft takes a step forward.',
+      lessons: {
+        items: [
+          {
+            title: 'Designing from trends',
+            body: "My early designs followed what AI tools default to, and the result didn't fit the flows.",
+            rule: 'Decide the reading order first and the style last.',
+          },
+          {
+            title: 'Scope',
+            body: 'A bigger dashboard would have been easy to generate and hard to defend.',
+            rule: 'A feature earns its place by what people actually asked for.',
+          },
+        ],
+      },
+      roadmap:
+        'Exploring additional API sources so the embed editor could eventually turn other activity streams into clean, embeddable widgets.',
+      figmaActivityEmbedUrl: 'https://figma-tracker.onrender.com/embed-widget?slug=jason&files=OmcL296OeqZ4xsHzNcap65&style=fimanu',
       images: [
         {
           src: '/images/projects/fimanu/landing.webp',
-          label: 'Dashboard',
-          description: 'Unified dashboard visualizing design activity across multiple Figma files.'
+          label: 'Landing page',
+          description: 'The first thing a visitor sees at fimanu.com.',
+        },
+        {
+          src: '/images/projects/fimanu/studio.webp',
+          label: 'Studio embed editor',
+          description: 'Rebuilt around reading order: data, style and layout controls on the left, live preview on the right.',
         },
         {
           src: '/images/projects/fimanu/dashboard.webp',
-          label: 'Activity Heatmap',
-          description: 'Premium heatmap displaying daily Figma contributions.'
+          label: 'Early dashboard',
+          description: 'The floating-card version, before the rebuild around reading order.',
         },
         {
           src: '/images/projects/fimanu/onboarding.webp',
-          label: 'Public Embed',
-          description: 'Dynamic, public-facing activity widget for showcasing design stats.'
-        }
-      ]
-    }
+          label: 'Connect screen',
+          description: 'Connect a Figma account to start tracking files.',
+        },
+      ],
+    },
   },
   {
     id: 'product-space',
     year: 2025,
     slug: 'Product Space',
-    title: 'Product Space Website',
-    subtitle: 'Designing for the Next Generation of Product Leaders',
+    title: 'Product Space @ UC Davis',
+    subtitle: 'Website, brand identity and design system for UC Davis’s product community',
     role: 'VP of Design',
     tools: ['Figma'],
     categories: ['Product', 'Mentorship', 'Marketing', 'UI/UX'],
-    wheelIndex: 2,
     accentColor: '#a855f7',
-    tagline: 'Designing for the Next Generation of Product Leaders',
+    badge: '100+ FELLOWS',
+    timeline: 'Oct 2025 – Jan 2026',
+    team: 'Sole designer on the executive board; partnered with club engineers on the website',
+    tagline: 'Website, brand identity and design system for UC Davis’s product community.',
     metrics: [
       { label: 'Reach', value: '100+ Fellows' },
-      { label: 'Focus', value: 'Mentorship' },
+      { label: 'Focus', value: 'Website & Brand System' },
     ],
-    awards: ['VP of Design'],
+    awards: ['1st Place', 'Honorable Mention'],
     narrative: [
-      'A community driven by mentorship, marketing, and product management.',
-      'Designing for the next generation of product leaders, creating environments that empower students to think user-first.',
+      'As VP of Design and the only designer on the board, I designed the public website, brand identity and tokenized Figma template system for Product Space @ UC Davis.',
     ],
     url: 'https://www.davisproductspace.org',
     status: 'live',
     caseStudy: {
       executiveSummary:
-        'As Vice President of Design at Product Space @ UCD, my role was to operationalize design culture inside a student-run product organization. This meant treating the club itself as a product: defining the "user" as the aspiring product manager or designer, and reverse-engineering the experience they needed to develop a genuine user-first mindset.',
-      problemSpace: [
-        'Most university product clubs run on enthusiasm but lack design rigor. The gap between "learning PM frameworks" and "thinking like a designer who builds for real users" was wide, and closing it required an intentional curriculum, not just workshops.',
-        'The challenge was also brand-level: Product Space needed a visual identity coherent enough to be taken seriously by recruiters and industry partners, yet flexible enough for a student team to maintain without a dedicated design budget.',
+        'As VP of Design and the only designer on the board at Product Space @ UC Davis, I owned the public website, brand identity, marketing materials and Figma design system for a 100+ fellow community.',
+      lede: 'As VP of Design and the only designer on the board at Product Space @ UC Davis, I owned the public website, brand identity, marketing materials and Figma design system for a 100+ fellow community.',
+      facts: [
+        ['What it is', 'A student-run product management and design fellowship at UC Davis.'],
+        ['Scope', 'Public website, brand identity, event marketing and reusable Figma templates.'],
       ],
-      systemArchitecture: [
-        'I built a Figma-native design system for the club: reusable templates for event marketing, social posts, pitch decks, and workshop slides, all tokenized so any team member could produce on-brand work without design review.',
-        'Since I hadn\'t yet learned how to code websites, my core focus was on establishing a bulletproof design-to-engineering handoff process. I meticulously documented every component state, margin, and typography scale to ensure engineers could faithfully build the layouts without ambiguity.',
-        'The design system doubled as a teaching artifact: by walking new members through the component library, I could demonstrate component-level thinking, design tokens, and systematic layout without a single line of code.',
+      problemSpace: [
+        'Most students who visit a university product club website do not intuitively know what product management is—so explaining what Product Space does without first grounding the discipline loses them.',
+        'At the same time, as the sole designer on the board, I had to give the club a coherent identity across flyers, social posts, pitch decks and the website without becoming a bottleneck for every graphic.',
+      ],
+      sections: [
+        {
+          id: 'decisions',
+          title: 'Decisions',
+          blocks: [
+            {
+              heading: 'Anchor the hero in campus marketing, then teach PM in sequence',
+              paragraphs: [
+                'Most visitors arrive from flyers or social posts, so I matched the first screen directly to the marketing materials I had already designed—reassuring them right away that they were in the right place.',
+                'From there, the page explains what product management is in a short paragraph that interacts as you scroll, before tying the Product Space fellowship timeline directly into the PM concepts fellows actually cover.',
+              ],
+            },
+            {
+              heading: 'Lead with community, back it up with real capstone work',
+              paragraphs: [
+                'We had to decide whether to brand Product Space like a buttoned-up professional org or a student community. I leaned into community—using event photos, group shots and retreat pictures to show the people inside the club, reflecting that PM is about the people building the product, not just the product itself.',
+                'To balance that warmth with credibility, I paired the community photography with past capstone projects so prospective fellows and partners could see real work getting shipped.',
+              ],
+            },
+            {
+              heading: 'Build a Figma system any board member could use',
+              paragraphs: [
+                'Because I was the only designer on the board, one-off designs would not survive quarter-to-quarter turnover. I built a tokenized Figma library of reusable templates for social posts, flyers, decks and workshop slides, alongside detailed component specs and margins so club engineers could build the website without ambiguity.',
+              ],
+            },
+          ],
+        },
       ],
       validation: [
-        'The cohort produced award-winning project work, winning 2 consecutive product convention events, with 50% of fellows continuing to PM or design organizations and internships.',
-        'The brand system was adopted across all external-facing channels: events, social media, and the public website, with zero regressions in visual consistency despite high team turnover between quarters.',
+        'The brand and template system was adopted across the public website, recruitment campaigns, social channels and event decks with consistent visual quality across quarters.',
+        'Fellows won two consecutive product convention events, with 50% continuing into PM or design organizations and internships.',
       ],
-      roadmap:
-        'The next evolution is a public-facing resource library: open-sourcing the Figma template system so any UC campus club can bootstrap a professional design practice.',
+      lessons: {
+        items: [
+          {
+            title: 'Assuming visitors know the jargon',
+            body: 'Leading with club structure before explaining what product management actually is made the site feel insider-only.',
+            rule: 'Meet visitors where they just came from, then earn the next concept step by step.',
+          },
+          {
+            title: 'Being a solo designer bottleneck',
+            body: 'Doing every flyer and deck by hand does not scale on a student executive board.',
+            rule: 'Invest early in reusable templates and clean handoff specs so the team can ship without waiting on you.',
+          },
+        ],
+      },
       images: [
         {
           src: '/images/projects/product-space/landing.webp',
-          label: 'Landing Page',
-          description: 'The homepage for Product Space @ UCD.'
+          label: 'Landing page',
+          description: 'Ties back to campus marketing before walking visitors through what PM is.',
         },
         {
           src: '/images/projects/product-space/about.webp',
-          label: 'About Us',
-          description: 'Our mission and the people behind Product Space.'
+          label: 'About us',
+          description: 'Community-first photography paired with the club’s mission and people.',
         },
         {
           src: '/images/projects/product-space/join.webp',
-          label: 'Join Us',
-          description: 'Application and recruitment details for prospective members.'
-        }
-      ]
+          label: 'Join us',
+          description: 'Fellowship timeline mapped to the product concepts students learn.',
+        },
+      ],
     },
   },
   {
     id: 'spot',
-    year: 2024,
+    year: 2025,
     slug: 'Spot',
     title: 'Spot',
-    subtitle: 'Real-Time Space Mapping for Study & Work, Indoors and Out',
+    subtitle: 'Finding a free study spot on campus, pitched in 24 hours',
     role: 'Product Designer',
     tools: ['Figma'],
     categories: ['Product', 'UI/UX'],
-    wheelIndex: 3,
     accentColor: '#ebd648',
-    tagline: 'Finding the exact desk, courtyard bench, or quiet corner that Google Maps never tells you about.',
+    badge: '1ST PLACE',
+    timeline: 'Feb 2025 (competition), redesign Jan 2026',
+    team: '2 PMs, 1 designer (me)',
+    tagline: 'Finding a free study spot on campus, pitched in 24 hours.',
     metrics: [
-      { label: 'Award', value: '1st Place' },
-      { label: 'Research', value: '70+ Surveys' }
+      { label: 'Result', value: '1st of 20+ teams' },
+      { label: 'Event', value: 'UC Davis Product Convention' },
     ],
     awards: ['1st Place'],
     narrative: [
-      'A real-time, data-driven mapping application built to eliminate the friction of finding a good place to sit down and get work done.',
-      'Designed, researched, and prototyped within a 24-hour product competition at ProdCon 2025.',
+      "Spot took first place among more than 20 teams at UC Davis's second annual Product Convention, a 24-hour product pitch competition.",
     ],
     url: '',
     status: 'offline',
     caseStudy: {
       executiveSummary:
-        'Designed, researched, and prototyped within a 24-hour product competition at ProdCon 2025, Spot is a real-time, data-driven mapping application built to close the gap between what maps show and what people actually need to know: not just which building or park exists nearby, but which floor, wing, courtyard, or shaded bench is actually free, quiet, and outlet-friendly right now. The original prototype targeted campus study spaces, but the underlying problem, that conventional maps stop at the building entrance or the park boundary, applies just as much to remote workers, freelancers, and anyone hunting for a good outdoor or indoor spot across a city.',
+        "Spot took first place among more than 20 teams at UC Davis's second annual Product Convention, a 24-hour product pitch competition.",
+      lede: "Spot took first place among more than 20 teams at UC Davis's second annual Product Convention, a 24-hour product pitch competition. I led the feature set and product direction, and owned the UX, the design system and the pitch design.",
+      facts: [['Prompt', 'Ideate a product that improves the education experience of a student.']],
       problemSpace: [
-        'The "Wandering" Tax: People lose 15 to 30 minutes just looking for an open desk, table, or bench, causing frustration and interrupting momentum, whether it is a student between classes or a remote worker looking for a sunny patch of grass.',
-        'Information Asymmetry: Google Maps and building websites can tell you a location exists and when it opens, but nothing about what is inside or around it: which floor has open seating, which courtyard is quiet, or whether a specific outdoor corner even has shade or an outlet nearby.',
-        'Environmental Disconnect: People have distinct sensory needs (dead silence vs. ambient noise, sun vs. shade, outlet proximity, group collaboration space) that standard maps, built for wayfinding rather than dwelling, completely ignore, whether the spot is inside a library or outside on a quad.',
+        'The idea came from the team. We asked friends for small pet peeves about university life and chose the one small enough to solve well in 24 hours: finding a good study spot.',
+        'Students walk between locations that may or may not have free seats, and the 5 to 15 minutes a day adds up to hours.',
       ],
-      systemArchitecture: [
-        'Live Occupancy Heatmapping: A visual map interface utilizing real-time crowd-sourced data, Wi-Fi pings, and facility sensors to color-code the density of specific rooms, floors, and outdoor areas, not just entire buildings or parks.',
-        'Contextual Filtering: A robust filtering engine allowing users to sort indoor and outdoor spaces alike by real-time metrics: noise level, outlet availability, sun/shade, and group size capability.',
-        'Spot Creation & Reviews: A user-generated content loop that lets anyone add undocumented spaces, be it a library alcove, a shaded quad bench, or a coworking corner, and submit real-time environmental reviews, ensuring the catalog expands organically into the detail no map provider tracks.',
+      sections: [
+        {
+          id: 'research',
+          title: 'Research',
+          paragraphs: ['We collected 50+ survey responses. The team wrote the survey and I helped shape the questions.'],
+          list: {
+            items: [
+              '92% study outside their dorm or home on a regular basis.',
+              '87% have left a study spot because it was too crowded or noisy.',
+              '97% said they would use an app that finds spots in real time, which is stated intent, not observed behavior.',
+            ],
+          },
+          after: ['The most wanted features were availability tracking (82.6%), amenity filters (76.1%) and a map view (69.6%).'],
+        },
+        {
+          id: 'decisions',
+          title: 'Decisions',
+          blocks: [
+            {
+              heading: 'Cut unfeasible tracking to focus on the core pitch',
+              paragraphs: [
+                'High-precision location ideas like Bluetooth device-to-device sensing, facility sensors and physical hardware weren’t feasible to build or prove in 24 hours, so we cut them from v1 and framed them as a future roadmap.',
+                'Instead, we scoped the pitch to geofencing: foot-traffic trends from existing data sources, one-tap check-ins when you arrive at a spot, and ratings and reviews—matching the features survey respondents actually asked for.',
+              ],
+            },
+            {
+              heading: 'Solve the cold start by hand',
+              paragraphs: [
+                'A crowdsourced product has no data on day one. Our answer was to seed the initial catalog manually with locations the team gathered ourselves, then rely on user-submitted spots to grow coverage over time.',
+              ],
+            },
+            {
+              heading: 'Take a privacy position',
+              paragraphs: [
+                "We said Spot stores no history that connects an account to where a person physically was. It works from a list of locations, so the data can't be used to find a specific person. Favorites and reviews are choices users make explicitly.",
+                'This was a design principle in the pitch, not a shipped system.',
+              ],
+            },
+            {
+              heading: 'Flows that end at a destination',
+              paragraphs: [
+                'I designed every flow to end at a destination, a study spot, rather than a dead end, so people stay in the core loop of finding and going. I also defined the brand and built reusable Figma components.',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'why-we-won',
+          title: 'Why the pitch worked',
+          nav: 'The pitch',
+          paragraphs: [
+            'We picked a specific, everyday problem solvable at the scale of a single product, while other teams stayed high-level and had trouble positioning what they were building.',
+          ],
+        },
+        {
+          id: 'redesign',
+          title: 'The redesign',
+          paragraphs: [
+            'Spot was my first product design project, and nearly a year later I redesigned it to drop the 24-hour pitch constraints and focus on UI craft. I refreshed the branding and standardized components across the app so every button, dropdown and control looked and behaved consistently instead of varying from screen to screen.',
+            'On the map and search views, I tightened the information hierarchy to pack richer location details and more informative search results into a smaller space while keeping them easy to scan.',
+          ],
+        },
       ],
       validation: [
-        'Rapid User Research: A survey deployed to student channels yielded over 50 responses in hours, with over 80% noting they frequently struggle to find open seating, indoors or outdoors. 5 in-depth user interviews uncovered nuanced environmental preferences that generalize well beyond the campus context.',
-        'The Winning Edge: Out of more than 20 competing teams at ProdCon 2025, Spot took home First Place due to its airtight alignment with real user data and highly polished, production-ready interface parity.',
+        { figure: '1st', body: 'First place among more than 20 teams at the second annual UC Davis Product Convention.' },
+        'Spot was never built, so I make no usage or retention claims.',
       ],
-      roadmap:
-        'Scaling beyond the original campus prototype with a lightweight full-stack implementation to consume live location data and network connection density across indoor and outdoor spaces alike, plus introducing micro-reservations to optimize underutilized real estate in libraries, courtyards, parks, and other shared work environments.',
+      lessons: {
+        items: [
+          {
+            title: 'Waiting for the perfect idea',
+            body: 'Facing a blank canvas, I stalled. Once I started whiteboarding low-fidelity designs, the motivation followed.',
+            rule: 'Start rough and let the work show me the answer.',
+          },
+          {
+            title: 'Quantity over quality under a deadline',
+            body: 'I had more items to produce than time, so I spent four to five hours on the polish of the flows, the brand and the reusable components instead of extra marketing graphics.',
+            rule: 'Under time pressure, protect the quality of the core work.',
+          },
+          {
+            title: 'Hierarchy and consistency',
+            body: 'Coming back to my first product project a year later showed how much inconsistent controls and loose spacing hurt scannability.',
+            rule: 'Lock down component patterns early so users never have to re-learn what a button or dropdown looks like.',
+          },
+        ],
+      },
       images: [
         {
           src: '/images/projects/spot/onboarding.webp',
-          label: 'Onboarding Flow',
-          description: 'A seamless onboarding experience that introduces users to core features.'
+          label: 'Onboarding',
+          description: 'Introduces the core loop: find a spot, then go.',
         },
         {
           src: '/images/projects/spot/map-and-catalog.webp',
-          label: 'Map & Catalog',
-          description: 'Live occupancy heatmapping and detailed study space catalog.'
+          label: 'Map and catalog',
+          description: 'Availability on the map, with standardized controls and scannable location details.',
         },
         {
           src: '/images/projects/spot/spot-creation.webp',
-          label: 'Spot Creation',
-          description: 'Interface for adding and configuring new study spots with environmental preferences.'
-        }
-      ]
+          label: 'Spot creation',
+          description: 'Adding a new spot and its amenities.',
+        },
+      ],
     },
   },
 ]

@@ -1,47 +1,45 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import type { ReactNode } from 'react'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
-import { usePrefersReducedMotion } from './HeroAboutPanels'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { ANCHOR_OFFSET, setSmoothScroller } from '../utils/sectionScroll'
 
-// ── Smooth scroll ────────────────────────────────────────────────────────────
-// Lenis drives the real window scrollbar with weighted inertia. It's disabled
-// under prefers-reduced-motion, so the instance is null in that case and every
-// consumer must fall back to native scrolling. The instance is shared via
-// context so SectionCurtain can feed Lenis's scroll position to its GSAP
-// ScrollTrigger, keeping the scrubbed wipe in step with the inertial scroll.
-
-const LenisContext = createContext<Lenis | null>(null)
-
-export function useLenis(): Lenis | null {
-  return useContext(LenisContext)
-}
-
+// Lenis smooths the window scroll. Its frame loop runs only while the page is
+// moving (plus a short tail), so an idle page does no per-frame work.
 export function SmoothScroll({ children }: { children: ReactNode }) {
   const reduced = usePrefersReducedMotion()
-  const [lenis, setLenis] = useState<Lenis | null>(null)
-  const rafRef = useRef(0)
 
   useEffect(() => {
     if (reduced) return
-
-    const instance = new Lenis({ lerp: 0.1 })
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLenis(instance)
-
-    const raf = (time: number) => {
-      instance.raf(time)
-      rafRef.current = requestAnimationFrame(raf)
+    const lenis = new Lenis({ lerp: 0.2, autoRaf: false, anchors: { offset: -ANCHOR_OFFSET } })
+    let raf = 0
+    let until = 0
+    const loop = (t: number) => {
+      lenis.raf(t)
+      raf = t < until || lenis.isScrolling ? requestAnimationFrame(loop) : 0
     }
-    rafRef.current = requestAnimationFrame(raf)
-
+    const kick = () => {
+      until = performance.now() + 400
+      if (!raf) raf = requestAnimationFrame(loop)
+    }
+    // Programmatic jumps start the loop themselves; nothing guarantees an
+    // input event arrived first (keyboard activation, assistive tech).
+    setSmoothScroller((top) => {
+      lenis.scrollTo(top)
+      kick()
+    })
+    const events = ['wheel', 'touchmove', 'keydown', 'pointerdown', 'hashchange'] as const
+    events.forEach((e) => window.addEventListener(e, kick, { passive: true }))
+    const off = lenis.on('scroll', kick)
     return () => {
-      cancelAnimationFrame(rafRef.current)
-      instance.destroy()
-      setLenis(null)
+      cancelAnimationFrame(raf)
+      events.forEach((e) => window.removeEventListener(e, kick))
+      off()
+      lenis.destroy()
+      setSmoothScroller(null)
     }
   }, [reduced])
 
-  return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>
+  return <>{children}</>
 }
