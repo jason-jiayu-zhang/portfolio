@@ -130,9 +130,9 @@ function Section({ leg, alt, children }: { leg: Leg; alt: number; children: Reac
 function buildEmbedSrc(src: string) {
   try {
     const url = new URL(src)
-    url.searchParams.set('bg', 'transparent')
-    url.searchParams.set('text', '1c2035')
-    url.searchParams.set('empty', 'e0dcd0')
+    // Defaults only: a link exported with its own colors keeps them.
+    const defaults = { bg: 'transparent', text: '1c2035', empty: 'e0dcd0' }
+    for (const [k, v] of Object.entries(defaults)) if (!url.searchParams.has(k)) url.searchParams.set(k, v)
     return url.toString()
   } catch {
     return src
@@ -311,6 +311,23 @@ export default function CaseStudyPage() {
               })}
             </ul>
             {cs.resultsNote && <p className="mt-5 max-w-[34rem] text-sm leading-relaxed text-mist">{cs.resultsNote}</p>}
+            {cs.analyticsEmbedUrl && (
+              <figure className="mt-10 max-w-[52rem]">
+                <div className="mat on-cream relative h-[400px] w-full overflow-hidden bg-white" style={{ colorScheme: 'only light' }}>
+                  <iframe
+                    title="Cattlelog unique users over all time (PostHog)"
+                    src={cs.analyticsEmbedUrl}
+                    loading="lazy"
+                    allowFullScreen
+                    sandbox="allow-scripts allow-same-origin allow-popups"
+                    className="block h-full w-full border-0"
+                  />
+                </div>
+                {cs.analyticsEmbedNote && (
+                  <figcaption className="mt-3 text-sm leading-relaxed text-mist">{cs.analyticsEmbedNote}</figcaption>
+                )}
+              </figure>
+            )}
           </Section>
         )
       case 'live':

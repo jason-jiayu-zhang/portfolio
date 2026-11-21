@@ -103,7 +103,13 @@ export const SUMMIT = {
   shoulderLit: `M560 780L760 352L790 360L812 420L730 780Z`,
   shoulderShade: `M790 360L900 470L980 780L730 780L812 420Z`,
   lit: `M640 780L1066 100L1088 190L1040 330L1070 470L1010 620L1040 780Z`,
-  shade: `M1066 100L1440 470L1440 780L1040 780L1010 620L1070 470L1040 330L1088 190Z`,
-  snowLit: `M1066 100L962 248L996 236L1012 270L1040 226L1060 258L1088 190Z`,
-  snowShade: `M1066 100L1088 190L1060 258L1100 232L1128 268L1150 230L1196 256L1180 214Z`,
+  // The faces and the two snow tones share edges exactly. Each back layer
+  // (shade, snowShade) is drawn first and tucks a few units under the layer in
+  // front of its seam, so anti-aliasing never opens a hairline along the ridge.
+  shade: `M1066 100L1440 470L1440 780L1036 780L1006 620L1066 470L1036 330L1084 190Z`,
+  // Outer snow vertices sit on the face edges (973.3 / 1181.2 are on the
+  // apex→640,780 and apex→1440,470 lines); the lit/shade split ends at 1064,260,
+  // the ridge's midpoint, so the snow line continues the rock ridge below it.
+  snowLit: `M1066 100L973.3 248L996 236L1012 270L1040 226L1064 260L1088 190Z`,
+  snowShade: `M1066 100L1181.2 214L1196 256L1150 230L1128 268L1100 232L1064 260L1062 256L1084 190Z`,
 }

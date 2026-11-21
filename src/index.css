@@ -166,16 +166,6 @@
    reading. Moving it by transform keeps the glide off the layout path. */
 .alt-marker { transform: translateY(calc(var(--fall, 0) * 100%)); transition: transform 0.6s var(--ease-out); }
 
-/* The flag only waves while the summit is on screen (Summit toggles this). */
-.summit-flag.is-paused { animation-play-state: paused; }
-
-.summit-flag { transform-box: fill-box; transform-origin: left center; animation: flag 3.2s ease-in-out infinite alternate; }
-@keyframes flag {
-  0% { transform: scaleX(1) skewY(0deg); }
-  50% { transform: scaleX(0.82) skewY(4deg); }
-  100% { transform: scaleX(0.95) skewY(-3deg); }
-}
-
 /* The portrait's mat mirrored on the lake: flipped, rippled, streaked, fading. */
 .lake-reflection {
   position: relative;
@@ -217,7 +207,6 @@
 .spine-title { writing-mode: vertical-rl; white-space: nowrap; width: max-content; }
 
 @media (prefers-reduced-motion: reduce) {
-  .summit-flag { animation: none; }
   .alt-marker, .studio-piece, .studio-piece img, .spine { transition: none; }
   .studio-piece:hover, .studio-piece:hover img { transform: none; }
 }

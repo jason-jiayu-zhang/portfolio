@@ -50,6 +50,10 @@ export interface CaseStudyContent {
   roadmap?: string
   /** Optional visual screenshots or mockups of the interface */
   images?: CaseStudyImage[]
+  /** Optional live analytics chart (e.g. a PostHog shared insight) shown under the results */
+  analyticsEmbedUrl?: string
+  /** Caption under the analytics chart */
+  analyticsEmbedNote?: string
   /** Optional Fimanu Figma-activity embed URL, rendered as a live widget */
   figmaActivityEmbedUrl?: string
   /** "At a Glance" panel; falls back to project narrative + executiveSummary */

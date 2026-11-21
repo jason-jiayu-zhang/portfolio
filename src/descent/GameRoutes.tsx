@@ -1,4 +1,5 @@
 import { PLAYGROUND, type GameEntry, type Ladder } from '../data/about'
+import RipplingFlag from './RipplingFlag'
 
 // Each game's standing read as a route profile, the strip under a trail map:
 // the climbed stretch is solid ground, the route ahead is a dashed line, and a
@@ -42,8 +43,8 @@ function Profile({ ladder, seed, value, sub }: { ladder: Ladder; seed: number; v
         {/* The flag, planted on the ridge at the current standing. */}
         <div aria-hidden="true" className="absolute" style={{ left: `${ladder.at * 100}%`, bottom: `${here * 100}%` }}>
           <svg viewBox="0 0 24 40" className="absolute bottom-0 left-[-1px] h-10 w-6 overflow-visible">
+            <RipplingFlag x={1} top={2} bottom={14} tip={[22, 8]} fill="#cfccbb" />
             <rect x="0" y="0" width="2" height="40" fill="#eeebe2" />
-            <path className="summit-flag" d="M2 2L22 8L2 14Z" fill="#cfccbb" />
           </svg>
           <p className={`absolute bottom-11 whitespace-nowrap ${flip ? 'right-0 text-right' : 'left-0'}`}>
             <span className="mat inline-block px-2.5 py-1.5 text-[0.85rem] font-bold leading-none text-night">{value}</span>

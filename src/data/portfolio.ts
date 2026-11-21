@@ -181,7 +181,9 @@ export const PROJECTS: Project[] = [
         outro:
           'I get faster because of the design system, reusable components, AI tools and a memory of why past decisions were made.',
       },
-      figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=OmcL296OeqZ4xsHzNcap65&style=fimanu&days=365',
+      analyticsEmbedUrl: 'https://us.posthog.com/embedded/PcY499Hc5CqUXUyDlMa7z0LoAd_d5w',
+      analyticsEmbedNote: 'Unique users over all time, live from PostHog.',
+      figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=egdFjrBp34V1JtdQi9O2mu&style=custom&days=365&bg=transparent&text=3d4268&empty=e0dcd0&levels=c4c9ec-95a0da-646d9c-1c2035&scroll=cfccbb&radius=2&size=12',
       liveActivityNote:
         'My Figma activity, from a live Fimanu embed, the tool in my Fimanu case study.',
       images: [
