@@ -15,6 +15,7 @@ const SHAPES = [
 const FIXED = 80 // px per piece that does not scale with width: mat padding, caption, gap
 const FRAME = 16 // px the mat padding takes off the image width
 const STEP = 96 // px each column ends below the one to its left
+const LEAD = 48 // px max top offset per column, so a short column never opens a big gap under the heading
 const TYPICAL_COL = 340 // px, only used to pick the reference column
 
 type Piece = (typeof EXPERIMENTS)[number] & { shape: string; cover: number }
@@ -31,24 +32,28 @@ function sizes(cover: number) {
   return `(min-width: 1024px) calc((min(100vw, 1360px) - 328px) / 3 * ${k}), calc((100vw - 76px) / 2 * ${k})`
 }
 
-// Deal the pieces to the lightest column, then pad each column's top so its
-// bottom lands one STEP below the column to its left: the stand of pieces steps
-// down the slope. Image height scales with the column width (a % of padding is
-// a % of that width); captions and gaps do not, so they go in as px.
+// Deal each piece to the column whose bottom sits highest against the
+// staircase, then pad each column's top so its bottom lands one STEP below the
+// column to its left: the stand of pieces steps down the slope. The pad is
+// capped at c * LEAD, because with few, large pieces the columns cannot always
+// balance and an uncapped pad leaves a tall empty gap above a column. Image
+// height scales with the column width (a % of padding is a % of that width);
+// captions and gaps do not, so they go in as px.
 function stand() {
   const cols: Piece[][] = [[], [], []]
   const ratio = [0, 0, 0]
+  const px = (c: number) => cols[c].length * FIXED - ratio[c] * FRAME
+  const height = (c: number) => ratio[c] * TYPICAL_COL + px(c) - c * STEP
   EXPERIMENTS.forEach((e, i) => {
     const s = SHAPES[i % SHAPES.length]
-    const c = ratio.indexOf(Math.min(...ratio))
+    const c = [0, 1, 2].reduce((a, b) => (height(b) < height(a) ? b : a))
     cols[c].push({ ...e, shape: s.cls, cover: Math.max(1, s.h) })
     ratio[c] += s.h
   })
-  const px = (c: number) => cols[c].length * FIXED - ratio[c] * FRAME
-  const height = (c: number) => ratio[c] * TYPICAL_COL + px(c) - c * STEP
   const ref = [0, 1, 2].reduce((a, b) => (height(b) > height(a) ? b : a))
   const pad = [0, 1, 2].map(
-    (c) => `max(0px, calc(${((ratio[ref] - ratio[c]) * 100).toFixed(2)}% + ${Math.round(px(ref) - px(c) + (c - ref) * STEP)}px))`,
+    (c) =>
+      `max(0px, min(${c * LEAD}px, calc(${((ratio[ref] - ratio[c]) * 100).toFixed(2)}% + ${Math.round(px(ref) - px(c) + (c - ref) * STEP)}px)))`,
   )
   return { cols, pad }
 }

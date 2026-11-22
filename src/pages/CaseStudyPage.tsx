@@ -5,6 +5,7 @@ import NotFoundPage from './NotFoundPage'
 import Altimeter from '../descent/Altimeter'
 import type { Stop } from '../descent/Altimeter'
 import Edge from '../descent/Edge'
+import CampPeak, { Foothills } from '../descent/CampPeak'
 import RouteProfile, { RouteList } from '../descent/RouteProfile'
 import type { Waypoint } from '../descent/RouteProfile'
 import { Arrow } from '../descent/Camp'
@@ -20,12 +21,39 @@ const VALLEY_ALT = 300
 const round10 = (n: number) => Math.round(n / 10) * 10
 const fmt = new Intl.NumberFormat('en-US')
 
+const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g
+const INLINE_LINK_CLASS = 'font-medium text-cream underline decoration-1 underline-offset-[0.25em] hover:text-white'
+
+function InlineText({ text }: { text: string }) {
+  const parts: ReactNode[] = []
+  let last = 0
+  for (const match of text.matchAll(LINK_RE)) {
+    const start = match.index ?? 0
+    if (start > last) parts.push(text.slice(last, start))
+    const [, label, href] = match
+    parts.push(
+      href.startsWith('/') ? (
+        <Link key={start} to={href} className={INLINE_LINK_CLASS}>
+          {label}
+        </Link>
+      ) : (
+        <a key={start} href={href} target="_blank" rel="noreferrer" className={INLINE_LINK_CLASS}>
+          {label}
+        </a>
+      ),
+    )
+    last = start + match[0].length
+  }
+  if (last < text.length) parts.push(text.slice(last))
+  return <>{parts}</>
+}
+
 function Prose({ paragraphs, list, after, className = 'mt-5' }: { paragraphs?: string[]; list?: CaseStudyList; after?: string[]; className?: string }) {
   if (!paragraphs?.length && !list && !after?.length) return null
   const ListTag = list?.ordered ? 'ol' : 'ul'
   return (
     <div className={`cs-prose text-paper ${className}`}>
-      {paragraphs?.map((p, i) => <p key={i}>{p}</p>)}
+      {paragraphs?.map((p, i) => <p key={i}><InlineText text={p} /></p>)}
       {list && (
         <ListTag className={`${paragraphs?.length ? 'mt-4' : ''} space-y-2.5 pl-6 ${list.ordered ? 'list-decimal' : 'list-disc'} marker:text-sand`}>
           {list.items.map((item, i) => {
@@ -34,10 +62,10 @@ function Prose({ paragraphs, list, after, className = 'mt-5' }: { paragraphs?: s
               <li key={i} className="pl-1">
                 {rest.length ? (
                   <>
-                    <strong className="font-bold text-cream">{lead}.</strong> {rest.join(': ')}
+                    <strong className="font-bold text-cream">{lead}.</strong> <InlineText text={rest.join(': ')} />
                   </>
                 ) : (
-                  item
+                  <InlineText text={item} />
                 )}
               </li>
             )
@@ -46,7 +74,7 @@ function Prose({ paragraphs, list, after, className = 'mt-5' }: { paragraphs?: s
       )}
       {after?.map((p, i) => (
         <p key={i} className={i === 0 && list ? 'mt-4' : undefined}>
-          {p}
+          <InlineText text={p} />
         </p>
       ))}
     </div>
@@ -139,14 +167,27 @@ function buildEmbedSrc(src: string) {
   }
 }
 
+/** Mirrors Fimanu's estimateWidgetHeight(rectSize): 196px at the default 12px cell. */
+function embedHeight(src: string) {
+  let size = 12
+  try {
+    const n = Number(new URL(src).searchParams.get('size'))
+    if (n > 0) size = n
+  } catch {
+    /* keep default */
+  }
+  return Math.ceil(7.83 * size + 102)
+}
+
 /** The Fimanu embed sleeps on a free host; say so until the frame has loaded. */
 function LiveEmbed({ src }: { src: string }) {
   const [loaded, setLoaded] = useState(false)
   const embedSrc = useMemo(() => buildEmbedSrc(src), [src])
+  const height = useMemo(() => embedHeight(src), [src])
   return (
     <div
-      className="mat on-cream relative mt-6 h-[228px] w-full max-w-[52rem] overflow-hidden sm:h-[204px]"
-      style={{ colorScheme: 'only light' }}
+      className="mat on-cream relative mt-6 w-full max-w-[52rem] overflow-hidden"
+      style={{ colorScheme: 'only light', height }}
     >
       {!loaded && (
         <p className="absolute inset-0 grid place-items-center px-6 text-center text-[0.95rem] text-action" role="status">
@@ -334,8 +375,12 @@ export default function CaseStudyPage() {
         return (
           <Section key={leg.id} leg={leg} alt={alt}>
             <p className="cs-prose mt-4 text-paper">
-              {cs.liveActivityNote ??
-                'The public embed widget, running against real Figma files. It loads from a free host, so it can take a few seconds to wake.'}
+              <InlineText
+                text={
+                  cs.liveActivityNote ??
+                  'The public embed widget, running against real Figma files. It loads from a free host, so it can take a few seconds to wake.'
+                }
+              />
             </p>
             <LiveEmbed key={cs.figmaActivityEmbedUrl} src={cs.figmaActivityEmbedUrl!} />
             <a
@@ -372,7 +417,10 @@ export default function CaseStudyPage() {
       case 'roadmap':
         return (
           <Section key={leg.id} leg={leg} alt={alt}>
-            <Prose paragraphs={[cs.roadmap!]} />
+            <p className="mat on-cream mt-4 max-w-[34rem] px-5 py-4 text-[0.95rem] leading-snug text-night">
+              <strong className="font-bold">Next up: </strong>
+              {cs.roadmap}
+            </p>
           </Section>
         )
       case 'screens':
@@ -394,19 +442,24 @@ export default function CaseStudyPage() {
     <div className="min-h-screen bg-night">
       <Altimeter stops={stops} top={top} fallbackId="top" homeLink back={{ to: '/#work', label: 'Ascents' }} />
 
-      <header id="top" data-alt={top} tabIndex={-1} className="relative bg-peri text-night outline-none">
-        <div className="band-inner pb-[calc(clamp(110px,18vw,250px)+28px)] pt-28 lg:pt-[8svh]">
+      <header id="top" data-alt={top} tabIndex={-1} className="relative overflow-clip bg-peri text-night outline-none">
+        <CampPeak seed={7 + index * 4} className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-auto xl:block" />
+        <Foothills
+          seed={7 + index * 4}
+          className="pointer-events-none absolute bottom-0 right-0 hidden h-[calc(clamp(110px,18vw,250px)+56px)] w-[52%] xl:block"
+        />
+        <div className="band-inner relative pb-[calc(clamp(110px,18vw,250px)+28px)] pt-28 lg:pt-[8svh]">
           <h1
             className={`wordmark !text-night ${long ? 'text-[clamp(3rem,7vw,6.25rem)]' : 'text-[clamp(3.4rem,8.4vw,8.5rem)]'} !leading-[0.86]`}
           >
             {project.slug}
           </h1>
           <p className="mt-4 max-w-[26ch] text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold leading-[1.15] tracking-[-0.015em]">{project.subtitle}</p>
-          <dl className="mt-7 grid max-w-[60rem] gap-x-10 gap-y-4 text-[0.95rem] sm:grid-cols-2 xl:grid-cols-[auto_auto_minmax(0,1fr)]">
+          <dl className="mt-7 grid max-w-[40rem] gap-x-10 gap-y-4 text-[0.95rem] sm:grid-cols-2">
             {facts
               .filter(([, v]) => v)
               .map(([k, v]) => (
-                <div key={k} className={k === 'Built with' ? 'sm:col-span-2 xl:col-span-3' : undefined}>
+                <div key={k}>
                   <dt className="text-[0.75rem] font-bold uppercase tracking-[0.14em]">{k}</dt>
                   <dd className={`mt-1 ${k === 'When' ? 'tabnum' : ''}`}>{v}</dd>
                 </div>

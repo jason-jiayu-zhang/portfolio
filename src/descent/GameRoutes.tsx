@@ -58,7 +58,7 @@ function Profile({ ladder, seed, value, sub }: { ladder: Ladder; seed: number; v
           <span
             key={k.label}
             className={`absolute top-1.5 whitespace-nowrap text-[0.62rem] font-medium uppercase leading-none tracking-[0.12em] text-mist ${
-              k.minor ? 'hidden sm:block' : ''
+              k.minor ? 'hidden sm:block lg:hidden' : ''
             } ${k.at <= 0.01 ? '' : k.at >= 0.99 ? '-translate-x-full' : '-translate-x-1/2'}`}
             style={{ left: `${k.at * 100}%` }}
           >
@@ -79,7 +79,7 @@ function Route({ g, seed }: { g: GameEntry; seed: number }) {
   const [value, server] = standing?.value.includes(' // ') ? standing.value.split(' // ').reverse() : [standing?.value, standing?.sublabel]
 
   return (
-    <li className="grid gap-x-14 gap-y-4 border-b border-mist/20 py-10 first:pt-2 last:border-b-0 md:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] md:items-end">
+    <li className="grid gap-x-14 gap-y-4 border-b border-mist/20 py-10 first:pt-2 last:border-b-0 md:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] md:items-end lg:flex lg:flex-col lg:items-stretch lg:justify-between lg:gap-0 lg:border-b-0 lg:py-0 lg:first:pt-0">
       <div>
         <p className="text-2xl font-bold leading-tight tracking-[-0.01em] text-cream">{g.title}</p>
         <p className="mt-1 text-sm text-sand">{genre.value}</p>
@@ -110,7 +110,7 @@ function Route({ g, seed }: { g: GameEntry; seed: number }) {
 
 export default function GameRoutes() {
   return (
-    <ul>
+    <ul className="lg:grid lg:grid-cols-3 lg:gap-12">
       {PLAYGROUND.map((g, i) => (
         <Route key={g.id} g={g} seed={i * 1.7 + 0.6} />
       ))}

@@ -1,22 +1,27 @@
-import { BELIEFS, EDUCATION, TIMELINE, type TimelineEntry } from '../data/about'
+import { EDUCATION, TIMELINE, type TimelineEntry } from '../data/about'
+import Beliefs from './Beliefs'
 import Edge from './Edge'
 
+// Each role is a pitch on the route: a marker on the dashed line, current
+// roles filled, past ones hollow.
 function Role({ t }: { t: TimelineEntry }) {
+  const current = /present/i.test(t.period)
   return (
-    <li className="grid gap-x-10 gap-y-1.5 py-6 md:grid-cols-[12rem_minmax(0,1fr)]">
-      <p className="tabnum text-sm text-mist">{t.period}</p>
-      <div>
-        <p className="text-lg font-bold text-cream">
-          {t.role} <span className="font-medium text-sand">at {t.org}</span>
-        </p>
-        <p className="mt-1.5 max-w-[64ch] text-paper">{t.detail}</p>
-      </div>
+    <li className="relative pb-8 pl-8 last:pb-0">
+      <span
+        aria-hidden="true"
+        className={`absolute left-0 top-[0.4rem] h-2.5 w-2.5 -translate-x-1/2 rotate-45 border border-cream ${current ? 'bg-cream' : 'bg-ground-deep'}`}
+      />
+      <p className="tabnum text-xs font-medium uppercase tracking-[0.12em] text-mist">{t.period}</p>
+      <p className="mt-1.5 text-lg font-bold leading-snug text-cream">{t.role}</p>
+      <p className="text-sm font-medium text-sand">{t.org}</p>
+      <p className="mt-2 max-w-[56ch] text-paper">{t.detail}</p>
     </li>
   )
 }
 
 const summary =
-  'cursor-pointer list-none py-5 text-sm font-bold text-sand underline decoration-1 underline-offset-[0.4em] hover:text-cream [&::-webkit-details-marker]:hidden'
+  'cursor-pointer list-none pl-9 pt-6 text-sm font-bold text-sand underline decoration-1 underline-offset-[0.4em] hover:text-cream [&::-webkit-details-marker]:hidden'
 
 // About lies at the lake: the portrait stands on the shore and the water holds
 // its reflection.
@@ -54,39 +59,33 @@ export default function Lake() {
             <p className="prose-body mt-6 text-lg text-paper">{EDUCATION.note}</p>
             <p className="mt-3 max-w-[60ch] text-sm text-mist">Tools: {EDUCATION.tools.join(', ')}.</p>
 
-            <h3 className="mt-16 text-2xl font-bold text-cream md:text-3xl">What I believe</h3>
-            <dl className="mt-6 space-y-7">
-              {BELIEFS.map((b) => (
-                <div key={b.headline}>
-                  <dt className="text-xl font-bold leading-snug text-cream">{b.headline}</dt>
-                  <dd className="mt-1.5 max-w-[60ch] text-paper">{b.body}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </div>
-
-        <div className="mt-24 md:mt-32">
-          <h3 className="text-2xl font-bold text-cream md:text-3xl">Where I have worked</h3>
-          <ol className="mt-6 divide-y divide-mist/20 border-y border-mist/20">
-            {TIMELINE.slice(0, 3).map((t) => (
-              <Role key={`${t.org}-${t.period}`} t={t} />
-            ))}
-          </ol>
-          {TIMELINE.length > 3 && (
-            <details className="group">
-              <summary className={summary}>
-                <span className="group-open:hidden">Show {TIMELINE.length - 3} more roles</span>
-                <span className="hidden group-open:inline">Show fewer roles</span>
-              </summary>
-              <ol className="divide-y divide-mist/20 border-b border-mist/20">
-                {TIMELINE.slice(3).map((t) => (
+            <div className="mt-14 md:mt-16">
+              <h3 className="text-2xl font-bold text-cream md:text-3xl">The logbook</h3>
+              <p className="mt-1 text-sm text-mist">Where I have worked, most recent first.</p>
+              <ol className="mt-8 ml-1 border-l border-dashed border-mist/40">
+                {TIMELINE.slice(0, 3).map((t) => (
                   <Role key={`${t.org}-${t.period}`} t={t} />
                 ))}
               </ol>
-            </details>
-          )}
+              {TIMELINE.length > 3 && (
+                <details className="group">
+                  <summary className={summary}>
+                    <span className="group-open:hidden">Show {TIMELINE.length - 3} earlier roles</span>
+                    <span className="hidden group-open:inline">Show fewer roles</span>
+                  </summary>
+                  <ol className="ml-1 mt-6 border-l border-dashed border-mist/40">
+                    {TIMELINE.slice(3).map((t) => (
+                      <Role key={`${t.org}-${t.period}`} t={t} />
+                    ))}
+                  </ol>
+                </details>
+              )}
+            </div>
+          </div>
         </div>
+
+        <Beliefs />
+
       </div>
     </section>
   )

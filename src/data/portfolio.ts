@@ -51,7 +51,7 @@ export const PROJECTS: Project[] = [
     year: 'Present',
     slug: 'Cattlelog',
     title: 'Cattlelog',
-    subtitle: 'A course and professor catalog for UC Davis',
+    subtitle: 'A course and professor catalog combining reviews and grade data for UC Davis',
     role: 'Product Designer & Frontend Engineer',
     tools: ['Figma', 'React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Supabase', 'PostHog'],
     categories: ['Product', 'Full-Stack Engineering', 'UI/UX'],
@@ -71,8 +71,8 @@ export const PROJECTS: Project[] = [
     status: 'live',
     caseStudy: {
       executiveSummary:
-        'Cattlelog reaches over 15,000 users a quarter (65,000+ cumulative) at UC Davis, and the first five weeks of Fall 2026 drew 109% more users than the same period in Fall 2025.',
-      lede: 'Cattlelog reaches over 15,000 users a quarter (65,000+ cumulative) at UC Davis, and the first five weeks of Fall 2026 drew 109% more users than the same period in Fall 2025.',
+        'Cattlelog reaches over 15,000 users a quarter (65,000+ cumulative) at UC Davis with growth of 109% comparing the first five weeks of Fall 2026 to the same period in Fall 2025.',
+      lede: 'Cattlelog reaches over 15,000 users a quarter (65,000+ cumulative) at UC Davis with growth of 109% comparing the first five weeks of Fall 2026 to the same period in Fall 2025.',
       facts: [
         [
           'What it is',
@@ -85,7 +85,7 @@ export const PROJECTS: Project[] = [
       ],
       problemSpace: [
         'Planning a quarter at UC Davis meant switching between six different web pages to learn about courses, and most students chose by word of mouth.',
-        "Rate My Professors is sorted by professor, so it can't help you discover a course. It also has no grade distributions, no course-specific information and no professor summaries. Those gaps are what Cattlelog is built on, and they are the reason a student would switch. Course, grade and professor data comes from official UC Davis sources.",
+        "Existing sources such as Rate My Professor sort ratings by professor, unable to help users discover courses. They also lack grade distributions, course-specific information and professor summaries for a wider breadth of information. Those gaps are what Cattlelog is built on, and they are the reason a student would switch. Course, grade and professor data comes from official UC Davis sources.",
       ],
       sections: [
         {
@@ -93,15 +93,15 @@ export const PROJECTS: Project[] = [
           title: 'What I owned',
           nav: 'Owned',
           paragraphs: [
-            'I joined in March 2025. A test version existed before I did, but I have since redesigned all of it, so the design is mine end to end. I own the UI, the design system and the frontend build of features once the SWEs finish the backend. I also built the blog from scratch.',
-            'I read and write the React frontend directly, and use AI tools to speed up Figma-to-code translation and navigate nested codebases.',
+            'I joined in March 2025 and own the UI, the design system and the frontend build of all features, as well as the entirety of the blog.',
+            'I read and write the React frontend directly, and use AI tools to speed up Figma-to-code translation and navigate the 9 million line codebase.',
           ],
         },
         {
           id: 'process',
           title: 'How I decide',
           paragraphs: [
-            'Behavior over opinion. I ran about 50 interviews. They are good at telling you what people dislike, so I use them to find pain points. Analytics and session replays tell me what people actually do, and when the two disagree I trust behavior.',
+            'Behavior over opinion. Since joining, I\'ve ran over 50 interviews. Through these, I\'ve found that people are good at expressing what they dislike, which I distill into pain points. However I use real analytics and session replays to tell me what people actually do, and when the two disagree I trust behavior.',
             'Every feature ships behind a feature flag with event tracking in place before launch.',
           ],
         },
@@ -125,7 +125,7 @@ export const PROJECTS: Project[] = [
             {
               heading: 'Reshape a feature that grew traffic but missed the goal',
               paragraphs: [
-                "Cooked Course Comparison was a social feature where students shared their quarter schedule and got a difficulty rating based on professor reviews and unit count. It brought in traffic, but it didn't fit what Cattlelog is for. I refactored it into the Comparison Tool, which lets students compare courses and professors side by side on ratings, grade distributions and requirements without comparing against other people. It has been used 8,105 times by 2,780 users.",
+                "Cooked Course Comparison was a social feature where students shared their quarter schedule and got a difficulty rating based on professor reviews and unit count. It brought in traffic, but users preferred to use it to compare courses side-by-side instead. I refactored it into the Comparison Tool, which lets students compare courses and professors side by side on ratings, grade distributions and requirements without comparing against other people. It has been used 8,105 times by 2,780 users.",
               ],
               image: {
                 src: '/images/projects/cattlelog/comparison.webp',
@@ -141,14 +141,14 @@ export const PROJECTS: Project[] = [
           nav: 'System',
           paragraphs: [
             'The look mixes minimalism and maximalism: blank space directs attention to the key features, while a more complex logo and landing page keep the feel of a product made by students, for students.',
-            'Reusable components, and knowing why past decisions were made, are why new features take me far less time to ship now.',
+            'Reusable components, and recording why past decisions were made, are why new features take me far less time to ship now.',
           ],
         },
       ],
       validation: [
         {
           figure: '15,000+',
-          body: 'Quarterly active users (65,000+ cumulative), averaged over Fall 2025 – Fall 2026 and peaking in Spring 2026.',
+          body: 'Quarterly active users (65,000+ cumulative), averaged from Fall 2025 to the present.',
         },
         { figure: '109%', body: 'Growth Fall over Fall, comparing the first five weeks of instruction: 4,010 to 8,370 users.' },
         {
@@ -160,7 +160,7 @@ export const PROJECTS: Project[] = [
         'Users are anonymous browser IDs, so one person on two devices counts twice. The returning rate is likely conservative for the same reason. PostHog data as of Oct 26, 2026.',
       lessons: {
         intro:
-          'I started on Cattlelog as a newer designer, and most of what I know about hierarchy, scope and measurement I learned by getting it wrong in front of real users.',
+          'I started on Cattlelog as a newer designer, and most of what I know about hierarchy, scope and hierarchy I learned by getting it wrong in front of real users.',
         items: [
           {
             title: 'Feature creep',
@@ -179,13 +179,13 @@ export const PROJECTS: Project[] = [
           },
         ],
         outro:
-          'I get faster because of the design system, reusable components, AI tools and a memory of why past decisions were made.',
+          'I get faster because of the design system, reusable components, AI tools and a record of why past decisions were made.',
       },
       analyticsEmbedUrl: 'https://us.posthog.com/embedded/PcY499Hc5CqUXUyDlMa7z0LoAd_d5w',
       analyticsEmbedNote: 'Unique users over all time, live from PostHog.',
       figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=egdFjrBp34V1JtdQi9O2mu&style=custom&days=365&bg=transparent&text=3d4268&empty=e0dcd0&levels=c4c9ec-95a0da-646d9c-1c2035&scroll=cfccbb&radius=2&size=12',
       liveActivityNote:
-        'My Figma activity, from a live Fimanu embed, the tool in my Fimanu case study.',
+        'My Figma activity, from a live Fimanu embed, the tool in my [Fimanu case study](/case-studies/fimanu).',
       images: [
         {
           src: '/images/projects/cattlelog/landing.webp',
@@ -215,7 +215,7 @@ export const PROJECTS: Project[] = [
     year: 'Present',
     slug: 'Fimanu',
     title: 'Fimanu',
-    subtitle: 'Figma version history as a GitHub-style activity heatmap',
+    subtitle: 'A GitHub-style activity heatmap and embeddable widgets for Figma designers',
     role: 'Solo Designer & Builder',
     tools: [
       'React 19',
@@ -246,7 +246,7 @@ export const PROJECTS: Project[] = [
     caseStudy: {
       executiveSummary:
         'Fimanu turns Figma version history into a GitHub-style activity heatmap and embeddable widgets that show how consistently you design.',
-      lede: 'Fimanu turns Figma version history into a GitHub-style activity heatmap and embeddable widgets that show how consistently you design. I owned the product direction, UI and system architecture, directing AI coding tools to build the full-stack implementation.',
+      lede: 'Fimanu turns Figma version history into a GitHub-style activity heatmap and embeddable widgets that show how consistently you design. I own the product direction, UI and system architecture, and direct AI coding tools to build the full-stack implementation.',
       facts: [
         ['Role', 'Solo designer and builder: product, UI and AI-directed full-stack'],
         [
@@ -267,19 +267,19 @@ export const PROJECTS: Project[] = [
             items: [
               'Feasibility: I asked an AI whether this was possible and ran a rough test.',
               'My own flow: It worked, so I designed the user flow I wanted for myself.',
-              'Other people: I asked peers in informal interviews what to add and what to cut, and designed around that.',
-              "Polish: After a break for Cattlelog and travel, I came back and removed the leftovers of the phase I'd designed in.",
+              'Other people: Through informal interviews with peers, I learned what to add and what to cut, and designed around their feedback.',
+              "Polish: After a break for Cattlelog and travel, I came back with fresh eyes and removed what was left over from the earlier phases.",
             ],
           },
-          after: ['The activity heatmap on my Cattlelog case study is a live Fimanu embed.'],
+          after: ['The activity heatmap on my [Cattlelog case study](/case-studies/cattlelog) is a live Fimanu embed.'],
         },
         {
           id: 'signal',
           title: 'What the signal means',
           nav: 'The signal',
           paragraphs: [
-            "Version history is the best activity data Figma's API gives me, so I treat it as a proof-of-practice signal, like GitHub's contribution graph. It shows whether you showed up, not how much you produced.",
-            "It has limits I state openly: it counts saved versions, not hours; design time spent with AI tools isn't captured; and working across more files can inflate it, although switching between projects takes real effort.",
+            "Version history is the best activity data Figma's API offers, so I treat it as a proof-of-practice signal similar to GitHub's contribution graph, showing whether you showed up rather than how much you produced.",
+            "It has limits that I state openly: it counts saved versions rather than hours, design time spent with AI tools isn't captured and working across more files can inflate it, although switching between projects takes real effort.",
           ],
         },
         {
@@ -290,14 +290,14 @@ export const PROJECTS: Project[] = [
             {
               heading: 'An embed editor, not an analytics dashboard',
               paragraphs: [
-                "I rejected a fuller dashboard with analysis for three reasons. It would bloat the product and make it hard to position. The data Figma's API gives me probably wasn't enough for good analysis. And in my interviews and surveys, nobody cared about insights beyond the embeds, which are also the easiest thing to add to a case study.",
-                'Today the app has some insights, but it is mainly an embed editor.',
+                "I rejected a fuller analytics dashboard for three reasons: it would bloat the product and make it hard to position, the data Figma's API provides probably wasn't enough for good analysis, and through my interviews and surveys I found that nobody cared about insights beyond the embeds, which are also the easiest thing to add to a case study.",
+                'Today the app includes some insights, but it remains primarily an embed editor.',
               ],
             },
             {
               heading: 'Rebuild the UI around reading order',
               paragraphs: [
-                "My first designs leaned on trends like glassmorphism, and the dashboard was a set of floating cards that didn't suit the user flows. I rebuilt it as a clearer dashboard, still scoped to the embed editor, so people know where to look first, second and last.",
+                "My first designs leaned on trends like glassmorphism, and the dashboard was a set of floating cards that didn't suit the user flows. I rebuilt it as a clearer dashboard, still scoped to the embed editor, with a reading order that tells people where to look first, second and last.",
               ],
               image: {
                 src: '/images/projects/fimanu/studio.webp',
@@ -315,7 +315,7 @@ export const PROJECTS: Project[] = [
             {
               heading: "A sync that doesn't miss recent history",
               paragraphs: [
-                'In development, rate limits kept restarting the sync from the beginning and I missed data. Now each check goes newest-first and stops at the first version it already has, so recent activity is never lost, even when a burst of edits spans more than one page.',
+                'During development, rate limits kept restarting the sync from the beginning, which caused me to miss data. Now each check goes newest-first and stops at the first version it already has, so recent activity is never lost, even when a burst of edits spans more than one page.',
                 'Older history backfills in resumable pages with a saved cursor, so a rate limit no longer restarts it.',
               ],
             },
@@ -328,7 +328,7 @@ export const PROJECTS: Project[] = [
             {
               heading: 'Hosting is a design constraint',
               paragraphs: [
-                "The sync is a long-running, stateful process. Vercel's serverless model and cron limits held it to a daily sync. Railway ran it as a real server, but the free plan's usage, uptime and feature limits got in the way.",
+                "Because the sync is a long-running, stateful process, Vercel's serverless model and cron limits held it to a daily sync. Railway ran it as a real server, but the free plan's usage, uptime and feature limits got in the way.",
                 "Render's free tier plus cron-job.org gave me a server that stays up, with a keep-warm ping so it doesn't sleep, at no cost.",
               ],
             },
@@ -345,13 +345,13 @@ export const PROJECTS: Project[] = [
           title: 'How I work with AI',
           nav: 'With AI',
           paragraphs: [
-            "I decide what the product is and what it isn't, art-direct the UI, and verify the behavior against real data. I cut the analytics dashboard, rejected the trend-driven styling, and caught the sync bug by watching activity go missing—while directing AI coding tools to write the implementation.",
+            "While AI coding tools write the implementation, I decide what the product is and isn't, art-direct the UI and verify its behavior against real data. In practice, that meant cutting the analytics dashboard, rejecting the trend-driven styling and catching the sync bug by noticing activity go missing.",
           ],
         },
       ],
       validation: [
-        { figure: '~450', body: 'Landing-page views and 20 users, tracked via PostHog and Supabase.' },
-        'I use it every day, and it powers the live activity heatmap on my Cattlelog case study.',
+        { figure: '~450', body: 'Landing-page views from about 1,000 impressions, tracked via PostHog.' },
+        { figure: '20', body: 'Users who connected their Figma accounts, tracked via Supabase.' },
       ],
       resultsNote: 'Built as a personal proof-of-practice tool and a sandbox I revisit whenever my design craft takes a step forward.',
       lessons: {
@@ -363,7 +363,7 @@ export const PROJECTS: Project[] = [
           },
           {
             title: 'Scope',
-            body: 'A bigger dashboard would have been easy to generate and hard to defend.',
+            body: 'A bigger dashboard would have been easy to generate, but hard to defend to users who never asked for it.',
             rule: 'A feature earns its place by what people actually asked for.',
           },
         ],
@@ -399,7 +399,7 @@ export const PROJECTS: Project[] = [
     id: 'product-space',
     year: 2025,
     slug: 'Product Space',
-    title: 'Product Space @ UC Davis',
+    title: 'Product Space',
     subtitle: 'Website, brand identity and design system for UC Davis’s product community',
     role: 'VP of Design',
     tools: ['Figma'],
@@ -417,8 +417,8 @@ export const PROJECTS: Project[] = [
     narrative: [
       'As VP of Design and the only designer on the board, I designed the public website, brand identity and tokenized Figma template system for Product Space @ UC Davis.',
     ],
-    url: 'https://www.davisproductspace.org',
-    status: 'live',
+    url: '',
+    status: 'offline',
     caseStudy: {
       executiveSummary:
         'As VP of Design and the only designer on the board at Product Space @ UC Davis, I owned the public website, brand identity, marketing materials and Figma design system for a 100+ fellow community.',
@@ -426,10 +426,11 @@ export const PROJECTS: Project[] = [
       facts: [
         ['What it is', 'A student-run product management and design fellowship at UC Davis.'],
         ['Scope', 'Public website, brand identity, event marketing and reusable Figma templates.'],
+        ['Note', 'The live site has since been rebuilt by later club members and no longer reflects these designs. Everything shown here is from my original Figma files.'],
       ],
       problemSpace: [
-        'Most students who visit a university product club website do not intuitively know what product management is—so explaining what Product Space does without first grounding the discipline loses them.',
-        'At the same time, as the sole designer on the board, I had to give the club a coherent identity across flyers, social posts, pitch decks and the website without becoming a bottleneck for every graphic.',
+        "Most students who visit a university product club website don't intuitively know what product management is, so explaining what Product Space does without first grounding the discipline loses them.",
+        'At the same time, as the sole designer on the board, I needed to give the club a coherent identity across flyers, social posts, pitch decks and the website without becoming a bottleneck for every graphic.',
       ],
       sections: [
         {
@@ -439,29 +440,35 @@ export const PROJECTS: Project[] = [
             {
               heading: 'Anchor the hero in campus marketing, then teach PM in sequence',
               paragraphs: [
-                'Most visitors arrive from flyers or social posts, so I matched the first screen directly to the marketing materials I had already designed—reassuring them right away that they were in the right place.',
-                'From there, the page explains what product management is in a short paragraph that interacts as you scroll, before tying the Product Space fellowship timeline directly into the PM concepts fellows actually cover.',
+                "Most visitors arrive from flyers or social posts, so I matched the first screen to the marketing materials I had already designed, which reassures them right away that they're in the right place.",
+                'From there, the page explains what product management is in a short paragraph that interacts as you scroll, then ties the fellowship timeline to the PM concepts fellows actually cover.',
               ],
             },
             {
               heading: 'Lead with community, back it up with real capstone work',
               paragraphs: [
-                'We had to decide whether to brand Product Space like a buttoned-up professional org or a student community. I leaned into community—using event photos, group shots and retreat pictures to show the people inside the club, reflecting that PM is about the people building the product, not just the product itself.',
-                'To balance that warmth with credibility, I paired the community photography with past capstone projects so prospective fellows and partners could see real work getting shipped.',
+                'We had to decide whether to brand Product Space as a buttoned-up professional org or a student community. I leaned into community, using event photos, group shots and retreat pictures to show the people inside the club, since PM is as much about the people building the product as the product itself.',
+                'To balance that warmth with credibility, I paired the photography with past capstone projects so prospective fellows and partners could see real, shipped work.',
               ],
             },
             {
               heading: 'Build a Figma system any board member could use',
               paragraphs: [
-                'Because I was the only designer on the board, one-off designs would not survive quarter-to-quarter turnover. I built a tokenized Figma library of reusable templates for social posts, flyers, decks and workshop slides, alongside detailed component specs and margins so club engineers could build the website without ambiguity.',
+                "Because I was the only designer on the board, one-off designs wouldn't survive turnover from quarter to quarter. I built a tokenized Figma library of reusable templates for social posts, flyers, decks and workshop slides, along with detailed component specs and margins so club engineers could build the website without ambiguity.",
               ],
             },
           ],
         },
       ],
       validation: [
-        'The brand and template system was adopted across the public website, recruitment campaigns, social channels and event decks with consistent visual quality across quarters.',
-        'Fellows won two consecutive product convention events, with 50% continuing into PM or design organizations and internships.',
+        {
+          figure: '200+',
+          body: 'Assets I created with the brand and template system, adopted across the public website, recruitment campaigns, social channels and event decks.',
+        },
+        {
+          figure: '75%',
+          body: 'Of fellows went on to other product and design organizations and internships. Fellows also won two consecutive product convention events.',
+        },
       ],
       lessons: {
         items: [
@@ -472,14 +479,14 @@ export const PROJECTS: Project[] = [
           },
           {
             title: 'Being a solo designer bottleneck',
-            body: 'Doing every flyer and deck by hand does not scale on a student executive board.',
-            rule: 'Invest early in reusable templates and clean handoff specs so the team can ship without waiting on you.',
+            body: "Doing every flyer and deck by hand doesn't scale on a student executive board.",
+            rule: 'Invest early in reusable templates and clean handoff specs so the team can ship without waiting on me.',
           },
         ],
       },
       figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=RwVeTKJP2kikURo3gVMtWz&style=fimanu&days=365',
       liveActivityNote:
-        'My Figma activity for Product Space, from a live Fimanu embed, the tool in my Fimanu case study.',
+        'My Figma activity for Product Space, from a live Fimanu embed, the tool in my [Fimanu case study](/case-studies/fimanu).',
       images: [
         {
           src: '/images/projects/product-space/landing.webp',
@@ -504,7 +511,7 @@ export const PROJECTS: Project[] = [
     year: 2025,
     slug: 'Spot',
     title: 'Spot',
-    subtitle: 'Finding a free study spot on campus, pitched in 24 hours',
+    subtitle: 'A first-place 24-hour pitch for an app that finds free study spots on campus',
     role: 'Product Designer',
     tools: ['Figma'],
     categories: ['Product', 'UI/UX'],
@@ -529,19 +536,19 @@ export const PROJECTS: Project[] = [
       lede: "Spot took first place among more than 20 teams at UC Davis's second annual Product Convention, a 24-hour product pitch competition. I led the feature set and product direction, and owned the UX, the design system and the pitch design.",
       facts: [['Prompt', 'Ideate a product that improves the education experience of a student.']],
       problemSpace: [
-        'The idea came from the team. We asked friends for small pet peeves about university life and chose the one small enough to solve well in 24 hours: finding a good study spot.',
-        'Students walk between locations that may or may not have free seats, and the 5 to 15 minutes a day adds up to hours.',
+        'The idea came from the team, after we asked friends for small pet peeves about university life and chose the one small enough to solve well in 24 hours: finding a good study spot.',
+        'Students walk between locations that may or may not have free seats, and those 5 to 15 minutes a day add up to hours.',
       ],
       sections: [
         {
           id: 'research',
           title: 'Research',
-          paragraphs: ['We collected 50+ survey responses. The team wrote the survey and I helped shape the questions.'],
+          paragraphs: ['We collected over 50 responses to a survey the team wrote and I helped shape.'],
           list: {
             items: [
               '92% study outside their dorm or home on a regular basis.',
               '87% have left a study spot because it was too crowded or noisy.',
-              '97% said they would use an app that finds spots in real time, which is stated intent, not observed behavior.',
+              "97% said they would use an app that finds spots in real time, though that's stated intent rather than observed behavior.",
             ],
           },
           after: ['The most wanted features were availability tracking (82.6%), amenity filters (76.1%) and a map view (69.6%).'],
@@ -553,27 +560,27 @@ export const PROJECTS: Project[] = [
             {
               heading: 'Cut unfeasible tracking to focus on the core pitch',
               paragraphs: [
-                'High-precision location ideas like Bluetooth device-to-device sensing, facility sensors and physical hardware weren’t feasible to build or prove in 24 hours, so we cut them from v1 and framed them as a future roadmap.',
-                'Instead, we scoped the pitch to geofencing: foot-traffic trends from existing data sources, one-tap check-ins when you arrive at a spot, and ratings and reviews—matching the features survey respondents actually asked for.',
+                'High-precision location ideas like Bluetooth device-to-device sensing, facility sensors and physical hardware weren’t feasible to build or prove in 24 hours, so we cut them from v1 and framed them as future roadmap items.',
+                'Instead, we scoped the pitch to geofencing: foot-traffic trends from existing data sources, one-tap check-ins when you arrive at a spot, and ratings and reviews, matching the features survey respondents asked for.',
               ],
             },
             {
               heading: 'Solve the cold start by hand',
               paragraphs: [
-                'A crowdsourced product has no data on day one. Our answer was to seed the initial catalog manually with locations the team gathered ourselves, then rely on user-submitted spots to grow coverage over time.',
+                'A crowdsourced product has no data on day one, so we planned to seed the initial catalog by hand with locations the team gathered, then rely on user-submitted spots to grow coverage over time.',
               ],
             },
             {
               heading: 'Take a privacy position',
               paragraphs: [
-                "We said Spot stores no history that connects an account to where a person physically was. It works from a list of locations, so the data can't be used to find a specific person. Favorites and reviews are choices users make explicitly.",
+                "In the pitch, Spot stores no history that connects an account to where a person physically was. It works from a list of locations, so the data can't be used to find a specific person, and favorites and reviews are choices users make explicitly.",
                 'This was a design principle in the pitch, not a shipped system.',
               ],
             },
             {
               heading: 'Flows that end at a destination',
               paragraphs: [
-                'I designed every flow to end at a destination, a study spot, rather than a dead end, so people stay in the core loop of finding and going. I also defined the brand and built reusable Figma components.',
+                'I designed every flow to end at a destination, a study spot, rather than a dead end, so people stay in the core loop of finding and going. Alongside the flows, I defined the brand and built reusable Figma components.',
               ],
             },
           ],
@@ -583,7 +590,7 @@ export const PROJECTS: Project[] = [
           title: 'Why the pitch worked',
           nav: 'The pitch',
           paragraphs: [
-            'We picked a specific, everyday problem solvable at the scale of a single product, while other teams stayed high-level and had trouble positioning what they were building.',
+            'While many teams stayed high-level and had trouble positioning what they were building, we picked a specific, everyday problem solvable at the scale of a single product.',
           ],
         },
         {
@@ -597,7 +604,7 @@ export const PROJECTS: Project[] = [
       ],
       validation: [
         { figure: '1st', body: 'Place among more than 20 teams at the second annual UC Davis Product Convention.' },
-        'Spot was never built, so I make no usage or retention claims.',
+        { figure: '30', body: 'Screens designed for the app, including 4 prototyped flows.' },
       ],
       lessons: {
         items: [
@@ -620,7 +627,7 @@ export const PROJECTS: Project[] = [
       },
       figmaActivityEmbedUrl: 'https://fimanu.com/embed-widget?widget=heatmap&slug=jason&files=egdFjrBp34V1JtdQi9O2mu&style=fimanu&days=365',
       liveActivityNote:
-        'My Figma activity for Spot, from a live Fimanu embed, the tool in my Fimanu case study.',
+        'My Figma activity for Spot, from a live Fimanu embed, the tool in my [Fimanu case study](/case-studies/fimanu).',
       images: [
         {
           src: '/images/projects/spot/onboarding.webp',

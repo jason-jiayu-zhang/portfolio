@@ -206,7 +206,26 @@
 }
 .spine-title { writing-mode: vertical-rl; white-space: nowrap; width: max-content; }
 
+/* Beliefs: a stone skipped across the lake. Each landing rings the water
+   outward; the picked belief's text surfaces as if through the water. */
+.belief-wave { transform-box: view-box; animation: belief-wave 1.4s var(--ease-out) forwards; }
+@keyframes belief-wave {
+  from { transform: scale(0.35); opacity: 1; }
+  to { transform: scale(1.9); opacity: 0; }
+}
+.belief-tab { transition: color 0.3s var(--ease-out); }
+.belief-tab-label { text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 0.35em; transition: text-decoration-color 0.3s var(--ease-out); }
+.belief-tab:hover .belief-tab-label { text-decoration-color: rgba(201, 204, 230, 0.5); }
+.belief-tab[aria-selected='true'] .belief-tab-label { text-decoration-color: var(--sand); text-decoration-thickness: 2px; }
+.belief-body { animation: belief-surface 0.7s var(--ease-out); }
+@keyframes belief-surface {
+  from { opacity: 0.3; filter: blur(5px); transform: translateY(6px); }
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .belief-wave, .belief-body { animation: none; }
+  .belief-wave { opacity: 0; }
   .alt-marker, .studio-piece, .studio-piece img, .spine { transition: none; }
   .studio-piece:hover, .studio-piece:hover img { transform: none; }
 }
