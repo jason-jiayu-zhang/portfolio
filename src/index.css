@@ -122,21 +122,8 @@
   .studio-tile:hover img { transform: none; }
 }
 
-/* ─── Mountain system motion ─────────────────────────────────────────────── */
-.ls-layer {
-  transform: translate3d(calc(var(--px, 0) * var(--d, 0) * 1px), 0, 0);
-}
-.water-ring { transform-box: fill-box; transform-origin: center; animation: ring 1.5s var(--ease-out) forwards; }
-@keyframes ring { to { transform: scale(11, 9); opacity: 0; } }
-
-
 /* Below-the-fold sections skip rendering until they approach the viewport */
 .cv-auto { content-visibility: auto; contain-intrinsic-size: auto 1100px; }
-
-@media (prefers-reduced-motion: reduce) {
-  .ls-layer { transform: none; }
-  .water-ring { animation: none !important; transition: none !important; }
-}
 
 /* ─── Descent (home) ─────────────────────────────────────────────────────── */
 :root {
@@ -175,6 +162,12 @@
   box-shadow: 0 -1px 0 rgba(238, 235, 226, 0.5);
   -webkit-mask-image: linear-gradient(to bottom, #000 10%, transparent 95%);
   mask-image: linear-gradient(to bottom, #000 10%, transparent 95%);
+  /* The ripple is an SVG reference filter, which browsers run on the CPU and
+     re-run whenever this region repaints. Its own contained layer means it is
+     rasterised once and then only composited as the page scrolls past. */
+  contain: paint;
+  isolation: isolate;
+  transform: translateZ(0);
 }
 .lake-mirror { transform: scaleY(-1); transform-origin: top; translate: 0 100%; filter: url(#lake-ripple); opacity: 0.45; }
 .lake-reflection::after {
@@ -205,6 +198,18 @@
   box-shadow: inset -2px 0 0 rgba(28, 32, 53, 0.18), 0 14px 22px -14px rgba(10, 12, 30, 0.8);
 }
 .spine-title { writing-mode: vertical-rl; white-space: nowrap; width: max-content; }
+/* Notes: arrow boards on a trailhead post. The point is a square-cut chevron;
+   the drop shadow follows the cut, which box-shadow cannot. Each board hangs a
+   little off true and squares up, sliding toward where it points, when picked. */
+.trail-board-wrap {
+  filter: drop-shadow(0 14px 14px rgba(18, 20, 40, 0.45));
+  transform: rotate(var(--tilt, 0deg));
+  transform-origin: left center;
+  transition: transform 0.6s var(--ease-out);
+}
+.trail-board-wrap:has(.trail-board:hover), .trail-board-wrap:has(.trail-board:focus-visible) { transform: translateX(6px) rotate(0deg); }
+.trail-board { clip-path: polygon(0 0, calc(100% - 1.5rem) 0, 100% 50%, calc(100% - 1.5rem) 100%, 0 100%); }
+.trail-board:focus-visible { outline: none; background-color: #ffffff; }
 
 /* Beliefs: a stone skipped across the lake. Each landing rings the water
    outward; the picked belief's text surfaces as if through the water. */
@@ -218,15 +223,19 @@
 .belief-tab:hover .belief-tab-label { text-decoration-color: rgba(201, 204, 230, 0.5); }
 .belief-tab[aria-selected='true'] .belief-tab-label { text-decoration-color: var(--sand); text-decoration-thickness: 2px; }
 .belief-body { animation: belief-surface 0.7s var(--ease-out); }
+/* Opacity and transform only, so it runs on the compositor; an animated blur
+   on text re-rasterises it every frame. */
 @keyframes belief-surface {
-  from { opacity: 0.3; filter: blur(5px); transform: translateY(6px); }
-  to { opacity: 1; filter: blur(0); transform: none; }
+  from { opacity: 0; transform: translateY(10px); }
+  45% { opacity: 0.6; }
+  to { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .belief-wave, .belief-body { animation: none; }
   .belief-wave { opacity: 0; }
-  .alt-marker, .studio-piece, .studio-piece img, .spine { transition: none; }
+  .alt-marker, .studio-piece, .studio-piece img, .spine, .trail-board-wrap { transition: none; }
+  .trail-board-wrap:has(.trail-board:hover), .trail-board-wrap:has(.trail-board:focus-visible) { transform: rotate(var(--tilt, 0deg)); }
   .studio-piece:hover, .studio-piece:hover img { transform: none; }
 }
 
@@ -237,3 +246,48 @@
 .cs-stop { scroll-margin-top: 80px; }
 @media (min-width: 1024px) { .cs-stop { scroll-margin-top: 24px; } }
 .route-wp[data-passed] .route-mark { background: var(--sand); border-color: var(--sand); }
+
+/* ─── Page transitions: the descent between pages ───────────────────────────
+   Routes sit at altitudes (src/utils/descent.ts). Going down to camp, the
+   summit slides up out of view while camp rises in from below; climbing back
+   reverses it; pages at one height cross-fade. The chrome holds still: the
+   action row and the phone bar sit in the same spot on every page, so they are
+   named out of the page snapshot and stay put while it moves beneath them.
+   Snapshots move by transform and opacity only, on the compositor. Browsers
+   without View Transitions navigate instantly. */
+.site-actions { view-transition-name: site-actions; }
+.site-bar { view-transition-name: site-bar; }
+.altimeter { view-transition-name: altimeter; }
+
+/* The action row gains the JJZ mark off home. Its right edge never moves, so
+   let it grow leftward at natural size instead of stretching the snapshot. */
+::view-transition-group(site-actions) { animation-duration: 0.36s; animation-timing-function: var(--ease-out); }
+::view-transition-old(site-actions),
+::view-transition-new(site-actions) { inset: 0 0 auto auto; width: auto; height: 100%; }
+::view-transition-old(site-actions) { animation: vt-fade-out 0.12s linear both; }
+::view-transition-new(site-actions) { animation: vt-fade-in 0.24s 0.08s linear both; }
+
+/* Exit faster than entrance, and in sequence rather than a double exposure:
+   the page you leave clears in the first half of its travel, and the arrival
+   starts a beat later, only becoming opaque once the old one is gone. */
+:root[data-descent='down']::view-transition-old(root) { animation: vt-leave-up 0.34s cubic-bezier(0.5, 0, 0.75, 0) both; }
+:root[data-descent='down']::view-transition-new(root) { animation: vt-rise-in 0.56s 0.12s var(--ease-out) both; }
+:root[data-descent='up']::view-transition-old(root) { animation: vt-leave-down 0.34s cubic-bezier(0.5, 0, 0.75, 0) both; }
+:root[data-descent='up']::view-transition-new(root) { animation: vt-drop-in 0.56s 0.12s var(--ease-out) both; }
+:root[data-descent='level']::view-transition-old(root) { animation: vt-fade-out 0.14s linear both; }
+:root[data-descent='level']::view-transition-new(root) { animation: vt-fade-in 0.24s 0.08s linear both; }
+
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }
+@keyframes vt-leave-up { 55% { opacity: 0; } to { opacity: 0; transform: translateY(-6vh); } }
+@keyframes vt-rise-in { from { opacity: 0; transform: translateY(14vh); } 45% { opacity: 1; } }
+@keyframes vt-leave-down { 55% { opacity: 0; } to { opacity: 0; transform: translateY(6vh); } }
+@keyframes vt-drop-in { from { opacity: 0; transform: translateY(-14vh); } 45% { opacity: 1; } }
+
+/* Reduced motion keeps the change of place legible as a short cross-fade,
+   with no travel. */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-descent]::view-transition-old(root) { animation: vt-fade-out 0.14s linear both; }
+  :root[data-descent]::view-transition-new(root) { animation: vt-fade-in 0.2s linear both; }
+  ::view-transition-group(site-actions) { animation: none; }
+}

@@ -369,7 +369,6 @@ Under the About portrait mat, a 6 to 10rem window holds the same mat flipped ver
 ### Base Camp (700 m)
 The band between the lake and the valley. Its meadow edge flattens where one A-frame tent stands, in Camp Indigo with a sand-lit doorway. Section headings are themed (Ascents, Side Trails, The Climber, Base Camp, Rope up), while the altimeter, menu and Let's talk buttons keep plain labels.
 - **Shelf:** the books as flat palette spines (sand, alpine, cream, mist, tan, periwinkle, action), with vertical titles and two faint bands. They stand behind a sand and tan ledge lip, and the book being read leans -7deg at the end of the row. Hovering, focusing or tapping a spine raises it 10px from behind the lip and names it in the caption below (title, author, category, and a tan "Reading now" badge). This is the band's only motion, and it is off under reduced motion.
-- **Tracklist:** a cream mat with tabular 01–08, the track in bold Action and the artist in Alpine Indigo, with 1px action/15 rules.
 - **Game routes:** one row per game, split by 1px mist/20 rules. The left side holds only the title, the genre in sand, and what is played (agents, characters or classes). The right side is a trail-map elevation profile of the game's own ladder (Valorant's nine tiers, Endfield's levels 1 to 60, Soul's Remnant's leaderboard percentile). The climbed stretch is filled in Alpine Indigo with a 2px sand edge; the route ahead is a dashed mist line up to a drawn summit. A cream pole and sand flag (the summit flag's flutter, off under reduced motion) stand at the current standing, under a cream chip that names it. Tick labels sit below a 1px rule, and minor ticks hide on phones. The chart is `aria-hidden`; a visually hidden figcaption states the standing in words.
 
 ### Summit
@@ -378,8 +377,11 @@ The first viewport: one snow-capped peak right of centre with a shoulder and a f
 ### Chips
 - **Badge:** Tan fill, Night text, 0.75rem bold uppercase at 0.12em, 6px 12px, square.
 
-### Incumbent pages (current state)
-The case study, studio piece and 404 pages still use the earlier components in `src/components/`. Header is a sticky 56px cream nav bar with the JJZ mark, text links and a "Let's talk!" button. Footer is a mountain scene (`Landscape`) followed by its `Water` mirror, and the case-study hero also ends in `Water`. Content reveals rise 28px over 0.9s with ease-out and are disabled under reduced motion. Case-study callouts alternate cream and sand blocks (16px 20px padding, Night text). These record what those pages ship today. They are not the home system, and new home-page work does not inherit them.
+### Pages off the mountain
+Field Notes (`/notes`, `/notes/:slug`), studio pieces and the 404 page share the home chrome through `Header`: the same action row fixed top right on desktop (`TopActions`, which adds the JJZ mark off home), and below `lg` the same 56px cream bar inset 12px from the top, naming the page where home shows the altitude. They end like home, with the Rope up band and the valley floor (`Contact`, `FloorFooter`). Case-study callouts alternate cream and sand blocks (16px 20px padding, Night text), and case-study content reveals rise 28px over 0.9s with ease-out, off under reduced motion.
+
+### Page transitions
+Moving between pages is a climb or a descent. Each route has an altitude (`src/utils/descent.ts`: home 4,200, case studies 3,600, studio 1,900, notes 700), and links between home and the notes use View Transitions. Going down, the page you leave rises 6vh and clears in the first half of a 0.34s ease-in, and the arrival rises 14vh into place over 0.56s on the ease-out curve after a 0.12s beat, so the two never double-expose. Climbing back runs the same motion downward. Pages at one height cross-fade (0.14s out, 0.24s in). The action row, the phone bar and the altimeter are named out of the page snapshot and hold still. Under reduced motion every page change is a short cross-fade with no travel. Browsers without View Transitions change pages instantly.
 
 ## Do's and Don'ts
 

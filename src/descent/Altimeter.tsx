@@ -3,6 +3,7 @@ import type { MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { BIO } from '../data/portfolio'
 import Logo from '../components/Logo'
+import TopActions from '../components/TopActions'
 import { landingTop, scrollToSection } from '../utils/sectionScroll'
 
 export type Stop = { id: string; label: string; alt: number; /** Rail label when `label` is too long */ short?: string }
@@ -153,7 +154,7 @@ export default function Altimeter({ stops = HOME_STOPS, top = 4200, fallbackId =
       {/* Desktop: the instrument at the left edge */}
       <nav aria-label="Sections" className="altimeter mat on-cream fixed left-4 top-1/2 z-50 hidden w-[140px] -translate-y-1/2 flex-col px-4 pb-5 pt-4 lg:flex">
         {homeLink ? (
-          <Link to="/" className="-mx-1 flex min-h-11 items-center gap-2 px-1 text-action" aria-label={markLabel}>
+          <Link viewTransition to="/" className="-mx-1 flex min-h-11 items-center gap-2 px-1 text-action" aria-label={markLabel}>
             <Logo className="h-5 w-auto" />
             <span className="text-[0.7rem] font-bold uppercase tracking-[0.12em]">JJZ</span>
           </Link>
@@ -202,21 +203,14 @@ export default function Altimeter({ stops = HOME_STOPS, top = 4200, fallbackId =
         </div>
       </nav>
 
-      {/* Desktop: the two ways out, always in reach */}
-      <div className="mat on-cream fixed right-4 top-4 z-50 hidden items-center gap-1 p-1 lg:flex">
-        <a href={BIO.resumeUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center px-4 text-[0.75rem] font-bold uppercase tracking-[0.14em] text-action underline-offset-[0.5em] hover:underline">
-          Resume
-        </a>
-        <a href={`mailto:${BIO.email}`} className="inline-flex min-h-11 items-center bg-action px-4 text-[0.75rem] font-bold uppercase tracking-[0.14em] text-cream transition-colors hover:bg-night">
-          Let's talk
-        </a>
-      </div>
+      {/* Desktop: the ways out, in the same spot on every page */}
+      <TopActions homeMark={homeLink} />
 
       {/* Below lg: a bar across the top carrying the same reading */}
-      <div className="fixed inset-x-3 top-3 z-50 lg:hidden">
+      <div className="site-bar fixed inset-x-3 top-3 z-50 lg:hidden">
         <div className="mat on-cream flex h-14 items-center justify-between gap-3 pl-3 pr-1">
           {homeLink ? (
-            <Link to="/" className="flex min-h-11 items-center text-action" aria-label={markLabel}>
+            <Link viewTransition to="/" className="flex min-h-11 items-center text-action" aria-label={markLabel}>
               <Logo className="h-5 w-auto" />
             </Link>
           ) : (
@@ -271,6 +265,11 @@ export default function Altimeter({ stops = HOME_STOPS, top = 4200, fallbackId =
                 </Link>
               </li>
             )}
+            <li>
+              <Link viewTransition to="/notes" className="flex min-h-11 items-center text-[0.8rem] font-bold uppercase tracking-[0.12em] text-action">
+                Notes
+              </Link>
+            </li>
             <li>
               <a href={BIO.resumeUrl} target="_blank" rel="noreferrer" className="flex min-h-11 items-center text-[0.8rem] font-bold uppercase tracking-[0.12em] text-action">
                 Resume

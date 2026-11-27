@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Header from '../components/Header'
-import Footer from '../components/Footer'
+import { Contact, FloorFooter } from '../descent/Valley'
 import NotFoundPage from './NotFoundPage'
 import { EXPERIMENTS } from '../data/portfolio'
 
@@ -18,8 +18,8 @@ export default function ExperimentPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
-      <main id="main" tabIndex={-1} className="outline-none mx-auto max-w-[1080px] px-3 pt-16 md:px-6 md:pt-24 lg:px-0">
+      <Header label="Side Trails" />
+      <main id="main" tabIndex={-1} className="outline-none mx-auto max-w-[1080px] px-3 pt-[7.5rem] md:px-6 md:pt-[9.5rem] lg:px-0">
         <Link to="/#studio" className="text-sm text-mist underline underline-offset-[0.3em] hover:text-cream">
           Back to the studio
         </Link>
@@ -65,7 +65,10 @@ export default function ExperimentPage() {
           </Link>
         </nav>
       </main>
-      <Footer />
+      <div className="mt-40 md:mt-56">
+        <Contact />
+      </div>
+      <FloorFooter />
     </div>
   )
 }
