@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="780" viewBox="0 0 1440 780" fill="none">
+  <g id="shoulder" transform="translate(70 195)">
+  <path id="shoulder-lit" d="M560 780L760 352L790 360L812 420L730 780Z" fill="#a9afd8"/>
+  <path id="shoulder-shade" d="M790 360L900 470L980 780L730 780L812 420Z" fill="#5d669a"/>
+  </g>
+</svg>

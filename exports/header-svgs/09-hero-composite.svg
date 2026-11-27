@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="840" viewBox="0 0 1440 840" fill="none">
+  <rect id="sky" width="1440" height="840" fill="#95a0da"/>
+  <g id="summit">
+  <path id="far-range" d="M0 780L0 690L90 650L170 668L260 590L330 628L420 572L520 640L600 606L660 780Z" fill="#838dc8"/>
+  <g id="shoulder" transform="translate(70 195)">
+  <path id="shoulder-lit" d="M560 780L760 352L790 360L812 420L730 780Z" fill="#a9afd8"/>
+  <path id="shoulder-shade" d="M790 360L900 470L980 780L730 780L812 420Z" fill="#5d669a"/>
+  </g>
+  <g id="peak" transform="translate(70 195)">
+  <path id="peak-shade" d="M1066 100L1440 470L1440 780L1036 780L1006 620L1066 470L1036 330L1084 190Z" fill="#646d9c"/>
+  <path id="peak-lit" d="M640 780L1066 100L1088 190L1040 330L1070 470L1010 620L1040 780Z" fill="#c9cce6"/>
+  </g>
+  <g id="snowcap" transform="translate(70 195)">
+  <path id="snow-shade" d="M1066 100L1181.2 214L1196 256L1150 230L1128 268L1100 232L1064 260L1062 256L1084 190Z" fill="#b9bde0"/>
+  <path id="snow-lit" d="M1066 100L973.3 248L996 236L1012 270L1040 226L1064 260L1088 190Z" fill="#eeebe2"/>
+  </g>
+  <g transform="translate(70 195)">
+  <g id="flag-and-pole" transform="translate(1064.5 106)"><path id="flag" d="M1 -64C2.04 -63.81 5.11 -63.21 7.21 -62.86C9.32 -62.51 11.45 -62.27 13.62 -61.92C15.79 -61.58 18.03 -61.25 20.26 -60.78C22.48 -60.3 24.76 -59.73 26.96 -59.07C29.16 -58.41 31.36 -57.58 33.45 -56.81C35.54 -56.03 38.49 -54.83 39.5 -54.43C38.49 -54.27 35.54 -53.81 33.45 -53.47C31.36 -53.14 29.16 -52.85 26.96 -52.4C24.76 -51.95 22.48 -51.41 20.26 -50.78C18.03 -50.14 15.79 -49.36 13.62 -48.59C11.45 -47.83 9.32 -46.96 7.21 -46.19C5.11 -45.43 2.04 -44.37 1 -44Z" fill="#eeebe2"></path><rect id="pole" x="0" y="-64" width="3" height="64" fill="#1c2035"/></g>
+  </g>
+  </g>
+  <g id="ridge" transform="translate(0 720)">  <path d="M0 120L0 54.6L89.9 62L180.8 36L266.7 36L296.5 36L391.3 67.2L454.5 64L518.9 71L599.3 89.4L654.6 87.7L740.2 78.6L799.9 51.7L878.3 73.8L929.4 52.6L1024.1 36L1082 36L1115.5 36L1185 54L1217 61L1307.8 45.5L1375.1 36L1423 36.8L1440 36L1440 120Z" fill="#4d5584"/></g>
+  <rect id="alpine-band" y="839" width="1440" height="1" fill="#4d5584"/>
+</svg>

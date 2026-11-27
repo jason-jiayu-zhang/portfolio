@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="780" viewBox="0 0 1440 780" fill="none">
+  <g id="peak" transform="translate(70 195)">
+  <path id="peak-shade" d="M1066 100L1440 470L1440 780L1036 780L1006 620L1066 470L1036 330L1084 190Z" fill="#646d9c"/>
+  <path id="peak-lit" d="M640 780L1066 100L1088 190L1040 330L1070 470L1010 620L1040 780Z" fill="#c9cce6"/>
+  </g>
+</svg>

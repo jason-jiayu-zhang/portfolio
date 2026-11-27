@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="80" viewBox="0 0 1280 80" fill="none">
+  <rect id="sky #95a0da" x="0" width="80" height="80" fill="#95a0da"/>
+  <rect id="terrain-far #838dc8" x="80" width="80" height="80" fill="#838dc8"/>
+  <rect id="shoulder-lit #a9afd8" x="160" width="80" height="80" fill="#a9afd8"/>
+  <rect id="peak-lit #c9cce6" x="240" width="80" height="80" fill="#c9cce6"/>
+  <rect id="snow-shade #b9bde0" x="320" width="80" height="80" fill="#b9bde0"/>
+  <rect id="cream #eeebe2" x="400" width="80" height="80" fill="#eeebe2"/>
+  <rect id="sand #cfccbb" x="480" width="80" height="80" fill="#cfccbb"/>
+  <rect id="tan #a39d7b" x="560" width="80" height="80" fill="#a39d7b"/>
+  <rect id="shoulder-shade #5d669a" x="640" width="80" height="80" fill="#5d669a"/>
+  <rect id="peak-shade #646d9c" x="720" width="80" height="80" fill="#646d9c"/>
+  <rect id="alpine #4d5584" x="800" width="80" height="80" fill="#4d5584"/>
+  <rect id="action #38406a" x="880" width="80" height="80" fill="#38406a"/>
+  <rect id="treeline #3d4268" x="960" width="80" height="80" fill="#3d4268"/>
+  <rect id="lake #2f3456" x="1040" width="80" height="80" fill="#2f3456"/>
+  <rect id="camp #262a48" x="1120" width="80" height="80" fill="#262a48"/>
+  <rect id="night #1c2035" x="1200" width="80" height="80" fill="#1c2035"/>
+</svg>

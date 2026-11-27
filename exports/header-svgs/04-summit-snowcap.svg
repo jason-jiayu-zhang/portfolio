@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="780" viewBox="0 0 1440 780" fill="none">
+  <g id="snowcap" transform="translate(70 195)">
+  <path id="snow-shade" d="M1066 100L1181.2 214L1196 256L1150 230L1128 268L1100 232L1064 260L1062 256L1084 190Z" fill="#b9bde0"/>
+  <path id="snow-lit" d="M1066 100L973.3 248L996 236L1012 270L1040 226L1064 260L1088 190Z" fill="#eeebe2"/>
+  </g>
+</svg>
