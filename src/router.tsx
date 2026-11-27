@@ -65,6 +65,7 @@ const router = createBrowserRouter([
         },
         lazy: async () => ({ Component: (await import('./pages/NotePage')).default }),
       },
+      { path: 'resume', lazy: async () => ({ Component: (await import('./pages/ResumePage')).default }) },
       { path: '*', element: <Suspense fallback={fallback}><NotFoundPage /></Suspense> },
     ],
   },
