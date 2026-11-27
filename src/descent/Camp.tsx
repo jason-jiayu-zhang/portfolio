@@ -20,6 +20,12 @@ export function Camp({ project, alt, flip }: { project: Project; alt: number; fl
   const [main, second] = project.caseStudy?.images ?? []
   const name = project.slug
   const long = name.length > 9
+  // The wordmark sits in a 5/12 column from lg up, so a viewport-based size alone
+  // overruns it near 1024px. Cap it so the longest word fits the column itself:
+  // Satoshi Black caps at -0.035em run ~0.62em a letter; 0.68 leaves headroom.
+  const longestWord = Math.max(...name.split(/\s+/).map((w) => w.length))
+  const fit = `${(100 / (longestWord * 0.68)).toFixed(2)}cqi`
+  const size = long ? 'clamp(2.4rem,5.4vw,4.25rem)' : 'clamp(2.8rem,6.6vw,5.5rem)'
 
   return (
     <article
@@ -44,10 +50,11 @@ export function Camp({ project, alt, flip }: { project: Project; alt: number; fl
         )}
       </div>
 
-      <div className={`lg:col-span-5 ${flip ? 'lg:order-1 lg:col-start-1' : ''}`}>
+      <div className={`min-w-0 [container-type:inline-size] lg:col-span-5 ${flip ? 'lg:order-1 lg:col-start-1' : ''}`}>
         <h3
           id={`camp-${project.id}`}
-          className={`wordmark !text-sand ${long ? 'text-[clamp(2.4rem,5.4vw,4.25rem)]' : 'text-[clamp(2.8rem,6.6vw,5.5rem)]'}`}
+          className="wordmark !text-sand"
+          style={{ fontSize: `min(${size}, ${fit})` }}
         >
           {name}
         </h3>

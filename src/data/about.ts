@@ -28,6 +28,7 @@ export interface RotationEntry {
   note: string
 }
 
+// Hand-ordered: the first two show in the logbook, the rest sit behind the fold.
 // ─── PROFESSIONAL TIMELINE ────────────────────────────────────────────────────
 
 export const TIMELINE: TimelineEntry[] = [
@@ -56,20 +57,20 @@ export const TIMELINE: TimelineEntry[] = [
       'Designed and built Fimanu, which turns Figma version history into a GitHub-style activity heatmap and embeddable widgets. I owned the product direction, UI and system architecture, directing AI coding tools to build the full-stack implementation.',
   },
   {
-    period: 'Sep 2025 – Present',
-    role: 'Design Advisor',
-    org: 'Formula Racing @ UC Davis',
-    tags: ['Design Systems', 'Graphics', 'Marketing'],
-    detail:
-      'Guiding the Formula Racing Design Systems team to design a unified brand and asset ecosystem for the team\'s 200+ members.',
-  },
-  {
     period: 'Oct 2025 – Jan 2026',
     role: 'Vice President of Design',
     org: 'Product Space @ UC Davis',
     tags: ['Leadership', 'Mentorship', 'UI/UX'],
     detail:
       'Led the design vertical of UC Davis\'s premier product organization. Responsible for brand cohesion, design mentorship pipeline, and establishing a human-first design culture across 100+ members.',
+  },
+  {
+    period: 'Sep 2025 – Present',
+    role: 'Design Advisor',
+    org: 'Formula Racing @ UC Davis',
+    tags: ['Design Systems', 'Graphics', 'Marketing'],
+    detail:
+      'Guiding the Formula Racing Design Systems team to design a unified brand and asset ecosystem for the team\'s 200+ members.',
   },
   {
     period: 'Apr 2025 – Jul 2026',

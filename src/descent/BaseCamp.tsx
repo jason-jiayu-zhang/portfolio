@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { BOOKSHELF, ROTATIONS } from '../data/about'
+import { Link } from 'react-router-dom'
+import { ESSAYS, SERIES, SHORTS, formatDate } from '../data/notes'
+import { BOOKSHELF } from '../data/about'
 import Edge from './Edge'
 import GameRoutes from './GameRoutes'
 import { STRATA } from './terrain'
@@ -20,10 +22,65 @@ const SPINES = [
 const WIDTH = [3.1, 2.5, 2.3, 2.7, 2.0, 2.4, 2.2, 2.6]
 const JITTER = [0.3, -0.4, 0.6, -0.2, 0.9, 0, -0.5, 0.4]
 
-const CJK = /[぀-ヿ㐀-鿿]/
-
 // Finished books stand upright; the one being read leans at the end of the row.
 const SHELF = [...BOOKSHELF.filter((b) => b.status !== 'reading'), ...BOOKSHELF.filter((b) => b.status === 'reading')]
+
+// Notes are trails out of camp, not books on the shelf: arrow boards on a
+// trailhead post, newest on top. Title, date and length stay on the board, so
+// nothing hides behind hover. Past four, the last board points to the rest.
+const TRAILS_SHOWN = 4
+const TILT = [-1.2, 0.9, -0.6, 1.1]
+
+function Arrow({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="square" aria-hidden="true">
+      <path d="M3.5 10h12M11 5.5l4.5 4.5-4.5 4.5" />
+    </svg>
+  )
+}
+
+function Trailhead() {
+  const shown = ESSAYS.length > TRAILS_SHOWN ? ESSAYS.slice(0, TRAILS_SHOWN - 1) : ESSAYS
+  const more = ESSAYS.length - shown.length
+  return (
+    <div className="relative max-w-[36rem] pl-6 md:pl-8">
+      {/* The post: sand-lit face, tan shade, standing in a scrape of ground */}
+      <span aria-hidden className="absolute bottom-0 left-0 top-0 flex w-2.5 md:left-1">
+        <span className="w-1/2 bg-sand" />
+        <span className="w-1/2 bg-tan" />
+      </span>
+      <p className="tabnum relative -ml-6 mb-5 inline-flex items-center gap-2 bg-peri-deep px-3 py-1 text-sm text-paper md:-ml-7">
+        Trailhead at <span className="font-bold text-cream">700 m</span>
+      </p>
+      <ul className="space-y-3 pb-10" aria-label="Notes">
+        {shown.map((n, i) => (
+          <li key={n.slug} className="trail-board-wrap" style={{ ['--tilt' as string]: `${TILT[i % TILT.length]}deg` }}>
+            <Link viewTransition to={`/notes/${n.slug}`} className="trail-board group grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 bg-cream py-3 pl-5 pr-10 text-action md:pr-12">
+              <span className="min-w-0">
+                <span className="block text-[1.05rem] font-bold leading-snug decoration-1 underline-offset-[0.3em] group-hover:underline group-focus-visible:underline md:text-lg">{n.title}</span>
+                <span className="tabnum mt-0.5 block text-sm text-peri-deep">{formatDate(n.date)}</span>
+              </span>
+              <span className="tabnum flex items-center gap-1.5 whitespace-nowrap text-night">
+                <span className="text-lg font-black tracking-[-0.02em]">{n.minutes}</span>
+                <span className="text-[0.75rem] font-medium uppercase tracking-[0.14em] text-peri-deep">min</span>
+                <Arrow className="ml-1 h-4 w-4 text-action" />
+              </span>
+            </Link>
+          </li>
+        ))}
+        {more > 0 && (
+          <li className="trail-board-wrap" style={{ ['--tilt' as string]: '0.4deg' }}>
+            <Link viewTransition to="/notes" className="trail-board flex min-h-11 items-center gap-2 bg-sand py-3 pl-5 pr-10 text-[0.75rem] font-bold uppercase tracking-[0.14em] text-night">
+              {more} more {more === 1 ? 'essay' : 'essays'}
+              <Arrow className="h-4 w-4" />
+            </Link>
+          </li>
+        )}
+      </ul>
+      <span aria-hidden className="absolute -left-3 bottom-0 h-1 w-16 bg-sand/60 md:-left-2" />
+    </div>
+  )
+}
 
 function Shelf() {
   const reading = SHELF.findIndex((b) => b.status === 'reading')
@@ -87,25 +144,6 @@ function Shelf() {
   )
 }
 
-function Tracklist() {
-  return (
-    <ol className="mat on-cream divide-y divide-action/15 px-5 py-2 md:px-6">
-      {ROTATIONS.map((r, i) => {
-        const lang = CJK.test(r.artist + r.note) ? 'zh-Hans' : undefined
-        return (
-          <li key={`${r.artist}-${r.note}`} lang={lang} className="grid grid-cols-[1.75rem_minmax(0,1fr)] items-baseline gap-x-2 py-2.5 sm:grid-cols-[1.75rem_minmax(0,1fr)_auto] sm:gap-x-4">
-            <span className="tabnum text-[0.75rem] font-medium text-peri-deep">{String(i + 1).padStart(2, '0')}</span>
-            <span className="truncate font-bold leading-snug text-action" title={r.note}>
-              {r.note}
-            </span>
-            <span className="col-start-2 text-sm leading-snug text-peri-deep sm:col-start-auto sm:text-right">{r.artist}</span>
-          </li>
-        )
-      })}
-    </ol>
-  )
-}
-
 // Base camp sits below the lake: where the climber rests between ascents.
 export default function BaseCamp() {
   return (
@@ -117,18 +155,25 @@ export default function BaseCamp() {
             Base Camp
           </h2>
           <p className="max-w-[40ch] text-lg text-mist md:justify-self-end md:text-right">
-            Where I rest between climbs: the books, music and games that fill the hours after the laptop closes.
+            Where I rest between climbs: the books and games that fill the hours after the laptop closes.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-16 md:mt-20 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-14">
-          <div>
+        <div className="mt-14 grid gap-20 md:mt-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-14">
+          {ESSAYS.length > 0 && (
+            <div>
+              <h3 className="mb-6 text-xl font-bold text-cream">Notes from camp</h3>
+              <Trailhead />
+              {SERIES.length + SHORTS.length > 0 && (
+                <Link viewTransition to="/notes#stories" className="mt-6 inline-flex min-h-11 items-center text-cream underline decoration-1 underline-offset-[0.35em] hover:text-white">
+                  Short stories
+                </Link>
+              )}
+            </div>
+          )}
+          <div className="max-w-[40rem]">
             <h3 className="mb-6 text-xl font-bold text-cream">On the shelf</h3>
             <Shelf />
-          </div>
-          <div>
-            <h3 className="mb-6 text-xl font-bold text-cream">On repeat</h3>
-            <Tracklist />
           </div>
         </div>
 

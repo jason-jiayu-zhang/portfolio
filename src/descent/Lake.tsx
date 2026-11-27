@@ -44,8 +44,13 @@ export default function Lake() {
                 <img src="/images/jason-headshot-1.webp" alt="" loading="lazy" className="block aspect-[4/5] w-full object-cover" />
               </div>
             </div>
+            {/* The filter region covers only the mirror's lower part: the
+                reflection box shows at most its bottom ~40% (the flip puts the
+                portrait's foot at the waterline), so the CPU-run turbulence and
+                displacement skip the hidden top. Noise is in user space, so the
+                visible ripple is identical. */}
             <svg width="0" height="0" className="absolute" aria-hidden="true" focusable="false">
-              <filter id="lake-ripple" x="-5%" y="-5%" width="110%" height="110%">
+              <filter id="lake-ripple" x="-5%" y="40%" width="110%" height="65%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.006 0.11" numOctaves="1" seed="4" />
                 <feDisplacementMap in="SourceGraphic" scale="14" xChannelSelector="R" yChannelSelector="G" />
               </filter>
@@ -61,20 +66,20 @@ export default function Lake() {
 
             <div className="mt-14 md:mt-16">
               <h3 className="text-2xl font-bold text-cream md:text-3xl">The logbook</h3>
-              <p className="mt-1 text-sm text-mist">Where I have worked, most recent first.</p>
+              <p className="mt-1 text-sm text-mist">What I've worked on.</p>
               <ol className="mt-8 ml-1 border-l border-dashed border-mist/40">
-                {TIMELINE.slice(0, 3).map((t) => (
+                {TIMELINE.slice(0, 2).map((t) => (
                   <Role key={`${t.org}-${t.period}`} t={t} />
                 ))}
               </ol>
-              {TIMELINE.length > 3 && (
+              {TIMELINE.length > 2 && (
                 <details className="group">
                   <summary className={summary}>
-                    <span className="group-open:hidden">Show {TIMELINE.length - 3} earlier roles</span>
+                    <span className="group-open:hidden">Show {TIMELINE.length - 2} more roles</span>
                     <span className="hidden group-open:inline">Show fewer roles</span>
                   </summary>
                   <ol className="ml-1 mt-6 border-l border-dashed border-mist/40">
-                    {TIMELINE.slice(3).map((t) => (
+                    {TIMELINE.slice(2).map((t) => (
                       <Role key={`${t.org}-${t.period}`} t={t} />
                     ))}
                   </ol>

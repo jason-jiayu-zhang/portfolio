@@ -4,6 +4,8 @@ import { BELIEFS } from '../data/about'
 // The beliefs are a stone skipped across the lake. Five landings, each hop
 // lower than the last; every landing is one belief. Pick a belief and the
 // stone hops there along the same dashed line, ringing the water as it lands.
+// Left alone, the stone drifts on to the next belief every ten seconds, hopping
+// slowly; past the last one it is thrown again from the shore.
 
 const W = 1000
 const H = 160
@@ -50,6 +52,10 @@ function Rings({ x, strong }: { x: number; strong?: boolean }) {
   )
 }
 
+const DWELL = 10_000
+// Auto hops glide: this much slower than a picked one.
+const DRIFT = 2.4
+
 const reduced = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 export default function Beliefs() {
@@ -64,6 +70,12 @@ export default function Beliefs() {
   const flying = useRef(false)
   const frame = useRef(0)
   const waveId = useRef(0)
+  const slow = useRef(false)
+  const flyRef = useRef<() => void>(() => {})
+  const wrapRef = useRef<HTMLDivElement>(null)
+  // Autoplay waits while the reader points at, focuses or scrolls away from the water.
+  const [playing, setPlaying] = useState(() => !reduced())
+  const held = useRef({ hover: false, focus: false, away: true })
 
   const place = useCallback((p: Pt) => {
     const lift = Math.max(0, WATER - p.y)
@@ -94,7 +106,7 @@ export default function Beliefs() {
     const next = from < 0 ? 0 : from + Math.sign(target.current - from)
     const curve = from < 0 ? throwCurve : next > from ? hop(from) : (hop(next).slice().reverse() as [Pt, Pt, Pt])
     const peak = from < 0 ? 90 : HOP[Math.min(from, next)]
-    const ms = from < 0 ? 620 : 300 * Math.sqrt(peak / 60)
+    const ms = (from < 0 ? 620 : 300 * Math.sqrt(peak / 60)) * (slow.current ? DRIFT : 1)
     const start = performance.now()
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / ms)
@@ -105,10 +117,14 @@ export default function Beliefs() {
       }
       at.current = next
       ring(next)
-      fly()
+      flyRef.current()
     }
     frame.current = requestAnimationFrame(tick)
   }, [place, ring])
+
+  useEffect(() => {
+    flyRef.current = fly
+  }, [fly])
 
   // The throw happens once, when the water comes into view.
   useEffect(() => {
@@ -135,16 +151,52 @@ export default function Beliefs() {
     }
   }, [fly, place])
 
-  const choose = (i: number) => {
-    setActive(i)
-    target.current = i
-    if (reduced()) {
-      at.current = i
-      place({ x: LAND[i], y: WATER })
-      return
+  const choose = useCallback(
+    (i: number, auto = false) => {
+      setActive(i)
+      if (!auto) setPlaying(false) // the reader took the stone; stop drifting
+      slow.current = auto
+      if (reduced()) {
+        target.current = i
+        at.current = i
+        place({ x: LAND[i], y: WATER })
+        return
+      }
+      // Wrapping round: a fresh throw from the shore instead of hopping back.
+      if (auto && i === 0 && at.current > 0 && !flying.current) {
+        at.current = -1
+        place(throwCurve[0])
+      }
+      target.current = i
+      if (!flying.current && (at.current >= 0 || auto)) fly()
+    },
+    [fly, place],
+  )
+
+  // Is the water on screen? Autoplay only counts down while it is.
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => (held.current.away = !e.isIntersecting), { threshold: 0.4 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  // Ten seconds on each belief, then on to the next. A held moment (hover,
+  // focus, scrolled away, hidden tab) re-checks each second instead.
+  useEffect(() => {
+    if (!playing) return
+    let id = 0
+    const due = (ms: number) => {
+      id = window.setTimeout(() => {
+        const h = held.current
+        if (h.hover || h.focus || h.away || document.hidden || flying.current || at.current < 0) return due(1000)
+        choose((active + 1) % BELIEFS.length, true)
+      }, ms)
     }
-    if (!flying.current && at.current >= 0) fly()
-  }
+    due(DWELL)
+    return () => window.clearTimeout(id)
+  }, [playing, active, choose])
 
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
     const n = BELIEFS.length
@@ -160,7 +212,20 @@ export default function Beliefs() {
 
   return (
     <div className="mt-24 md:mt-32">
-      <h3 className="text-2xl font-bold text-cream md:text-3xl">What I believe</h3>
+      <div className="flex items-baseline justify-between gap-6">
+        <h3 className="text-2xl font-bold text-cream md:text-3xl">What I believe</h3>
+        <button
+          type="button"
+          onClick={() => setPlaying((v) => !v)}
+          className="hidden min-h-11 items-center gap-2 text-sm text-mist decoration-1 underline-offset-[0.35em] hover:text-cream hover:underline md:inline-flex"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
+            {playing ? <path d="M4 3h3v10H4zM9 3h3v10H9z" /> : <path d="M4.5 2.5l9 5.5-9 5.5z" />}
+          </svg>
+          {playing ? 'Pause' : 'Play'}
+          <span className="sr-only-x"> the beliefs cycling</span>
+        </button>
+      </div>
 
       {/* Phones: the stones read as a list, each with its own rings. */}
       <ol className="mt-8 space-y-9 md:hidden">
@@ -183,7 +248,16 @@ export default function Beliefs() {
       </ol>
 
       {/* Tablets and up: the skip itself. */}
-      <div className="hidden md:block">
+      <div
+        ref={wrapRef}
+        className="hidden md:block"
+        onPointerEnter={() => (held.current.hover = true)}
+        onPointerLeave={() => (held.current.hover = false)}
+        onFocus={() => (held.current.focus = true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) held.current.focus = false
+        }}
+      >
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="mt-6 block w-full overflow-hidden" aria-hidden="true">
           {/* Water: the line the stone skims, and the streaks the portrait's reflection uses. */}
           <line x1="0" x2={W} y1={WATER} y2={WATER} stroke="#c9cce6" strokeOpacity="0.14" strokeWidth="1" vectorEffect="non-scaling-stroke" />

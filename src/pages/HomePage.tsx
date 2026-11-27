@@ -38,12 +38,16 @@ export default function HomePage() {
             <br />
             {last}
           </h1>
-          <p className="mt-6 max-w-[21ch] text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold leading-[1.15] tracking-[-0.015em] text-night">
-            To discover every peak of design.
-          </p>
-          <p className="mt-3 max-w-[30ch] text-base text-night md:text-lg">
-            I'm a product designer, engineer, and manager, shipping products for over 65,000 users.
-          </p>
+          {/* The bio takes the catchphrase's width: the box shrinks to the catchphrase,
+              and w-0 min-w-full keeps the bio from widening it. */}
+          <div className="mt-6 w-fit max-w-full">
+            <p className="text-balance text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold leading-[1.15] tracking-[-0.015em] text-night">
+              To discover every peak of design.
+            </p>
+            <p className="mt-5 w-0 min-w-full text-base text-night md:text-lg">
+              I'm a product designer, engineer, and manager, shipping products for over 65,000 users.
+            </p>
+          </div>
         </div>
       </header>
 

@@ -112,26 +112,36 @@ function peak(seed: number) {
 export default function CampPeak({ seed, className = '' }: { seed: number; className?: string }) {
   const p = useMemo(() => peak(seed), [seed])
   const [ax, ay] = p.apex
+  // The flag and pole draw in their own small svg over the peak (see
+  // RipplingFlag); the wrapper hugs the svg so the overlay maps its viewBox.
   return (
-    <svg
-      className={className}
-      viewBox={`0 0 ${VW} ${VH}`}
-      preserveAspectRatio="xMaxYMax meet"
-      style={{ aspectRatio: `${VW} / ${VH}` }}
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d={p.shade} fill="#646d9c" />
-      <path d={p.lit} fill="#c9cce6" />
-      <path d={p.snowShade} fill="#b9bde0" />
-      <path d={p.snowLit} fill="#eeebe2" />
-      <path d={p.shoulderShade} fill="#5d669a" />
-      <path d={p.shoulderLit} fill="#a9afd8" />
-      <g transform={`translate(${f(ax - 1.5)} ${f(ay + 6)})`}>
-        <RipplingFlag x={1} top={-64} bottom={-44} tip={[40, -56]} fill="#eeebe2" />
+    <div className={className} aria-hidden="true">
+      <svg
+        className="block h-full w-auto"
+        viewBox={`0 0 ${VW} ${VH}`}
+        preserveAspectRatio="xMaxYMax meet"
+        style={{ aspectRatio: `${VW} / ${VH}` }}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d={p.shade} fill="#646d9c" />
+        <path d={p.lit} fill="#c9cce6" />
+        <path d={p.snowShade} fill="#b9bde0" />
+        <path d={p.snowLit} fill="#eeebe2" />
+        <path d={p.shoulderShade} fill="#5d669a" />
+        <path d={p.shoulderLit} fill="#a9afd8" />
+      </svg>
+      <RipplingFlag
+        x={1}
+        top={-64}
+        bottom={-44}
+        tip={[40, -56]}
+        fill="#eeebe2"
+        fit={{ vw: VW, vh: VH, mode: 'meet', at: [f(ax - 1.5), f(ay + 6)] }}
+      >
         <rect x="0" y="-64" width="3" height="64" fill={STRATA.valley} />
-      </g>
-    </svg>
+      </RipplingFlag>
+    </div>
   )
 }
 
