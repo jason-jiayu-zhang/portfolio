@@ -42,10 +42,10 @@ function Profile({ ladder, seed, value, sub }: { ladder: Ladder; seed: number; v
         </svg>
         {/* The flag, planted on the ridge at the current standing. */}
         <div aria-hidden="true" className="absolute" style={{ left: `${ladder.at * 100}%`, bottom: `${here * 100}%` }}>
-          <svg viewBox="0 0 24 40" className="absolute bottom-0 left-[-1px] h-10 w-6 overflow-visible">
-            <RipplingFlag x={1} top={2} bottom={14} tip={[22, 8]} fill="#cfccbb" />
+          {/* RipplingFlag is its own small svg, so the ripple repaints only this box. */}
+          <RipplingFlag x={1} top={2} bottom={14} tip={[22, 8]} fill="#cfccbb" box={[0, 0, 24, 40]} className="absolute bottom-0 left-[-1px] h-10 w-6">
             <rect x="0" y="0" width="2" height="40" fill="#eeebe2" />
-          </svg>
+          </RipplingFlag>
           <p className={`absolute bottom-11 whitespace-nowrap ${flip ? 'right-0 text-right' : 'left-0'}`}>
             <span className="mat inline-block px-2.5 py-1.5 text-[0.85rem] font-bold leading-none text-night">{value}</span>
             {sub && <span className="mt-1.5 block text-[0.72rem] leading-none text-mist">{sub}</span>}

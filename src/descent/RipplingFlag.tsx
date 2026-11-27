@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { type ReactNode, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 
 // A flag that ripples rather than swings: a small wave rolls from the hoist
 // (held still by the pole) out to the tip, which flutters most. Each frame is
@@ -30,40 +30,115 @@ function frame(phase: number, x: number, top: number, bottom: number, tip: Pt, a
   return `M${f(upper[0][0])} ${f(upper[0][1])}${curve(upper)}${curve(lower)}Z`
 }
 
-/** Hoist edge runs down x from `top` to `bottom`; the cloth tapers to `tip`. */
+/**
+ * How the flag's own svg maps onto its host's drawing. The flag no longer lives
+ * inside the host svg (every SMIL frame would repaint the whole host): it is an
+ * absolutely positioned svg of its own, laid over the host at the spot and scale
+ * the host's viewBox would have drawn it. Its offset parent must have exactly the
+ * host svg's box.
+ */
+export type FlagFit = {
+  /** The host's viewBox size. */
+  vw: number
+  vh: number
+  /** The host's preserveAspectRatio (both hosts align xMax YMax). */
+  mode: 'slice' | 'meet'
+  /** Where the flag's local origin sits in host viewBox units (the old translate). */
+  at: Pt
+}
+
+type Box = [number, number, number, number]
+
+/**
+ * Hoist edge runs down x from `top` to `bottom`; the cloth tapers to `tip`.
+ * Renders its own small svg. `children` (the pole) draw over the cloth, in the
+ * same local units. With `fit` the svg places itself over the host; without
+ * it, `className` sizes and places it and `box` should be its viewBox.
+ */
 export default function RipplingFlag({
-  x, top, bottom, tip, fill, dur = 2.6,
-}: { x: number; top: number; bottom: number; tip: Pt; fill: string; dur?: number }) {
-  const ref = useRef<SVGPathElement>(null)
+  x, top, bottom, tip, fill, dur = 2.6, fit, box, className, children,
+}: {
+  x: number; top: number; bottom: number; tip: Pt; fill: string; dur?: number
+  fit?: FlagFit; box?: Box; className?: string; children?: ReactNode
+}) {
+  const ref = useRef<SVGSVGElement>(null)
   // Lift at the tip: ~9% of the hoist height, subtle at any flag size.
   const amp = (bottom - top) * 0.09
   const frames = useMemo(
     () => Array.from({ length: FRAMES + 1 }, (_, i) => frame((i / FRAMES) * Math.PI * 2, x, top, bottom, tip, amp)),
     [x, top, bottom, tip[0], tip[1], amp], // eslint-disable-line react-hooks/exhaustive-deps
   )
+  // The cloth's reach with some slack for the curves, widened to cover the pole
+  // (the children) when it hangs below or beside the cloth.
+  const pad = 2 + amp
+  const [bx, by, bw, bh] = box ?? (() => {
+    const x0 = Math.min(0, x) - pad
+    const y0 = Math.min(top, tip[1]) - pad
+    const x1 = Math.max(x, tip[0]) + pad
+    const y1 = Math.max(bottom, tip[1], 0) + pad
+    return [x0, y0, x1 - x0, y1 - y0]
+  })()
 
-  // The ripple repaints its svg every frame: run it only while on screen, and
-  // hold it still for reduced motion.
+  // Place the svg over the host: the host's box maps its viewBox with
+  // preserveAspectRatio xMaxYMax (slice or meet), so take the same scale and
+  // offset from the offset parent's layout size (unaffected by transforms).
+  const fvw = fit?.vw, fvh = fit?.vh, fmode = fit?.mode, fax = fit?.at[0], fay = fit?.at[1]
+  useLayoutEffect(() => {
+    const svg = ref.current
+    const host = svg?.parentElement
+    if (!svg || !host || fvw == null || fvh == null || fax == null || fay == null) return
+    const place = (w: number, h: number) => {
+      const s = fmode === 'slice' ? Math.max(w / fvw, h / fvh) : Math.min(w / fvw, h / fvh)
+      const ox = w - fvw * s
+      const oy = h - fvh * s
+      svg.style.left = `${ox + (fax + bx) * s}px`
+      svg.style.top = `${oy + (fay + by) * s}px`
+      svg.style.width = `${bw * s}px`
+      svg.style.height = `${bh * s}px`
+    }
+    const ro = new ResizeObserver(([e]) => place(e.contentRect.width, e.contentRect.height))
+    ro.observe(host)
+    return () => ro.disconnect()
+  }, [fvw, fvh, fmode, fax, fay, bx, by, bw, bh])
+
+  // The ripple repaints its svg every frame: run it only while on screen and the
+  // tab is showing, and hold it still for reduced motion.
   useEffect(() => {
-    const svg = ref.current?.ownerSVGElement
+    const svg = ref.current
     if (!svg) return
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let visible = true
     const sync = () => {
-      if (visible && !motion.matches) svg.unpauseAnimations()
+      if (visible && !document.hidden && !motion.matches) svg.unpauseAnimations()
       else svg.pauseAnimations()
       if (motion.matches) svg.setCurrentTime(0)
     }
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync() })
     io.observe(svg)
     motion.addEventListener('change', sync)
+    document.addEventListener('visibilitychange', sync)
     sync()
-    return () => { io.disconnect(); motion.removeEventListener('change', sync) }
+    return () => {
+      io.disconnect()
+      motion.removeEventListener('change', sync)
+      document.removeEventListener('visibilitychange', sync)
+    }
   }, [])
 
   return (
-    <path ref={ref} d={frames[0]} fill={fill}>
-      <animate attributeName="d" dur={`${dur}s`} repeatCount="indefinite" values={frames.join(';')} />
-    </path>
+    <svg
+      ref={ref}
+      viewBox={`${bx} ${by} ${bw} ${bh}`}
+      className={fit ? 'pointer-events-none absolute' : className}
+      // Its own paint area and layer: a frame repaints this small box, not the host.
+      style={{ contain: 'strict', willChange: 'transform', ...(fit ? { left: 0, top: 0, width: 0, height: 0 } : null) }}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d={frames[0]} fill={fill}>
+        <animate attributeName="d" dur={`${dur}s`} repeatCount="indefinite" values={frames.join(';')} />
+      </path>
+      {children}
+    </svg>
   )
 }
